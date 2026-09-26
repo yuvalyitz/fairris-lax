@@ -1,0 +1,21 @@
+specVersion: "1"
+id: lax-117284
+leanVersion: "v4.33.0"
+mathlibVersion: "db584cd6d46c92f209a44c0f1c829460d327499d"
+title: "Fair Repetitive Interval Scheduling"
+authors:
+  - name: Yuval Itzhaki
+    github: yuvalyitz
+  - name: Claude
+bibEntries:
+  - "@article{heeger2025fairris,\n  author  = {Heeger, Klaus and Hermelin, Danny and Itzhaki, Yuval and Molter, Hendrik and Shabtay, Dvir},\n  title   = {Fair repetitive interval scheduling},\n  journal = {Algorithmica},\n  year    = {2025},\n  doi     = {10.1007/s00453-025-01322-y}\n}\n"
+  - "@article{tovey1984simplified,\n  author  = {Tovey, Craig A.},\n  title   = {A simplified {NP}-complete satisfiability problem},\n  journal = {Discrete Applied Mathematics},\n  volume  = {8},\n  number  = {1},\n  pages   = {85--89},\n  year    = {1984}\n}\n"
+  - "@article{sung2005maximizing,\n  author  = {Sung, Shao Chin and Vlach, Milan},\n  title   = {Maximizing weighted number of just-in-time jobs on unrelated parallel machines},\n  journal = {Journal of Scheduling},\n  volume  = {8},\n  number  = {5},\n  pages   = {453--460},\n  year    = {2005}\n}\n"
+  - "@article{pietrzak2003parameterized,\n  author  = {Pietrzak, Krzysztof},\n  title   = {On the parameterized complexity of the fixed alphabet shortest common supersequence and longest common subsequence problems},\n  journal = {Journal of Computer and System Sciences},\n  volume  = {67},\n  number  = {4},\n  pages   = {757--771},\n  year    = {2003}\n}\n"
+  - "@article{fellows2009multiinterval,\n  author  = {Fellows, Michael R. and Hermelin, Danny and Rosamond, Frances and Vialette, St{\\'e}phane},\n  title   = {On the parameterized complexity of multiple-interval graph problems},\n  journal = {Theoretical Computer Science},\n  volume  = {410},\n  number  = {1},\n  pages   = {53--61},\n  year    = {2009}\n}\n"
+  - "@article{aspvall1979lineartime,\n  author  = {Aspvall, Bengt and Plass, Michael F. and Tarjan, Robert E.},\n  title   = {A linear-time algorithm for testing the truth of certain quantified boolean formulas},\n  journal = {Information Processing Letters},\n  volume  = {8},\n  number  = {3},\n  pages   = {121--123},\n  year    = {1979}\n}\n"
+  - "@article{hopcroft1973nfivehalves,\n  author  = {Hopcroft, John E. and Karp, Richard M.},\n  title   = {An $n^{5/2}$ algorithm for maximum matchings in bipartite graphs},\n  journal = {SIAM Journal on Computing},\n  volume  = {2},\n  number  = {4},\n  pages   = {225--231},\n  year    = {1973}\n}\n"
+  - "@article{bodlaender1996linear,\n  author  = {Bodlaender, Hans L.},\n  title   = {A linear-time algorithm for finding tree-decompositions of small treewidth},\n  journal = {SIAM Journal on Computing},\n  volume  = {25},\n  number  = {6},\n  pages   = {1305--1317},\n  year    = {1996}\n}\n"
+  - "@book{kloks1994treewidth,\n  author    = {Kloks, Ton},\n  title     = {Treewidth: Computations and Approximations},\n  series    = {Lecture Notes in Computer Science},\n  volume    = {842},\n  publisher = {Springer},\n  year      = {1994}\n}\n"
+  - "@book{golumbic1980algorithmic,\n  author    = {Golumbic, Martin Charles},\n  title     = {Algorithmic Graph Theory and Perfect Graphs},\n  publisher = {Academic Press},\n  year      = {1980}\n}\n"
+  - "@article{kuhn1955hungarian,\n  author  = {Kuhn, Harold W.},\n  title   = {The {H}ungarian method for the assignment problem},\n  journal = {Naval Research Logistics Quarterly},\n  volume  = {2},\n  number  = {1--2},\n  pages   = {83--97},\n  year    = {1955}\n}\n"

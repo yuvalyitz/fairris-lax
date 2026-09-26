@@ -1,0 +1,55 @@
+name = "Lax117284"
+defaultTargets = ["Lax117284"]
+
+[leanOptions]
+autoImplicit = false
+
+[[require]]
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4"
+rev = "db584cd6d46c92f209a44c0f1c829460d327499d"
+
+# the word RAM: machine, programs and timed computation
+[[require]]
+name = "Lax808846"
+git = "https://github.com/lax-archive/lax-submissions"
+rev = "9394e531cc51cb67a0214bca3f9264dfe97ba5c7"
+subDir = "word-ram/concepts"
+
+# polynomial-time computability on the word RAM
+[[require]]
+name = "Lax759944"
+git = "https://github.com/szymtor/RAM-TM"
+rev = "134e398cef46599371df99f10c9007bc34ba3868"
+subDir = "concepts"
+
+# the classes P and NP
+[[require]]
+name = "Lax434930"
+git = "https://github.com/EdouardBonnet/classical-complexity"
+rev = "0c0840319318215fd7b36a9a822b81ce55cf6941"
+subDir = "concepts"
+
+# treewidth and tree decompositions
+[[require]]
+name = "Lax228581"
+git = "https://github.com/lax-archive/lax-submissions"
+rev = "1e200ffac8b69e63b802f0aaf1dfee79561ca39a"
+subDir = "twin-width-treewidth-separation-v433/concepts"
+
+# polynomial many-one reductions, and satisfiability
+[[require]]
+name = "Lax429075"
+git = "https://github.com/EdouardBonnet/cook-levin"
+rev = "905f2da2698d5b38002676f74632aa716e731389"
+subDir = "concepts"
+
+# compressed sparse row encodings of graphs (for the bipartite matching modules)
+[[require]]
+name = "Lax271696"
+git = "https://github.com/lax-archive/lax-submissions"
+rev = "0503df0eaf4e41104b9a3aa31e3e028b5adf7a0e"
+subDir = "ram-linear-time/concepts"
+
+[[lean_lib]]
+name = "Lax117284"

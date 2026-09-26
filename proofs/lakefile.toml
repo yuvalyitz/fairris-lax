@@ -1,0 +1,130 @@
+name = "Lax117284Proofs"
+defaultTargets = ["Lax117284Proofs"]
+
+[leanOptions]
+autoImplicit = false
+
+[[require]]
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4"
+rev = "db584cd6d46c92f209a44c0f1c829460d327499d"
+
+[[require]]
+name = "Lax117284"
+path = "../concepts"
+
+# the word RAM: machine, programs and timed computation
+[[require]]
+name = "Lax808846"
+git = "https://github.com/lax-archive/lax-submissions"
+rev = "9394e531cc51cb67a0214bca3f9264dfe97ba5c7"
+subDir = "word-ram/concepts"
+
+# the word RAM's verified compilation pipeline, reused as proved theorems
+[[require]]
+name = "Lax808846Proofs"
+git = "https://github.com/lax-archive/lax-submissions"
+rev = "9394e531cc51cb67a0214bca3f9264dfe97ba5c7"
+subDir = "word-ram/proofs"
+
+# polynomial-time computability on the word RAM
+[[require]]
+name = "Lax759944"
+git = "https://github.com/szymtor/RAM-TM"
+rev = "134e398cef46599371df99f10c9007bc34ba3868"
+subDir = "concepts"
+
+# the encoding lemmas of the RAM/TM equivalence, reused as proved theorems
+[[require]]
+name = "Lax759944Proofs"
+git = "https://github.com/szymtor/RAM-TM"
+rev = "134e398cef46599371df99f10c9007bc34ba3868"
+subDir = "proofs"
+
+# the classes P and NP
+[[require]]
+name = "Lax434930"
+git = "https://github.com/EdouardBonnet/classical-complexity"
+rev = "0c0840319318215fd7b36a9a822b81ce55cf6941"
+subDir = "concepts"
+
+# polynomial-time computability is closed under composition, reused as a proved theorem
+[[require]]
+name = "Lax434930Proofs"
+git = "https://github.com/EdouardBonnet/classical-complexity"
+rev = "0c0840319318215fd7b36a9a822b81ce55cf6941"
+subDir = "proofs"
+
+# treewidth and tree decompositions
+[[require]]
+name = "Lax228581"
+git = "https://github.com/lax-archive/lax-submissions"
+rev = "1e200ffac8b69e63b802f0aaf1dfee79561ca39a"
+subDir = "twin-width-treewidth-separation-v433/concepts"
+
+# polynomial many-one reductions, and satisfiability
+[[require]]
+name = "Lax429075"
+git = "https://github.com/EdouardBonnet/cook-levin"
+rev = "905f2da2698d5b38002676f74632aa716e731389"
+subDir = "concepts"
+
+# the NP-hardness of interval scheduling with eligible machine sets, cited as a statement:
+# the concepts package only; a path require while lax-470956 is a draft, to become a git
+# require on its registered commit
+[[require]]
+name = "Lax470956"
+path = "../../isem-lax/concepts"
+
+# Hitting Set: instances and their binary encoding (lax-496464), the source of the reduction into
+# `R || ∑ Z_j` in `FromHittingSet`; a path require while that submission is a draft, to become a
+# git require on its registered commit
+[[require]]
+name = "Lax496464"
+path = "../../flexflowjit-lax/concepts"
+
+# compressed sparse row encodings of graphs (for the bipartite matching modules)
+[[require]]
+name = "Lax271696"
+git = "https://github.com/lax-archive/lax-submissions"
+rev = "0503df0eaf4e41104b9a3aa31e3e028b5adf7a0e"
+subDir = "ram-linear-time/concepts"
+
+# the verified scanner of an encoded formula and the RAM-to-Turing transfer (for the 2-SAT modules)
+[[require]]
+name = "Lax391470"
+git = "https://github.com/yuvalyitz/rjlmax-lax"
+rev = "373a655f6af9383a22bdb07784c0b146fab6bd42"
+subDir = "concepts"
+
+[[require]]
+name = "Lax391470Proofs"
+git = "https://github.com/yuvalyitz/rjlmax-lax"
+rev = "373a655f6af9383a22bdb07784c0b146fab6bd42"
+subDir = "proofs"
+
+# Bodlaender's theorem with Kloks' niceness, proved in lax-689794 (concepts, and the proofs of its
+# concept statement `niceDecomposition_computable`), reused for the same statement on the overall
+# conflict graph; path requires while that submission is a draft, to become git requires on its
+# registered commit
+[[require]]
+name = "Lax689794"
+path = "../../treewidth-lax/concepts"
+
+[[require]]
+name = "Lax689794Proofs"
+path = "../../treewidth-lax/proofs"
+
+# [2,3]-bounded 3-SAT is NP-hard, proved in lax-345332 (concepts, and the proof of its concept
+# statement `npHard`), reused for `boundedSat_npHard`; path requires while that submission is a
+# draft, to become git requires on its registered commit
+[[require]]
+name = "Lax345332"
+path = "../../tovey-lax/concepts"
+
+[[require]]
+name = "Lax345332Proofs"
+path = "../../tovey-lax/proofs"
+
+[[lean_lib]]
+name = "Lax117284Proofs"
