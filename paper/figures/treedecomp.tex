@@ -1,0 +1,22 @@
+% The width-four tree decomposition of Lemma 14, for two colours of three vertices.
+\begin{tikzpicture}[
+  level 1/.style={sibling distance=42mm,level distance=14mm},
+  level 2/.style={sibling distance=20mm,level distance=14mm},
+  level 3/.style={sibling distance=11mm,level distance=14mm},
+  bag/.style={draw,rounded corners,fill=mygray!12,align=center,font=\scriptsize,inner sep=2pt}
+]
+\node[bag] {$c_0,c^+,c^-$}
+  child { node[bag] {$c_0,c^+,c^-,c_1$}
+    child { node[bag] {$c_0,c^+,c^-,c_{v},c_1$}
+      child { node[bag] {$\cdots,c_{v,u}$} }
+      child { node[bag] {$\cdots,c_{v,u'}$} }
+    }
+    child { node[bag] {$\cdots$} }
+  }
+  child { node[bag] {$c_0,c^+,c^-,c_2$}
+    child { node[bag] {$c_0,c^+,c^-,c_{w},c_2$}
+      child { node[bag] {$\cdots,c_{w,x}$} }
+    }
+    child { node[bag] {$\cdots$} }
+  };
+\end{tikzpicture}
