@@ -43,7 +43,6 @@ structure ScanPost (y : List ℕ) (ext : String → ℕ) (σ : Env) : Prop where
   C : σ.vars "C" = (st y).done.length
   k : σ.vars "k" = (flat (st y)).length
   mx : σ.vars "mx" = mxOf (flat (st y))
-  L : σ.vars "L" = y.length
   vr : (σ.arrs "vr").take (flat (st y)).length = (flat (st y)).map Literal.index
   sg : (σ.arrs "sg").take (flat (st y)).length =
     (flat (st y)).map fun l => if l.positive then 1 else 0
@@ -52,17 +51,10 @@ structure ScanPost (y : List ℕ) (ext : String → ℕ) (σ : Env) : Prop where
   lsg : (σ.arrs "sg").length = y.length
   lcl : (σ.arrs "cl").length = y.length
   out : σ.out = []
-  zero : ∀ x, x ∉ ["L", "rt", "rv", "len", "mx", "ph", "n", "C", "k", "p", "c"] → σ.vars x = 0
   arr : ∀ b, b ∉ ["a", "vr", "sg", "cl"] → σ.arrs b = List.replicate (ext b) 0
 
 lemma warrs_scan : scanLoop.warrs = ["vr", "sg", "sg", "cl"] := by
   simp [scanLoop, scanBody, dispatch, phase3, Com.warrs]
-
-lemma mem_wvars_scan {x : String} (hx : x ∈ scanLoop.wvars) :
-    x ∈ ["p", "c", "ph", "C", "n", "mx", "k"] := by
-  simp only [scanLoop, scanBody, dispatch, phase3, Com.wvars, List.mem_append, List.mem_cons,
-    List.not_mem_nil] at hx ⊢
-  tauto
 
 variable {B : ℕ} {y : List ℕ} {ext : String → ℕ}
 
@@ -73,7 +65,7 @@ theorem scanPart_spec (hB : y.length + 8 < B) (hyB : ∀ v ∈ y, v < B)
   intro σ1 h1
   have r2 : Run B (.assign "mx" (.lit 1)) σ1 (σ1.setVar "mx" 1) (1 + (Expr.lit 1).size) :=
     Run.assign (evalB_lit (by omega))
-  obtain ⟨σ3, r3, ⟨I3, p3⟩, fv3, fa3, -, -⟩ := (scanLoop_spec (B := B) (y := y) hB hyB).frame
+  obtain ⟨σ3, r3, ⟨I3, p3⟩, -, fa3, -, -⟩ := (scanLoop_spec (B := B) (y := y) hB hyB).frame
     (σ1.setVar "mx" 1) (by
     refine ⟨⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
     all_goals simp only [Env.setVar]
@@ -88,18 +80,12 @@ theorem scanPart_spec (hB : y.length + 8 < B) (hyB : ∀ v ∈ y, v < B)
     · rw [h1.arr "sg" (by decide)]; simp [hext.2.1]
     · rw [h1.arr "cl" (by decide)]; simp [hext.2.2]
     · exact h1.out)
-  obtain ⟨hR, -, hL3, -, lvr, lsg, lcl, out3⟩ := I3
+  obtain ⟨hR, -, -, -, lvr, lsg, lcl, out3⟩ := I3
   have hst : stAt y (σ3.vars "p") = st y := by
     rw [p3]; unfold stAt st; rw [List.take_length]
   rw [hst] at hR
   refine ⟨σ3, (r2.seq r3).mono (by simp), ?_⟩
-  refine ⟨hR.ph, hR.C, hR.k, hR.mx, hL3, hR.vr, hR.sg, hR.cl, lvr, lsg, lcl, out3, ?_, ?_⟩
-  · intro x hx
-    simp only [List.mem_cons, List.not_mem_nil, or_false, not_or] at hx
-    rw [fv3 x (fun hm => by have := mem_wvars_scan hm; simp at this; tauto)]
-    simp only [Env.setVar]
-    rw [if_neg (by tauto)]
-    exact h1.zero x (by simp; tauto)
+  refine ⟨hR.ph, hR.C, hR.k, hR.mx, hR.vr, hR.sg, hR.cl, lvr, lsg, lcl, out3, ?_⟩
   · intro b hb
     simp only [List.mem_cons, List.not_mem_nil, or_false, not_or] at hb
     rw [fa3 b (by rw [warrs_scan]; simp; tauto)]

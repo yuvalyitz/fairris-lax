@@ -96,6 +96,23 @@ bibEntries:
       year      = {1994}
     }
   - |
+    @article{bodlaender1996efficient,
+      author  = {Bodlaender, Hans L. and Kloks, Ton},
+      title   = {Efficient and Constructive Algorithms for the Pathwidth and Treewidth of Graphs},
+      journal = {Journal of Algorithms},
+      volume  = {21},
+      number  = {2},
+      pages   = {358--402},
+      year    = {1996}
+    }
+  - |
+    @article{althaus2020optimal,
+      author  = {Althaus, Ernst and Ziegler, Sarah},
+      title   = {Optimal Tree Decompositions Revisited: A Simpler Linear-Time {FPT} Algorithm},
+      journal = {arXiv:1912.09144},
+      year    = {2020}
+    }
+  - |
     @book{golumbic1980algorithmic,
       author    = {Golumbic, Martin Charles},
       title     = {Algorithmic Graph Theory and Perfect Graphs},

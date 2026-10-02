@@ -143,9 +143,9 @@ theorem overlap_comm (R : JitI) (i : Fin R.machines) (j j' : Fin R.jobs) :
 /-- With no job, the instance is schedulable, and so is its image. -/
 theorem iff_of_jobs_zero (I : SchedI) (h : I.jobs = 0) :
     I.AllSchedulable ↔ (toJIT I).AllJustInTime := by
+  have key : (toJIT I).jobs = 0 := by rw [toJIT_jobs, walls_eq_zero I h, h]
   have hj : ∀ k : Fin (toJIT I).jobs, False := fun k => by
     have := k.2
-    simp only [toJIT_jobs, walls_eq_zero I h, h] at this
     omega
   constructor
   · intro _

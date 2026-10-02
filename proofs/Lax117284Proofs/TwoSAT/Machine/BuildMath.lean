@@ -146,7 +146,7 @@ def sumBelow (f : ℕ → ℕ) : ℕ → ℕ
 theorem sumBelow_congr {f g : ℕ → ℕ} {n : ℕ} (h : ∀ u, u < n → f u = g u) :
     sumBelow f n = sumBelow g n := by
   induction n with
-  | zero => rfl
+  | zero => rw [sumBelow_zero, sumBelow_zero]
   | succ n ih => rw [sumBelow_succ, sumBelow_succ, ih (fun u hu => h u (by omega)), h n (by omega)]
 
 theorem sumBelow_add (f g : ℕ → ℕ) (n : ℕ) :

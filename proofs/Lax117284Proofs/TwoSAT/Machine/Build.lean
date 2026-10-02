@@ -343,7 +343,9 @@ theorem prefPass_spec {B : ℕ} (hw : WidthOk F)
     · env_simp
       intro v hv
       have : v = 0 := by omega
-      subst this; simp [S_zero]
+      subst this
+      have h0 := S_zero (F := F)
+      simp [h0]
     · env_simp
       rw [hpos, replicate_eq_arrOf]
     · simp

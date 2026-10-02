@@ -83,11 +83,12 @@ rev = "3cdde85ce7b7eed2938def9b9be0b5434f615c0f"
 subDir = "proofs"
 
 # Hitting Set: instances and their binary encoding (lax-496464), the source of the reduction into
-# `R || ∑ Z_j` in `FromHittingSet`; a path require while that submission is a draft, to become a
-# git require on its registered commit
+# `R || ∑ Z_j` in `FromHittingSet`; registered, pinned to its registered commit
 [[require]]
 name = "Lax496464"
-path = "../../flexflowjit-lax/concepts"
+git = "https://github.com/yuvalyitz/jitflowshop-lax"
+rev = "605f30b327a2385b4617a6e7123975faadca7ebd"
+subDir = "concepts"
 
 # compressed sparse row encodings of graphs (for the bipartite matching modules)
 [[require]]
@@ -108,18 +109,6 @@ name = "Lax391470Proofs"
 git = "https://github.com/yuvalyitz/rjlmax-lax"
 rev = "6268ca44402d39b523265ae02123b467fe8af2d4"
 subDir = "proofs"
-
-# Bodlaender's theorem with Kloks' niceness, proved in lax-689794 (concepts, and the proofs of its
-# concept statement `niceDecomposition_computable`), reused for the same statement on the overall
-# conflict graph; path requires while that submission is a draft, to become git requires on its
-# registered commit
-[[require]]
-name = "Lax689794"
-path = "../../treewidth-lax/concepts"
-
-[[require]]
-name = "Lax689794Proofs"
-path = "../../treewidth-lax/proofs"
 
 # [2,3]-bounded 3-SAT is NP-hard, proved in lax-345332 (concepts, and the proof of its concept
 # statement `npHard`), reused for `boundedSat_npHard`; lax-345332 is registered, pinned to its

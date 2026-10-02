@@ -15,7 +15,7 @@ requires all external dependencies to be registered and pinned to their register
 | Result taken from the literature | Proved in |
 |---|---|
 | 2-SAT is in P (Aspvall, Plass, Tarjan 1979) | `TwoSAT/` |
-| A nice tree decomposition of small width in fixed-parameter time (Bodlaender 1996, Kloks 1994) | `lax-689794`, through `BodlaenderProved.lean` |
+| A nice tree decomposition of small width in fixed-parameter time (Bodlaender 1996, Kloks 1994) | `Treewidth/` (the exact dynamic program of Bodlaender and Kloks on the word RAM), through `BodlaenderProved.lean` |
 | The integer programs of Theorem 4 are solved in fixed-parameter time (the paper cites Lenstra) | `IlpClients/`, `Machine/Ilp*.lean`: the programs of the family have a fixed constraint matrix, and a guess-and-verify algorithm solves them, so Lenstra's algorithm is not needed |
 | Bounded-occurrence 3-SAT is NP-hard (Tovey 1984) | `lax-345332`, through `BoundedSatProved.lean` |
 | Multicoloured Independent Set is NP-hard on regular instances | `McisHard/`: from bounded-occurrence 3-SAT, through the occurrence graph, a regularisation gadget and a copy of the graph for every clause |
@@ -42,15 +42,8 @@ For archive validation, run:
 
     lax build .
 
-The submission currently uses local checkouts of `lax-496464` (flow-shop scheduling)
-and `lax-689794` (treewidth). Until both are registered and their requirements are pinned,
-validate the local development with:
-
-    lax build . --nonstrict
-
-A nonstrict build checks the local proofs but does not establish readiness for archive
-submission. Registered dependencies include ISEM (`lax-888481`), Tovey (`lax-345332`)
-and RJLMax (`lax-391470`).
+Every dependency is registered and pinned to its registered commit: ISEM (`lax-888481`),
+Tovey (`lax-345332`), RJLMax (`lax-391470`) and flexflowjit (`lax-496464`).
 
 The full build takes a while; on a machine with limited memory, cap Lake's parallelism, for
 example `LEAN_NUM_THREADS=2 lake build` from `proofs/`, or it will start one Lean process per
@@ -112,6 +105,15 @@ The 2-SAT development is under `TwoSAT/` (`Math/`, `Bridge.lean`, `Correct.lean`
 under `TwoSAT/Machine/`) and the bipartite matching development under `Bipartite/` (`Matching.lean`,
 `Maximum.lean`, `KuhnCorrect.lean`, `GraphBridge.lean`, the program under `Bipartite/Ram2/`, and
 `Machine.lean`/`MachineTotal.lean` for the running-time statements).
+The algorithm of Bodlaender and Kloks for nice tree decompositions of small width is under
+`Treewidth/`, with the concepts `GraphWords` (graphs and nice decompositions as words),
+`BodlaenderKloks` (the improvement step) and `BodlaenderGeneral` (Bodlaender's theorem for an
+arbitrary graph). It is the exact dynamic program over characteristics of partial decompositions,
+not the linear-time algorithm of the paper: `Seq/`, `Trees/`, `Chars/` and `Wrap/` prove its
+correctness, `Size/` bounds the tables, and `Fun/` runs the Lean functions themselves on a
+verified virtual machine and transfers the runs to the word RAM (`Fun/Final.lean`). The concept
+`Bodlaender` of Theorem 4 is the case of the overall conflict graph and is derived from
+`BodlaenderGeneral` in `BodlaenderProved.lean`.
 
 ## Layout
 
@@ -142,9 +144,7 @@ Beyond mathlib, this submission builds on other archive submissions:
   the just-in-time hardness reduces from, imported and composed (not cited as an axiom) in
   `JitHard/Sat34Wired.lean`. Registered as the successor of `lax-470956`.
 - `lax-496464`, just-in-time scheduling in two-stage flexible flow shops: Hitting Set and its
-  NP-hardness, the source of the reduction of `FromHittingSet`. A draft at the time of writing.
-- `lax-689794`, treewidth: Bodlaender's algorithm on the word RAM, proved there, from which
-  `BodlaenderProved.lean` derives the statement used here. A draft at the time of writing.
+  NP-hardness, the source of the reduction of `FromHittingSet`. Registered.
 - `lax-345332`, Tovey's bounded-occurrence satisfiability, proved there and identified with
   `BoundedSat` in `BoundedSatProved.lean`; also, through `JitHard/Sat34Wired.lean`, the source of
   the `(3,4)`-SAT hardness `lax-888481`'s reduction needs. Registered.

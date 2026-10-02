@@ -1,15 +1,15 @@
 import Lax117284.Bodlaender
-import Lax689794.Bodlaender
-import Lax689794Proofs.Fun.Final
+import Lax117284.BodlaenderGeneral
+import Lax117284Proofs.Treewidth.Fun.Final
 
 /-!
 Bodlaender's theorem with Kloks' niceness for the overall conflict graph of an instance, from the
-proof of the same theorem for an arbitrary graph on `Fin n` in lax-689794.
+proof of the same theorem for an arbitrary graph on `Fin n` (`BodlaenderGeneral`).
 
-The two statements differ only in that the concept of this submission fixes the graph to be the
+The two statements differ only in that the concept `Bodlaender` fixes the graph to be the
 overall conflict graph of an instance `I` (on `Fin I.clients`) and carries its own copies of the
 word definitions. The copies are the same functions: the bag of a node is equal to that of
-`Lax689794.GraphWords` (by induction), and the child relation and the tree of the nodes agree by
+`Lax117284.GraphWords` (by induction), and the child relation and the tree of the nodes agree by
 unfolding, so a word which encodes the overall conflict graph, and a nice decomposition of it, in
 one reading are so in the other.
 -/
@@ -20,24 +20,24 @@ open Lax117284.Scheduling Lax117284.ConflictGraph
 
 /-- The bag of a node is the same in the two copies of the definition. -/
 theorem bagAt_eq (n : ℕ) (D : List ℕ) (i : ℕ) :
-    Lax117284.Bodlaender.bagAt n D i = Lax689794.GraphWords.bagAt n D i := by
+    Lax117284.Bodlaender.bagAt n D i = Lax117284.GraphWords.bagAt n D i := by
   induction i with
   | zero => rfl
   | succ i ih =>
-    simp only [Lax117284.Bodlaender.bagAt, Lax689794.GraphWords.bagAt, ih]
+    simp only [Lax117284.Bodlaender.bagAt, Lax117284.GraphWords.bagAt, ih]
     rfl
 
-/-- A word of the overall conflict graph in this submission's sense is one in lax-689794's. -/
+/-- A word of the overall conflict graph in the sense of `Bodlaender` is one in the sense of `GraphWords`. -/
 theorem encodes {g : List ℕ} {I : Instance} (h : Lax117284.Bodlaender.EncodesGraph g I) :
-    Lax689794.GraphWords.EncodesGraph g (overallGraph I) :=
+    Lax117284.GraphWords.EncodesGraph g (overallGraph I) :=
   ⟨h.length_eq, h.head_eq, h.adj_eq⟩
 
-/-- A nice decomposition of the overall conflict graph in lax-689794's sense is one in this
-submission's sense. -/
+/-- A nice decomposition of the overall conflict graph in the sense of `GraphWords` is one in the
+sense of `Bodlaender`. -/
 theorem niceDecomposition {I : Instance} {w : ℕ} {D : List ℕ}
-    (h : Lax689794.GraphWords.NiceDecomposition (overallGraph I) w D) :
+    (h : Lax117284.GraphWords.NiceDecomposition (overallGraph I) w D) :
     Lax117284.Bodlaender.NiceDecomposition I w D := by
-  have hb : Lax117284.Bodlaender.bagAt = Lax689794.GraphWords.bagAt := by
+  have hb : Lax117284.Bodlaender.bagAt = Lax117284.GraphWords.bagAt := by
     funext n D i
     exact bagAt_eq n D i
   refine ⟨h.length_eq, h.nonempty, ?_, h.parent, h.isTree, ?_, ?_, ?_, ?_⟩
@@ -62,13 +62,13 @@ theorem niceDecomposition {I : Instance} {w : ℕ} {D : List ℕ}
 conclusion: Lax117284.Bodlaender.niceDecomposition_computable
 ---
 Bodlaender's theorem with Kloks' niceness for the overall conflict graph of an instance, on a word
-RAM: the case of `Lax689794.Bodlaender.niceDecomposition_computable`, proved there by running the
+RAM: the case of `Lax117284.BodlaenderGeneral.niceDecomposition_computable`, proved there by running the
 exact Bodlaender–Kloks algorithm on a verified virtual machine, for the graph
 `overallGraph I` on the `I.clients` vertices.
 -/
 theorem niceDecomposition_computable_proved :
     type_of% @Lax117284.Bodlaender.niceDecomposition_computable := by
-  obtain ⟨prog, c, h⟩ := Lax689794Proofs.Fun.Final.niceDecomposition_computable_proved
+  obtain ⟨prog, c, h⟩ := Lax117284Proofs.Treewidth.Fun.Final.niceDecomposition_computable_proved
   refine ⟨prog, c, fun W w g I hg hguard => ?_⟩
   obtain ⟨out, t, ht, hrun, hout⟩ := h W w I.clients (overallGraph I) g (encodes hg) hguard
   refine ⟨out, t, ht, hrun, ?_⟩
