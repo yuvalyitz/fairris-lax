@@ -56,9 +56,6 @@ theorem opsL_lt (Δ : ℕ → Option Tm) (N main : ℕ) : ∀ v ∈ opsL Δ N ma
   obtain ⟨i, _, rfl⟩ := hv
   exact opc_le i
 
-theorem mkProgF_len' (Δ : ℕ → Option Tm) (N main Bv : ℕ) :
-    (mkProgF Δ N main 1 Bv).len = (codeL Δ N main).length := rfl
-
 /-! ## The loaded environment -/
 
 /-- What the loader leaves. `A = W + 1` is the length of every array. -/

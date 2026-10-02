@@ -25,6 +25,7 @@ namespace Lax117284Proofs.Treewidth.Chars
 
 open Lax117284Proofs.Treewidth.Seq Lax117284Proofs.Treewidth.Trees CT
 
+set_option genInjectivity false in
 inductive FT where
   | node (S : Finset ℕ) (e : ℕ) (w : Bool) (ks : List FT)
 

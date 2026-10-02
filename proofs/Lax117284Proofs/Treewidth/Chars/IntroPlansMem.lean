@@ -327,8 +327,4 @@ theorem IR_toPlans (v : ℕ) (N : Finset ℕ) {t r : CT} (h : IR v N t r) :
     right
     simpa using hp
 
-theorem mem_introPlans (v : ℕ) (N : Finset ℕ) (t r : CT) :
-    (∃ path plan, (path, plan, r) ∈ introPlans v N t) ↔ IR v N t r :=
-  ⟨introPlans_toIR v N t r, IR_toPlans v N⟩
-
 end Lax117284Proofs.Treewidth.Chars

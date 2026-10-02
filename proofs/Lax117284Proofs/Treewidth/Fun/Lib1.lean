@@ -128,14 +128,11 @@ theorem Δ_map : Δ fMap = some mapTm := rfl
 theorem Δ_filter : Δ fFilter = some filterTm := rfl
 theorem Δ_foldl : Δ fFoldl = some foldlTm := rfl
 theorem Δ_flatMap : Δ fFlatMap = some flatMapTm := rfl
-theorem Δ_any : Δ fAny = some anyTm := rfl
 theorem Δ_all : Δ fAll = some allTm := rfl
 theorem Δ_rangeAux : Δ fRangeAux = some rangeAuxTm := rfl
 theorem Δ_range : Δ fRange = some rangeTm := rfl
-theorem Δ_zip : Δ fZip = some zipTm := rfl
 theorem Δ_eqV : Δ fEqV = some eqVTm := rfl
 theorem Δ_mem : Δ fMem = some memTm := rfl
-theorem Δ_min : Δ fMin = some minTm := rfl
 theorem Δ_max : Δ fMax = some maxTm := rfl
 
 /-- total cost of the calls made by a left fold. -/
@@ -176,23 +173,6 @@ theorem length_runs (xs : List α) (hB : 8 * xs.length + 8 < B) :
     ev_start
     · ev_run
     · simp; omega
-
-theorem nth_runs (xs : List α) (i : ℕ) (hi : i < xs.length) (hB : 1 < B) :
-    Runs Δ' B fNth [toVal xs, toVal i] (toVal xs[i]) (14 * i + 9) := by
-  induction xs generalizing i with
-  | nil => simp at hi
-  | cons a xs ih =>
-    refine Runs.mk (hΔ _ _ Δ_nth) ?_
-    cases i with
-    | zero =>
-      ev_start
-      · ev_run
-      · simp
-    | succ i =>
-      have ih := ih i (by simpa using hi)
-      ev_start
-      · ev_run
-      · simp; omega
 
 theorem take_runs (n : ℕ) (xs : List α) (hB : 1 < B) :
     Runs Δ' B fTake [toVal n, toVal xs] (toVal (xs.take n)) (20 * min n xs.length + 12) := by
@@ -318,31 +298,6 @@ theorem flatMap_runs (fid : ℕ) (ctx : Val) (g : α → List β) (cf : α → �
     · ev_run
     · simp; omega
 
-theorem any_runs (fid : ℕ) (ctx : Val) (p : α → Bool) (cf : α → ℕ) (l : List α)
-    (hf : ∀ a ∈ l, Runs Δ' B fid [ctx, toVal a] (toVal (p a)) (cf a)) (hB : 1 < B) :
-    Runs Δ' B fAny [.nat fid, ctx, toVal l] (toVal (l.any p)) (24 * l.length + 6 + (l.map cf).sum) := by
-  induction l with
-  | nil =>
-    refine Runs.mk (hΔ _ _ Δ_any) ?_
-    ev_start
-    · ev_run
-    · simp
-  | cons a l ih =>
-    have ih := ih (fun x hx => hf x (List.mem_cons_of_mem _ hx))
-    have h1 := hf a (List.mem_cons_self ..)
-    refine Runs.mk (hΔ _ _ Δ_any) ?_
-    rcases Bool.eq_false_or_eq_true (p a) with hp | hp
-    · simp only [hp] at h1
-      simp only [List.any_cons, hp, Bool.true_or]
-      ev_start
-      · ev_run
-      · simp; omega
-    · simp only [hp] at h1
-      simp only [List.any_cons, hp, Bool.false_or]
-      ev_start
-      · ev_run
-      · simp; omega
-
 theorem all_runs (fid : ℕ) (ctx : Val) (p : α → Bool) (cf : α → ℕ) (l : List α)
     (hf : ∀ a ∈ l, Runs Δ' B fid [ctx, toVal a] (toVal (p a)) (cf a)) (hB : 1 < B) :
     Runs Δ' B fAll [.nat fid, ctx, toVal l] (toVal (l.all p)) (24 * l.length + 6 + (l.map cf).sum) := by
@@ -396,41 +351,6 @@ theorem range_runs (n : ℕ) (hB : n + 2 < B) :
   ev_start
   · ev_run
   · omega
-
-theorem zip_runs (xs : List α) (ys : List β) :
-    Runs Δ' B fZip [toVal xs, toVal ys] (toVal (xs.zip ys)) (24 * min xs.length ys.length + 12) := by
-  induction xs generalizing ys with
-  | nil =>
-    refine Runs.mk (hΔ _ _ Δ_zip) ?_
-    ev_start
-    · ev_run
-    · simp
-  | cons a xs ih =>
-    refine Runs.mk (hΔ _ _ Δ_zip) ?_
-    cases ys with
-    | nil =>
-      ev_start
-      · ev_run
-      · simp
-    | cons b ys =>
-      have ih := ih ys
-      ev_start
-      · ev_run
-      · simp; omega
-
-theorem min_runs (a b : ℕ) : Runs Δ' B fMin [toVal a, toVal b] (toVal (min a b)) 8 := by
-  refine Runs.mk (hΔ _ _ Δ_min) ?_
-  by_cases h : a < b
-  · have : min a b = a := min_eq_left h.le
-    rw [this]
-    ev_start
-    · ev_run
-    · simp
-  · have : min a b = b := min_eq_right (by omega)
-    rw [this]
-    ev_start
-    · ev_run
-    · simp
 
 theorem max_runs (a b : ℕ) : Runs Δ' B fMax [toVal a, toVal b] (toVal (max a b)) 8 := by
   refine Runs.mk (hΔ _ _ Δ_max) ?_

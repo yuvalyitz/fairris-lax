@@ -85,7 +85,6 @@ theorem Δ_lt {f : ℕ} {b : Tm} (h : Δ f = some b) : f < size := by
 theorem ext2 : Lib2.Δ ⊑ Δ := Ext.layer tbl (fun f b h => by have := Lib2.Δ_lt h; simp [Lib2.size] at this; omega)
 theorem ext1 : Lib1.Δ ⊑ Δ := Ext.trans Lib2.ext1 ext2
 
-theorem Δ_memS : Δ fMemS = some memSTm := by simp [Δ, layerΔ_ge tbl (show 48 ≤ fMemS by decide)]; rfl
 theorem Δ_insertS : Δ fInsertS = some insertSTm := by simp [Δ, layerΔ_ge tbl (show 48 ≤ fInsertS by decide)]; rfl
 theorem Δ_eraseS : Δ fEraseS = some eraseSTm := by simp [Δ, layerΔ_ge tbl (show 48 ≤ fEraseS by decide)]; rfl
 theorem Δ_unionS : Δ fUnionS = some unionSTm := by simp [Δ, layerΔ_ge tbl (show 48 ≤ fUnionS by decide)]; rfl
@@ -252,30 +251,6 @@ theorem subsetL_runs (hB : 1 < B) (xs ys : List ℕ) :
     · simp only [List.length_cons]; omega
   | case5 x xs y ys hxy hyx ih =>
     refine Runs.mk (hΔ _ _ Δ_subsetS) ?_
-    ev_start
-    · ev_run
-    · simp only [List.length_cons]; omega
-
-theorem memL_runs (hB : 1 < B) (a : ℕ) (xs : List ℕ) :
-    Runs Δ' B fMemS [toVal a, toVal xs] (toVal (memL a xs)) (40 * xs.length + 20) := by
-  fun_induction memL a xs with
-  | case1 =>
-    refine Runs.mk (hΔ _ _ Δ_memS) ?_
-    ev_start
-    · ev_run
-    · simp
-  | case2 =>
-    refine Runs.mk (hΔ _ _ Δ_memS) ?_
-    ev_start
-    · ev_run
-    · simp
-  | case3 =>
-    refine Runs.mk (hΔ _ _ Δ_memS) ?_
-    ev_start
-    · ev_run
-    · simp
-  | case4 =>
-    refine Runs.mk (hΔ _ _ Δ_memS) ?_
     ev_start
     · ev_run
     · simp only [List.length_cons]; omega
@@ -512,22 +487,6 @@ theorem subsetL_iff (xs ys : List ℕ) (hx : xs.Pairwise (· < ·)) (hy : ys.Pai
       · exfalso; have := hx'.1 a ha; omega
       · exact h'
 
-theorem memL_iff (a : ℕ) (xs : List ℕ) (hx : xs.Pairwise (· < ·)) : memL a xs = true ↔ a ∈ xs := by
-  fun_induction memL a xs with
-  | case1 => simp
-  | case2 x xs h =>
-    have hx' := List.pairwise_cons.mp hx
-    simp only [Bool.false_eq_true, false_iff]
-    intro hm
-    rcases List.mem_cons.mp hm with e | hm'
-    · omega
-    · have := hx'.1 a hm'; omega
-  | case3 => simp
-  | case4 x xs h1 h2 ih =>
-    have hx' := List.pairwise_cons.mp hx
-    rw [ih hx'.2]
-    simp [h2]
-
 theorem mem_insertL (a : ℕ) (xs : List ℕ) (b : ℕ) : b ∈ insertL a xs ↔ b = a ∨ b ∈ xs := by
   fun_induction insertL a xs with
   | case1 => simp
@@ -655,16 +614,6 @@ theorem subset_runs (hB : 1 < B) (S T : Finset ℕ) (b : Bool) (hb : b = true �
     have h1 := subsetL_iff _ _ (sorted_sort S) (sorted_sort T)
     simp only [toVal_sort_mem] at h1
     exact Bool.eq_iff_iff.mpr (h1.trans (by rw [hb, Finset.subset_iff]))
-  rw [e] at h; exact h
-
-theorem mem_runs_S (hB : 1 < B) (a : ℕ) (S : Finset ℕ) (b : Bool) (hb : b = true ↔ a ∈ S) :
-    Runs Δ' B fMemS [toVal a, toVal S] (toVal b) (40 * S.card + 20) := by
-  have h := memL_runs hΔ B hB a (S.sort (· ≤ ·))
-  rw [Finset.length_sort] at h
-  have e : memL a (S.sort (· ≤ ·)) = b := by
-    have h1 := memL_iff a _ (sorted_sort S)
-    rw [toVal_sort_mem] at h1
-    exact Bool.eq_iff_iff.mpr (h1.trans hb.symm)
   rw [e] at h; exact h
 
 theorem insert_runs (a : ℕ) (S : Finset ℕ) :

@@ -30,10 +30,6 @@ def Zc (M k : ℕ) : ℕ := (M + 1) * 2 ^ (1728 * Yk k)
 theorem Yk_ge (k : ℕ) : 8 ≤ Yk k := E4.Y_ge k
 theorem lin_Yk (k : ℕ) : k + 2 ≤ Yk k := E4.X_le_Y k
 
-theorem Zc_ge_one (M k : ℕ) : 1 ≤ Zc M k := by
-  unfold Zc
-  exact Nat.mul_pos (by omega) (Nat.two_pow_pos _)
-
 theorem Zc_ge_M (M k : ℕ) : M + 1 ≤ Zc M k := by
   unfold Zc
   exact Nat.le_mul_of_pos_right _ (Nat.two_pow_pos _)

@@ -107,9 +107,6 @@ theorem norm_collapseL : ∀ ks : List CT, ConnL ks → ∀ k ∈ ks, verts k �
     · exact norm_collapseL ks h.2 k hk hv
 end
 
-theorem collapse {q : CT} (h : Conn q) (hv : verts q ⊆ q.S) : (norm q).kids = [] := by
-  rw [norm_collapse q h hv]; rfl
-
 theorem collapseL {ks : List CT} (h : ConnL ks) {k : CT} (hk : k ∈ ks) (hv : verts k ⊆ k.S) :
     (norm k).kids = [] := by
   rw [norm_collapseL ks h k hk hv]; rfl

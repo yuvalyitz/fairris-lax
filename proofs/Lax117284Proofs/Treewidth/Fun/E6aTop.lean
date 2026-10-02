@@ -40,30 +40,6 @@ section embeds
 variable {Δ' : ℕ → Option Tm} (hΔ : e6aΔ ⊑ Δ')
 include hΔ
 
-/-- **`niceOf`** (`fNiceOf`, argument `t`), unconditionally, output-sensitive cost of degree 3. -/
-theorem embeds_niceOf : Embeds Δ' fNiceOf (fun _ : RT => True) niceOf
-    (fun t => 2000 * (sz t + sz (niceOf t) + 1) ^ 3) := by
-  intro B t _ hfit
-  have hc : 2000 * (sz t + sz (niceOf t) + 1) ^ 3 + 3 < B := hfit.cost_lt
-  have hp1 := sz_pos t
-  have hp2 := sz_pos (niceOf t)
-  have hS : 3 ≤ sz t + sz (niceOf t) + 1 := by omega
-  have hS3 : 27 ≤ (sz t + sz (niceOf t) + 1) ^ 3 := by
-    calc 27 = 3 ^ 3 := by norm_num
-      _ ≤ _ := Nat.pow_le_pow_left hS 3
-  have h1000 : 1000 < B := by omega
-  have hsz := sz_ge_size (niceOf t)
-  have h := niceOf_runs (Δ' := Δ') hΔ B h1000 (sz t + sz (niceOf t)) t (by omega) (by omega)
-  refine h.mono ?_
-  have hw := wtR_le_sz t
-  have hsq : (sz t + sz (niceOf t) + 1) ^ 2 ≤ (sz t + sz (niceOf t) + 1) ^ 2 := le_rfl
-  have h3 : (sz t + sz (niceOf t) + 1) ^ 3 = (sz t + sz (niceOf t) + 1) ^ 2 * (sz t + sz (niceOf t) + 1) := by ring
-  show 1000 * (sz t + sz (niceOf t) + 1) ^ 2 * wtR t ≤ 2000 * (sz t + sz (niceOf t) + 1) ^ 3
-  rw [h3]
-  have : (sz t + sz (niceOf t) + 1) ^ 2 * wtR t ≤
-      (sz t + sz (niceOf t) + 1) ^ 2 * (2 * (sz t + sz (niceOf t) + 1)) := Nat.mul_le_mul_left _ (by omega)
-  nlinarith
-
 /-- **`niceOf` on a connected tree**: the cost is a polynomial (degree 5) in `sz t` alone
 (`niceOf_size_le` : `size (niceOf t) ≤ (|V|+2)(size t+1)`). -/
 theorem embeds_niceOf_conn : Embeds Δ' fNiceOf (fun t : RT => t.Conn) niceOf

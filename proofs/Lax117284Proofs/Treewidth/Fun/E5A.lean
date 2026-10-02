@@ -175,15 +175,6 @@ theorem sz_chain_ge : ∀ ns : List CNode, 4 * ns.length + 1 ≤ sz ns
     have := sz_pos b; have := sz_pos j
     simp only [List.length_cons]; omega
 
-theorem card_sum_le : ∀ ns : List CNode, (ns.map (fun n => n.bag.card)).sum ≤ sz ns
-  | [] => by simp
-  | n :: ns => by
-    have := card_sum_le ns
-    obtain ⟨b, j⟩ := n
-    rw [sz_cons, sz_cnode]
-    have := card_le_sz b; have := sz_pos j
-    simp only [List.map_cons, List.sum_cons]; omega
-
 
 theorem sz_rt_X_lt (X : Finset ℕ) (ks : List RT) : sz X < sz (RT.node X ks) := by
   rw [sz_rt_node]; have := sz_pos ks; omega

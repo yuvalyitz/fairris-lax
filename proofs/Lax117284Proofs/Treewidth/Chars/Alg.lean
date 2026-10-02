@@ -93,11 +93,15 @@ def tables (adj : Adj) (k : ℕ) : NT → List CT
 
 /-! ## phase B: analysis of a real tree -/
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 /-- A node of a chain of a run: its bag and the junk subtrees hanging at it (children outside the core). -/
 structure CNode where
   bag : Finset ℕ
   junk : List RT
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 /-- The analysis of a real tree relative to a boundary: a run tree whose runs carry their chains of tree nodes. -/
 inductive AR where
   | run (S : Finset ℕ) (chain : List CNode) (kids : List AR)

@@ -32,9 +32,6 @@ lemma mem_bagN {n : ℕ} {D : List ℕ} {i u : ℕ} :
   · rintro ⟨a, ha, rfl⟩; exact ⟨a.2, ha⟩
   · rintro ⟨h, hu⟩; exact ⟨⟨u, h⟩, hu, rfl⟩
 
-lemma lt_of_mem_bagN {n : ℕ} {D : List ℕ} {i u : ℕ} (h : u ∈ bagN n D i) : u < n :=
-  (mem_bagN.1 h).1
-
 lemma bagN_zero (n : ℕ) (D : List ℕ) : bagN n D 0 = ∅ := by simp [bagN, bagAt]
 
 lemma bagN_succ_intro {n : ℕ} {D : List ℕ} {i : ℕ} (hk : kind D (i + 1) = 1) (hv : vertex D (i + 1) < n) :
@@ -100,10 +97,6 @@ lemma Lay.join_data (L : Lay n D) {i : ℕ} (hi : i < nodeCount D) (hk : kind D 
   · omega
   · omega
   · exact ⟨h0, hv, by simp only [bagN, hb]⟩
-
-/-- Every kind is at most `3`, and a leaf is `0`. -/
-lemma Lay.kind_le (L : Lay n D) {i : ℕ} (hi : i < nodeCount D) : kind D i ≤ 3 := by
-  rcases L.shape i hi with h | ⟨h0, h1, hv, hb⟩ | ⟨h0, h1, hv, hb⟩ | ⟨h0, h1, hv, hb⟩ <;> omega
 
 /-- The node after `i` has a parent iff it's not the last. -/
 lemma Lay.isChild_lt (L : Lay n D) {c p : ℕ} (h : IsChild D c p) : c < p ∧ p < nodeCount D := by

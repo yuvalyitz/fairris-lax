@@ -177,11 +177,6 @@ theorem witnesses_le (a : List ℕ) : ∀ e ∈ witnesses a, e ≤ a.length := b
   obtain ⟨p, hp, rfl⟩ := List.mem_map.1 he
   exact witnessesAux_snd_le a.length a 0 [] (by simp) (by omega) p hp
 
-theorem getD_witnesses_le (a : List ℕ) (f : ℕ) : (witnesses a).getD f 0 ≤ a.length := by
-  by_cases hf : f < (witnesses a).length
-  · rw [List.getD_eq_getElem _ _ hf]; exact witnesses_le a _ (List.getElem_mem hf)
-  · rw [List.getD_eq_default _ _ (by omega)]; omega
-
 theorem cutAt_snd_le (y w : List ℕ) (L : ℕ) (hw : ∀ e ∈ w, e ≤ L) (c : CT.Cut) (ns : List CNode) :
     (cutAt y w c ns).2 ≤ L := by
   have key : ∀ f, w.getD f 0 ≤ L := by
@@ -247,14 +242,6 @@ def wnO : Option CT.WPlan → ℕ
   | none => 1
   | some p => wn p
 end
-
-theorem wn_pos : ∀ w : CT.WPlan, 1 ≤ wn w
-  | .endAt _ => by simp [wn]
-  | .whole _ => by simp [wn]
-
-theorem wnO_pos : ∀ p : Option CT.WPlan, 1 ≤ wnO p
-  | none => by simp [wnO]
-  | some p => by simp only [wnO]; exact wn_pos p
 
 /-- the local cost bound of `processRun` -/
 def cPR (s : ℕ) : ℕ := 3000 * (s + 1) ^ 3

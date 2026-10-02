@@ -112,12 +112,6 @@ theorem tbl_lt {f : ℕ} {b : Tm} (h : tbl f = some b) : 320 ≤ f ∧ f < 333 :
 
 theorem extB : E3B.Δ ⊑ Δ := Ext.layer tbl (fun f b h => by have := E3B.Δ_lt h; omega)
 
-theorem Δ_lt {f : ℕ} {b : Tm} (h : Δ f = some b) : f < 333 := by
-  unfold Δ layerΔ at h
-  by_cases hf : 320 ≤ f
-  · rw [if_pos hf] at h; exact (tbl_lt h).2
-  · rw [if_neg hf] at h; have := E3B.Δ_lt h; omega
-
 theorem Δ_subN : Δ fSubN = some subNTm := by simp [Δ, layerΔ_ge tbl (show 320 ≤ fSubN by decide)]; rfl
 theorem Δ_mk1 : Δ fMk1 = some mk1Tm := by simp [Δ, layerΔ_ge tbl (show 320 ≤ fMk1 by decide)]; rfl
 theorem Δ_mk2 : Δ fMk2 = some mk2Tm := by simp [Δ, layerΔ_ge tbl (show 320 ≤ fMk2 by decide)]; rfl
@@ -130,7 +124,6 @@ theorem Δ_maxEntry : Δ fMaxEntry = some maxEntryTm := by simp [Δ, layerΔ_ge 
 theorem Δ_normOf : Δ fNormOf = some normOfTm := by simp [Δ, layerΔ_ge tbl (show 320 ≤ fNormOf by decide)]; rfl
 theorem Δ_leKC : Δ fLeKC = some leKCTm := by simp [Δ, layerΔ_ge tbl (show 320 ≤ fLeKC by decide)]; rfl
 theorem Δ_introC : Δ fIntroC = some introCTm := by simp [Δ, layerΔ_ge tbl (show 320 ≤ fIntroC by decide)]; rfl
-theorem Δ_introCUn : Δ fIntroCUn = some introCUnTm := by simp [Δ, layerΔ_ge tbl (show 320 ≤ fIntroCUn by decide)]; rfl
 
 theorem ids_lt {B : ℕ} (h : 500 < B) :
     fSubN < B ∧ fMk1 < B ∧ fMk2 < B ∧ fKid < B ∧ fIntroKids < B ∧ fIntroPlans < B ∧ fMaxL < B ∧

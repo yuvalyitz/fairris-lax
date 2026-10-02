@@ -40,22 +40,5 @@ def asm4Tbl : ℕ → Option Tm := orElseΔ E3.asmTbl e4Tbl
 /-- the assembled table -/
 def asm4Δ : ℕ → Option Tm := layerΔ Lib.Δ 128 asm4Tbl
 
-theorem ext4_asm : Ext4 asm4Δ :=
-  Ext4.of_tbl (Ext.orElse_left _ _) (Ext.orElse_right e4Tbl_disj_asm)
-
-/-- **`E_tables` in the assembled table.** -/
-theorem E_tables_asm :
-    Embeds asm4Δ fTablesUn (fun p : List ℕ × ℕ × NT => ntOk p.1 p.2.1 p.2.2 ∧ mx p.2.2 ≤ p.1.length)
-      (fun p => tables (adjOfWord p.1) p.2.1 p.2.2)
-      (fun p => (p.1.length + sz p.2.2 + 1) ^ 16 * 2 ^ (4000 * (p.2.1 + 2) ^ 3)) :=
-  E_tables ext4_asm
-
-/-- the general form (labels not bounded by the word length): cost in `M = |x| + sz nt + mx nt` -/
-theorem embeds_tables_asm :
-    Embeds asm4Δ fTablesUn (fun p : List ℕ × ℕ × NT => ntOk p.1 p.2.1 p.2.2)
-      (fun p => tables (adjOfWord p.1) p.2.1 p.2.2)
-      (fun p => p.2.2.size * cnode (p.1.length + sz p.2.2 + mx p.2.2) p.2.1 + 20) :=
-  embeds_tables ext4_asm
-
 end E4
 end Lax117284Proofs.Treewidth.Fun

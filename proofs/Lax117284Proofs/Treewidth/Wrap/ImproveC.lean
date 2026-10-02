@@ -75,9 +75,6 @@ def ImproveCSpec (adj : Adj) (W : Finset ℕ) : Prop :=
     (improveC adj k nt = none ↔ ¬ HasTW adj U k) ∧
     (∀ t', improveC adj k nt = some t' → t'.IsNiceTD adj.graph U k ∧ t'.size ≤ (U.card + 2) * (U.card + 2))
 
-theorem improveCSpec {adj : Adj} {W : Finset ℕ} (hs : adj.SymmOn W) : ImproveCSpec adj W :=
-  fun _ _ _ k hU hnt => improveC_correct hs hU hnt k
-
 /-- Correctness and the size bound of `decomposeC`, on `range i ⊆ W`. -/
 theorem decomposeC_correct_final (adj : Adj) (W : Finset ℕ) (hs : adj.SymmOn W) (k : ℕ) :
     ∀ i, Finset.range i ⊆ W →
@@ -113,10 +110,6 @@ theorem decomposeC_correct_final (adj : Adj) (W : Finset ℕ) (hs : adj.SymmOn W
       obtain ⟨a, b⟩ := j2 t' ht'
       refine ⟨a, ?_⟩
       simpa using b
-
-theorem decomposeC_size_le (adj : Adj) (k : ℕ) {W : Finset ℕ} (hs : adj.SymmOn W) :
-    ∀ i, Finset.range i ⊆ W → ∀ t, decomposeC adj k i = some t → t.size ≤ (i + 2) * (i + 2) :=
-  fun i hi t ht => ((decomposeC_correct_final adj W hs k i hi).2 t ht).2
 
 /-- **The word-level statement of `decomposeC`**: the same conclusion as `decompose_words_final`. -/
 theorem decomposeC_words_final {n : ℕ} (G : SimpleGraph (Fin n)) (adj : Adj)

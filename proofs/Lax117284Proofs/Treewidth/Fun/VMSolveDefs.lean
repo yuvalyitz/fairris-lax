@@ -21,6 +21,7 @@ namespace Lax117284Proofs.Treewidth.Fun.Load
 
 open Lax808846Proofs.Imp Lax808846Proofs.Compile Lax808846Proofs.Reasoning Lax117284Proofs.Treewidth.Fun.VM Lax117284Proofs.Treewidth.Fun.VM.Ram
 
+set_option genSizeOfSpec false in
 /-- The input formats: `g ++ [k]` and `g ++ [k, l] ++ D` (`g = n :: n²` adjacency entries, `D = d :: 3d` entries). -/
 inductive Fmt where
   | graphK
@@ -48,8 +49,6 @@ def Fmt.loadCom : Fmt → Com
 
 /-- The largest entry of a word. -/
 def maxEntry (x : List ℕ) : ℕ := x.foldr max 0
-
-theorem maxEntry_eq (x : List ℕ) : maxEntry x = wordMax x := rfl
 
 /-- The cost bound. -/
 def Kx (p : KP) (fmt : Fmt) (x : List ℕ) : ℕ := p.k x.length (fmt.kw x)

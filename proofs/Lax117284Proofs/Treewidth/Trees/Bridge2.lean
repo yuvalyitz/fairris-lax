@@ -431,11 +431,6 @@ theorem ofWord_encode (t : NT) : ofWord t.encode (nodeCount t.encode - 1) = t :=
   rw [nodeCount_encode]
   simpa using ofWord_of_reads t 0 (reads_encode t)
 
-/-- Every `NiceDecomposition` word satisfies the layout conditions. -/
-theorem lay_of_niceDecomposition {n : ℕ} {G : SimpleGraph (Fin n)} {w : ℕ} {D : List ℕ}
-    (h : NiceDecomposition G w D) : Lay n D :=
-  ⟨h.length_eq, h.nonempty, h.shape, h.parent⟩
-
 end Word
 
 open Word Lax117284.GraphWords in
@@ -450,18 +445,5 @@ theorem niceDecomposition_encode {n : ℕ} {G : SimpleGraph (Fin n)} {w : ℕ} {
   refine L.niceDecomposition_of_isNiceTD ?_
   rw [ofWord_encode]
   exact h
-
-open Word Lax117284.GraphWords in
-/-- **Bridge 2 (word side), parse — corrected.**  `BP2` claimed `t.encode = D`; that is false: a
-`NiceDecomposition` word may list the nodes in any topological order (only the first child of a node is forced to be the
-node just before it) and may carry arbitrary junk in the unused fields of a record.  What is true, and what the
-consumers of the word use, is that the tree `ofWord D (N-1)` read off the word is a nice tree decomposition of `G` of
-width `≤ w` with exactly `N` nodes. -/
-theorem niceDecomposition_parse {n : ℕ} {G : SimpleGraph (Fin n)} {w : ℕ} {D : List ℕ}
-    (h : NiceDecomposition G w D) :
-    ∃ t : NT, t = ofWord D (nodeCount D - 1) ∧ t.size = nodeCount D ∧
-      t.IsNiceTD (liftGraph G) (Finset.range n) w :=
-  ⟨_, rfl, (lay_of_niceDecomposition h).size_ofWord_last,
-    (lay_of_niceDecomposition h).isNiceTD_ofWord h.covers h.edges h.connected h.width⟩
 
 end Lax117284Proofs.Treewidth.Trees

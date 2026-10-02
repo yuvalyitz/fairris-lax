@@ -288,7 +288,4 @@ instance : ToVal CT.Plan := ⟨fun p => match p with
 
 instance : ToVal (WithTop ℕ) := ⟨fun x => toVal (show Option ℕ from x), fun _ _ h => ToVal.inj (α := Option ℕ) h⟩
 
-@[simp] theorem toVal_withTop_top : toVal (⊤ : WithTop ℕ) = Val.nat 0 := rfl
-@[simp] theorem toVal_withTop_coe (n : ℕ) : toVal ((n : ℕ) : WithTop ℕ) = Val.cons (.nat 1) (.nat n) := rfl
-
 end Lax117284Proofs.Treewidth.Fun

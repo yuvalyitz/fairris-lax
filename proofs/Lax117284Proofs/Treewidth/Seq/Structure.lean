@@ -46,9 +46,6 @@ theorem maxOf_le {a : List ℕ} {L : ℕ} (h : ∀ x ∈ a, x ≤ L) : maxOf a �
     rw [maxOf_cons]
     exact max_le (h y (by simp)) (ih fun x hx => h x (by simp [hx]))
 
-theorem maxOf_le_iff {a : List ℕ} {L : ℕ} : maxOf a ≤ L ↔ ∀ x ∈ a, x ≤ L :=
-  ⟨fun h x hx => (le_maxOf hx).trans h, maxOf_le⟩
-
 theorem maxOf_mem {a : List ℕ} (h : a ≠ []) : maxOf a ∈ a := by
   induction a with
   | nil => exact absurd rfl h
@@ -119,40 +116,11 @@ theorem Red.upper_iff {a b : List ℕ} (h : Red a b) (L : ℕ) :
         tauto
   · intro ha x hx; exact ha x (h.sublist.subset hx)
 
-theorem Red.lower_iff {a b : List ℕ} (h : Red a b) (L : ℕ) :
-    (∀ x ∈ b, L ≤ x) ↔ ∀ x ∈ a, L ≤ x := by
-  constructor
-  · intro hb
-    cases h with
-    | dup l x r =>
-      intro z hz
-      apply hb z
-      simp only [List.mem_append, List.mem_cons] at hz ⊢
-      tauto
-    | typ l x m y r hm hz =>
-      intro z hzm
-      have hx := hb x (by simp)
-      have hy := hb y (by simp)
-      simp only [List.mem_append, List.mem_cons] at hzm
-      by_cases hzz : z ∈ m
-      · have := hz z hzz
-        unfold InR at this; omega
-      · apply hb z
-        simp only [List.mem_append, List.mem_cons]
-        tauto
-  · intro ha x hx; exact ha x (h.sublist.subset hx)
-
 theorem Reach.upper_iff {a b : List ℕ} (h : Reach a b) (L : ℕ) :
     (∀ x ∈ b, x ≤ L) ↔ ∀ x ∈ a, x ≤ L := by
   induction h with
   | refl => exact Iff.rfl
   | tail _ hr ih => exact (hr.upper_iff L).trans ih
-
-theorem Reach.lower_iff {a b : List ℕ} (h : Reach a b) (L : ℕ) :
-    (∀ x ∈ b, L ≤ x) ↔ ∀ x ∈ a, L ≤ x := by
-  induction h with
-  | refl => exact Iff.rfl
-  | tail _ hr ih => exact (hr.lower_iff L).trans ih
 
 /-- Every entry of the typical sequence occurs in the original sequence. -/
 theorem mem_of_mem_typical {a : List ℕ} {x : ℕ} (h : x ∈ typical a) : x ∈ a :=
@@ -162,22 +130,12 @@ theorem mem_of_mem_typical {a : List ℕ} {x : ℕ} (h : x ∈ typical a) : x �
 theorem typical_upper_iff (a : List ℕ) (L : ℕ) :
     (∀ x ∈ typical a, x ≤ L) ↔ ∀ x ∈ a, x ≤ L := (reach_typical a).upper_iff L
 
-theorem typical_lower_iff (a : List ℕ) (L : ℕ) :
-    (∀ x ∈ typical a, L ≤ x) ↔ ∀ x ∈ a, L ≤ x := (reach_typical a).lower_iff L
-
 /-- **Lemma 3.3 (i)**: the maximum is invariant. -/
 theorem maxOf_typical (a : List ℕ) : maxOf (typical a) = maxOf a := by
   apply le_antisymm
   · exact maxOf_le ((typical_upper_iff a _).2 fun x hx => le_maxOf hx)
   · exact maxOf_le fun x hx =>
       (typical_upper_iff a (maxOf (typical a))).1 (fun y hy => le_maxOf hy) x hx
-
-/-- **Lemma 3.3 (i)**: the minimum is invariant. -/
-theorem minOf_typical {a : List ℕ} (ha : a ≠ []) : minOf (typical a) = minOf a := by
-  have hb : typical a ≠ [] := typical_ne_nil ha
-  apply le_antisymm
-  · exact (typical_lower_iff a (minOf (typical a))).1 (fun y hy => minOf_le hy) _ (minOf_mem ha)
-  · exact (typical_lower_iff a (minOf a)).2 (fun y hy => minOf_le hy) _ (minOf_mem hb)
 
 /-! ### Windows and repetitions at the level of lists -/
 
@@ -563,10 +521,6 @@ theorem nf_length_le {n : List ℕ} {L : ℕ} (h : NF n) (hL : ∀ x ∈ n, x �
     simp only [Finset.card_range] at l1 l2
     simp only [List.length_append, List.length_cons, List.length_reverse] at l2 ⊢
     omega
-
-/-- **Lemma 3.3 (ii)**: `|τ a| ≤ 2 · max a + 1`. -/
-theorem typical_length_le (a : List ℕ) : (typical a).length ≤ 2 * maxOf a + 1 :=
-  nf_length_le (nf_typical a) ((typical_upper_iff a _).2 fun x hx => le_maxOf hx)
 
 /-- The bounded form of Lemma 3.3 (ii). -/
 theorem typical_length_le' {a : List ℕ} {L : ℕ} (h : ∀ x ∈ a, x ≤ L) :

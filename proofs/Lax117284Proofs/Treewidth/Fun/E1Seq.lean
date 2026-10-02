@@ -103,11 +103,9 @@ theorem Δ_inR : Δ fInR = some inRTm := by simp [Δ, layerΔ_ge tbl (show 128 �
 theorem Δ_allInR : Δ fAllInR = some allInRTm := by simp [Δ, layerΔ_ge tbl (show 128 ≤ fAllInR by decide)]; rfl
 theorem Δ_cut : Δ fCut = some cutTm := by simp [Δ, layerΔ_ge tbl (show 128 ≤ fCut by decide)]; rfl
 theorem Δ_push : Δ fPush = some pushTm := by simp [Δ, layerΔ_ge tbl (show 128 ≤ fPush by decide)]; rfl
-theorem Δ_pushC : Δ fPushC = some pushCTm := by simp [Δ, layerΔ_ge tbl (show 128 ≤ fPushC by decide)]; rfl
 theorem Δ_typAux : Δ fTypAux = some typAuxTm := by simp [Δ, layerΔ_ge tbl (show 128 ≤ fTypAux by decide)]; rfl
 theorem Δ_typical : Δ fTypical = some typicalTm := by simp [Δ, layerΔ_ge tbl (show 128 ≤ fTypical by decide)]; rfl
 theorem Δ_domB : Δ fDomB = some domBTm := by simp [Δ, layerΔ_ge tbl (show 128 ≤ fDomB by decide)]; rfl
-theorem Δ_domBP : Δ fDomBP = some domBPTm := by simp [Δ, layerΔ_ge tbl (show 128 ≤ fDomBP by decide)]; rfl
 
 section proofs
 variable {Δ' : ℕ → Option Tm} (hΔ : Δ ⊑ Δ') (B : ℕ)
@@ -336,37 +334,6 @@ theorem domB_runs (hB : 1 < B) : ∀ (n : ℕ) (a b : List ℕ), a.length + b.le
           ev_start
           · ev_run
           · omega
-
-theorem domBP_runs (hB : 1 < B) (a b : List ℕ) :
-    Runs Δ' B fDomBP [toVal (a, b)] (toVal (domB a b)) (60 * 3 ^ (a.length + b.length) + 8) := by
-  have h := domB_runs hΔ B hB _ a b rfl
-  refine Runs.mk (hΔ _ _ Δ_domBP) ?_
-  ev_start
-  · ev_run
-  · omega
-
-/-- unary `Embeds` form: `typical`. -/
-theorem embeds_typical : Embeds Δ' fTypical (fun _ : List ℕ => True) typical
-    (fun a => 110 * (a.length + 1) ^ 3) := by
-  intro B a _ hfit
-  have := hfit.cost_lt
-  exact typical_runs hΔ B (by omega) a
-
-theorem embeds_typical_os : Embeds Δ' fTypical (fun _ : List ℕ => True) typical (osCost 3 typical) := by
-  refine Embeds.mono_cost (embeds_typical hΔ) (fun a _ => ?_)
-  have h1 : sz a = 2 * a.length + 1 := sz_list_nat a
-  have h2 : 1 ≤ sz (typical a) := sz_pos _
-  have h3 : (2 * a.length + 2) ^ 3 ≤ (sz a + sz (typical a) + 1) ^ 3 := Nat.pow_le_pow_left (by omega) 3
-  have h4 : (2 * a.length + 2) ^ 3 = 8 * (a.length + 1) ^ 3 := by ring
-  unfold osCost
-  omega
-
-/-- `domB` as a unary function on a pair (exponential in the lengths, exactly like the Lean recursion). -/
-theorem embeds_domB : Embeds Δ' fDomBP (fun _ : List ℕ × List ℕ => True) (fun p => domB p.1 p.2)
-    (fun p => 60 * 3 ^ (p.1.length + p.2.length) + 8) := by
-  intro B p _ hfit
-  have := hfit.cost_lt
-  exact domBP_runs hΔ B (by omega) p.1 p.2
 
 end proofs
 end E1A

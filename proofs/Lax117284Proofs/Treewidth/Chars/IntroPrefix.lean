@@ -75,18 +75,6 @@ theorem attR_junction (v : ℕ) (N : Finset ℕ) (S : Finset ℕ) {yk : List ℕ
     AttR v N (node S (s ++ yk) kk) (node S s [pathSubtree v chain M, node S yk kk]) :=
   ⟨chain, M, h, Or.inr ⟨s, yk, splits_junction hs hy, rfl⟩⟩
 
-theorem root_label_IR {v : ℕ} {N : Finset ℕ} {S : Finset ℕ} {yk : List ℕ} {kk : List CT} {r : CT}
-    (h : IR v N (node S yk kk) r) : r.S = S ∨ r.S = insert v S := by
-  cases h with
-  | top hw hN =>
-    rcases hw with hw | ⟨d1, d2, X, hd, hX, rfl⟩
-    · rcases hw with ⟨d1, d2, hd, rfl, rfl⟩ | ⟨kids, cv, hk, rfl, rfl⟩ <;> exact Or.inr rfl
-    · exact Or.inl rfl
-  | att hNS ha =>
-    obtain ⟨chain, M, hcm, hr⟩ := ha
-    rcases hr with rfl | ⟨d1, d2, hd, rfl⟩ <;> exact Or.inl rfl
-  | kid hk => exact Or.inl rfl
-
 /-- Parent unflagged, any option of the run lifts to the exact run. -/
 theorem IR_prefix (v : ℕ) (N : Finset ℕ) (S : Finset ℕ) {yk : List ℕ} (kk : List CT) {s : List ℕ} (hs : s ≠ [])
     (hy : yk ≠ []) {r : CT} (h : IR v N (node S yk kk) r) :

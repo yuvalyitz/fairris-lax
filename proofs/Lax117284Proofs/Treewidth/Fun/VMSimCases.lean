@@ -8,12 +8,6 @@ namespace Lax117284Proofs.Treewidth.Fun.VM
 
 variable {P : Prog}
 
-theorem Cfg.nextL {W : ℕ} {s s₁ : St} {c c₁ c₂ : ℕ} (h : Cfg P W s c) (hc : c₁ + c₂ ≤ c)
-    (hb : s₁.Bd W) (hheap : s₁.heap.length ≤ s.heap.length + c₁)
-    (hstk : s₁.stk.length ≤ s.stk.length + c₁) (hret : s₁.ret.length ≤ s.ret.length) :
-    Cfg P W s₁ c₂ :=
-  ⟨hb, h.len, by have := h.heap; omega, by have := h.stk; omega, by have := h.ret; omega⟩
-
 theorem sim_lit {ρ : List Val} {n : ℕ} (hn : n < P.B) : SimEv P ρ (.lit n) (.nat n) 1 := by
   intro dep W s hfit henv hcfg
   have e : (compile dep (.lit n)).length = 1 := by simp [compile]

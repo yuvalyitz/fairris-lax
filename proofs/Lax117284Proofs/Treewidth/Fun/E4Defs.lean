@@ -148,10 +148,6 @@ theorem Δ_joinTable : e4Δ fJoinTable = some joinTableTm := by
   simp [e4Δ, layerΔ_ge e4Tbl (show 128 ≤ fJoinTable by decide)]; rfl
 theorem Δ_tables : e4Δ fTables = some tablesTm := by
   simp [e4Δ, layerΔ_ge e4Tbl (show 128 ≤ fTables by decide)]; rfl
-theorem Δ_tablesUn : e4Δ fTablesUn = some tablesUnTm := by
-  simp [e4Δ, layerΔ_ge e4Tbl (show 128 ≤ fTablesUn by decide)]; rfl
-theorem Δ_tablesFirst : e4Δ fTablesFirst = some tablesFirstTm := by
-  simp [e4Δ, layerΔ_ge e4Tbl (show 128 ≤ fTablesFirst by decide)]; rfl
 
 /-- The hypotheses on a table `Δ'` used by every theorem of WP E4: it contains the tables of E1, E2 (with
 `ringTypList` at `E1C.fRingTypList = 152`), E3 and the E4 layer. -/

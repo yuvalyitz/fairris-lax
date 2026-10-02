@@ -97,12 +97,6 @@ theorem pathSubtree_RB {v : ℕ} {S : Finset ℕ} {b Y : ℕ} (hY : 1 ≤ Y) (hS
 theorem RBL.mono {b b' Y Y' : ℕ} (hb : b ≤ b') (hY : Y ≤ Y') {ks : List CT} (h : RBL b Y ks) : RBL b' Y' ks :=
   RBL_iff.2 fun k hk => ((RBL_iff.1 h) k hk).mono hb hY
 
-theorem countL_map_snd (combo : List (Option WPlan × CT × Finset ℕ)) :
-    countL (combo.map (·.2.1)) = (combo.map (fun o => count o.2.1)).sum := by
-  induction combo with
-  | nil => simp [countL]
-  | cons o l ih => simp [countL, ih]
-
 /-! ## region plans -/
 
 mutual
@@ -270,10 +264,6 @@ theorem introPlans_vsz_le (v : ℕ) (N : Finset ℕ) {B : Finset ℕ} {kmax : �
     have := ht.count_le; omega
   calc x.2.2.vsz ≤ count x.2.2 * (2 * (B.card + 1) + 2 * (2 * kmax + 1) + 6) := h3
     _ ≤ _ := Nat.mul_le_mul h4 (by omega)
-
-theorem introC_length_le' {v : ℕ} {N B : Finset ℕ} {kmax : ℕ} {t : CT} (hw : t.Wf B kmax) :
-    (introC kmax v N t).length ≤ 2 ^ (64 * (B.card + kmax + 2) ^ 3) :=
-  le_trans (introC_length_le_plans _ _ _ _) (introPlans_length_le hw)
 
 /-! ## the size of the plans themselves -/
 

@@ -31,10 +31,6 @@ theorem sq_two_pow (a : ℕ) : (2 ^ a + 1) ^ 2 ≤ 2 ^ (2 * a + 2) := by
   calc (2 ^ a + 1) ^ 2 ≤ (2 * 2 ^ a) ^ 2 := Nat.pow_le_pow_left h2 2
     _ = 2 ^ (2 * a + 2) := by ring
 
-theorem const_two_pow (c e : ℕ) (h : c ≤ 2 ^ e) (n : ℕ) : c ≤ 2 ^ (e + n) := by
-  calc c ≤ 2 ^ e := h
-    _ ≤ 2 ^ (e + n) := pw_le (by omega)
-
 /-- the bound on the cost of the per-node work -/
 def cnode (M k : ℕ) : ℕ := (M + 1) ^ 15 * 2 ^ (4000 * (k + 2) ^ 3)
 

@@ -24,6 +24,7 @@ open Lax228581.Treewidth
 
 /-! ## rooted decomposition trees -/
 
+set_option genInjectivity false in
 /-- A rooted tree of bags (arbitrary arity). -/
 inductive RT where
   | node (bag : Finset ℕ) (kids : List RT)
@@ -94,6 +95,8 @@ def prefixGraph {n : ℕ} (G : SimpleGraph (Fin n)) (i : ℕ) (h : i ≤ n) : Si
 
 /-! ## nice trees -/
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 /-- Nice decompositions: leaf, introduce, forget, join.  (Bags are *computed*, as in the word format.) -/
 inductive NT where
   | leaf

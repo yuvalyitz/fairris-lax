@@ -16,6 +16,8 @@ namespace Lax117284Proofs.Treewidth.Fun.VM.Ram
 
 open Lax808846Proofs.Imp Lax808846Proofs.Compile Lax808846Proofs.Reasoning
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 /-- The four constants of the cost formula. -/
 structure KP where
   c0 : ℕ

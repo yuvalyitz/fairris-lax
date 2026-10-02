@@ -152,52 +152,6 @@ lemma Lay.parent_unique (L : Lay n D) {x p q : ℕ} (hp : IsChild D x p) (hq : I
   obtain ⟨r, -, hr⟩ := L.parent x hx
   rw [hr p hp, hr q hq]
 
-/-- Going up from a node below `a` (other than `a`) stays below `a`. -/
-lemma Lay.desc_step_up (L : Lay n D) : ∀ a x p, a < nodeCount D → x ∈ desc D a → x ≠ a →
-    IsChild D x p → p ∈ desc D a := by
-  intro a
-  induction a using Nat.strong_induction_on with
-  | _ a ih =>
-    intro x p ha hx hxa hp
-    rcases (L.mem_desc_iff ha).1 hx with h | ⟨c, hc, hxc⟩
-    · exact absurd h hxa
-    · by_cases hxc' : x = c
-      · subst hxc'
-        rw [L.parent_unique hp hc]
-        exact self_mem_desc D a
-      · have hlt := L.isChild_lt hc
-        exact L.child_desc_sub hc (ih c hlt.1 x p (by omega) hxc hxc' hp)
-
-/-- Nodes below two nodes are comparable. -/
-lemma Lay.desc_linear (L : Lay n D) : ∀ k a b x, a - x = k → a ≤ b → b < nodeCount D → x ∈ desc D a →
-    x ∈ desc D b → a ∈ desc D b := by
-  intro k
-  induction k using Nat.strong_induction_on with
-  | _ k ih =>
-    intro a b x hk hab hb hxa hxb
-    by_cases hxeq : x = a
-    · subst hxeq; exact hxb
-    · have hxle := desc_le D a x hxa
-      have hxa' : x < a := lt_of_le_of_ne hxle hxeq
-      have hx1 : x + 1 < nodeCount D := by omega
-      obtain ⟨p, hp, -⟩ := L.parent x hx1
-      have hpa := L.desc_step_up a x p (by omega) hxa hxeq hp
-      have hpb := L.desc_step_up b x p hb hxb (by omega) hp
-      have hxp := (L.isChild_lt hp).1
-      exact ih (a - p) (by omega) a b p rfl hab hb hpa hpb
-
-/-- The two subtrees of a join are disjoint. -/
-lemma Lay.desc_disjoint (L : Lay n D) {i : ℕ} (hi : i + 1 < nodeCount D) (hk : kind D (i + 1) = 3)
-    (ho : other D (i + 1) < i) : Disjoint (desc D i) (desc D (other D (i + 1))) := by
-  rw [Finset.disjoint_left]
-  intro x hxi hxo
-  have hoi : other D (i + 1) ∈ desc D i :=
-    L.desc_linear _ _ i x rfl ho.le (by omega) hxo hxi
-  have hchild : IsChild D (other D (i + 1)) (i + 1) := (L.isChild_succ_join hk hi).2 (Or.inr rfl)
-  have := L.desc_step_up i _ _ (by omega) hoi (by omega) hchild
-  have := desc_le D i _ this
-  omega
-
 /-- Every node is below the last one. -/
 lemma Lay.desc_full (L : Lay n D) : desc D (nodeCount D - 1) = Finset.range (nodeCount D) := by
   have hN := L.nonempty

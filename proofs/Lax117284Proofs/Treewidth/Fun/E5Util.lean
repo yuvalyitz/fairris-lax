@@ -21,16 +21,6 @@ open ToVal
 
 /-! ## sums -/
 
-theorem sum_map_le_mul {α : Type} (l : List α) (cf : α → ℕ) (c : ℕ) (h : ∀ a ∈ l, cf a ≤ c) :
-    (l.map cf).sum ≤ l.length * c := by
-  induction l with
-  | nil => simp
-  | cons a l ih =>
-    have h1 := h a (List.mem_cons_self ..)
-    have h2 := ih (fun x hx => h x (List.mem_cons_of_mem _ hx))
-    simp only [List.map_cons, List.sum_cons, List.length_cons]
-    nlinarith
-
 theorem sum_map_const {α : Type} (l : List α) (c : ℕ) : (l.map (fun _ => c)).sum = l.length * c := by
   induction l with
   | nil => simp
@@ -38,17 +28,11 @@ theorem sum_map_const {α : Type} (l : List α) (c : ℕ) : (l.map (fun _ => c))
 
 /-! ## powers of `t = s + 1` -/
 
-theorem pw_le {t : ℕ} (ht : 1 ≤ t) {i j : ℕ} (h : i ≤ j) : t ^ i ≤ t ^ j := Nat.pow_le_pow_right ht h
-
 theorem le_pw {t : ℕ} (ht : 1 ≤ t) {d : ℕ} (hd : 1 ≤ d) : t ≤ t ^ d := by
   calc t = t ^ 1 := (pow_one t).symm
     _ ≤ t ^ d := Nat.pow_le_pow_right ht hd
 
 theorem one_le_pw {t : ℕ} (ht : 1 ≤ t) (d : ℕ) : 1 ≤ t ^ d := Nat.one_le_pow _ _ ht
-
-/-- `a ≤ s → a + 1 ≤ t` product step: if `x ≤ t ^ i` and `y ≤ t ^ j` then `x * y ≤ t ^ (i + j)`. -/
-theorem mul_pw_le {t x y i j : ℕ} (hx : x ≤ t ^ i) (hy : y ≤ t ^ j) : x * y ≤ t ^ (i + j) := by
-  rw [pow_add]; exact Nat.mul_le_mul hx hy
 
 /-! ## sizes of list operations -/
 
@@ -68,24 +52,6 @@ theorem sz_map_le' {α β : Type} [ToVal α] [ToVal β] (f : α → β) : ∀ l 
     have h1 := h a (by simp)
     have ih := sz_map_le' f l (fun x hx => h x (List.mem_cons_of_mem _ hx))
     rw [List.map_cons, sz_cons, sz_cons]; omega
-
-theorem sz_take_le' {α : Type} [ToVal α] (n : ℕ) : ∀ l : List α, sz (l.take n) ≤ sz l
-  | [] => by simp
-  | a :: l => by
-    cases n with
-    | zero => simp; have := sz_pos (a :: l); omega
-    | succ n =>
-      have ih := sz_take_le' n l
-      rw [List.take_succ_cons, sz_cons, sz_cons]; omega
-
-theorem sz_drop_le' {α : Type} [ToVal α] (n : ℕ) : ∀ l : List α, sz (l.drop n) ≤ sz l
-  | [] => by simp
-  | a :: l => by
-    cases n with
-    | zero => simp
-    | succ n =>
-      have ih := sz_drop_le' n l
-      rw [List.drop_succ_cons, sz_cons]; omega
 
 theorem sz_append_le {α : Type} [ToVal α] (l₁ l₂ : List α) : sz (l₁ ++ l₂) ≤ sz l₁ + sz l₂ := by
   have := sz_append l₁ l₂; omega
@@ -144,11 +110,6 @@ theorem typical_length_le (a : List ℕ) : (Lax117284Proofs.Treewidth.Seq.typica
   have := typical_length_le_aux [] a
   simpa [Lax117284Proofs.Treewidth.Seq.typical] using this
 
-theorem sz_typical_le' (a : List ℕ) : sz (Lax117284Proofs.Treewidth.Seq.typical a) ≤ sz a := by
-  rw [sz_list_nat, sz_list_nat]
-  have := typical_length_le a
-  omega
-
 /-! ## reaching the library / E1 from an extension of `e1Δ` -/
 
 section plumbing
@@ -161,7 +122,6 @@ theorem l3 (hE : E1.e1Δ ⊑ Δ) : Lib3.Δ ⊑ Δ := Ext.trans Lib.ext3 (lib_of 
 theorem l4 (hE : E1.e1Δ ⊑ Δ) : Lib4.Δ ⊑ Δ := Ext.trans Lib.ext4 (lib_of hE)
 theorem eA (hE : E1.e1Δ ⊑ Δ) : E1A.Δ ⊑ Δ := Ext.trans E1.extA hE
 theorem eB (hE : E1.e1Δ ⊑ Δ) : E1B.Δ ⊑ Δ := Ext.trans E1.extB hE
-theorem eC (hE : E1.e1Δ ⊑ Δ) : E1C.Δ ⊑ Δ := Ext.trans E1.extC hE
 theorem eD (hE : E1.e1Δ ⊑ Δ) : E1D.Δ ⊑ Δ := Ext.trans E1.ext hE
 end plumbing
 

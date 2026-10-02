@@ -55,9 +55,7 @@ theorem rangeP_runs : ∀ (n lo : ℕ), lo + n + 2 < B →
     · simp; omega
 
 theorem x1 : Lib1.Δ ⊑ Δ' := Ext.trans Lib.ext1 (Ext.trans extLib hΔ)
-theorem x2 : Lib2.Δ ⊑ Δ' := Ext.trans Lib.ext2 (Ext.trans extLib hΔ)
 theorem x3 : Lib3.Δ ⊑ Δ' := Ext.trans Lib.ext3 (Ext.trans extLib hΔ)
-theorem x4 : Lib4.Δ ⊑ Δ' := Ext.trans Lib.ext4 (Ext.trans extLib hΔ)
 
 theorem ends1_runs (U v lo f : ℕ) (S : Finset ℕ) (y : List ℕ) (ks : List CT)
     (hU : sz (CT.node S y ks) ≤ U) (hM : mx (CT.node S y ks) ≤ U) (hv : v ≤ U) (hlo : lo ≤ U) (hf : f ≤ U)

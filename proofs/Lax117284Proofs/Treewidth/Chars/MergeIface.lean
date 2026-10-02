@@ -177,14 +177,6 @@ theorem pkg_kids {U : Finset ℕ} {r : AR} (h : Pkg U r) : ∀ k ∈ r.kids, Pkg
   cases r with
   | run S c ks => exact ((pkg_run U S c ks).1 h).2.2
 
-theorem pkg_conn {U : Finset ℕ} {r : AR} (h : Pkg U r) : (AR.toRT r).Conn := by
-  cases r with
-  | run S c ks => exact ((pkg_run U S c ks).1 h).1
-
-theorem pkg_verts {U : Finset ℕ} {r : AR} (h : Pkg U r) : (AR.toRT r).verts ⊆ U := by
-  cases r with
-  | run S c ks => exact ((pkg_run U S c ks).1 h).2.1
-
 theorem pkg_intro {U : Finset ℕ} {r : AR} (h1 : (AR.toRT r).Conn) (h2 : (AR.toRT r).verts ⊆ U)
     (h3 : ∀ k ∈ r.kids, Pkg U k) : Pkg U r := by
   cases r with

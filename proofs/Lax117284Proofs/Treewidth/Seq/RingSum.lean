@@ -19,13 +19,8 @@ def RingSum (a b c : List ℕ) : Prop :=
 /-- The set `a ⊕ b`. -/
 def ringSum (a b : List ℕ) : Set (List ℕ) := {c | RingSum a b c}
 
-theorem mem_ringSum {a b c : List ℕ} : c ∈ ringSum a b ↔ RingSum a b c := Iff.rfl
-
 theorem RingSum.mk {a b a' b' : List ℕ} (h1 : Ext a a') (h2 : Ext b b')
     (h3 : a'.length = b'.length) : RingSum a b (zadd a' b') := ⟨a', b', h1, h2, h3, rfl⟩
-
-theorem length_zadd {a b : List ℕ} (h : a.length = b.length) : (zadd a b).length = a.length := by
-  simp [h]
 
 /-- Common refinement of two extensions of two sequences of equal length, respecting the base
 positions: after further repetition the two extensions have the same length and the sum is an
@@ -68,20 +63,6 @@ theorem ext_zip : ∀ {a b u v : List ℕ}, Ext a u → Ext b v → a.length = b
       unfold zadd
       rw [List.zipWith_cons_cons]
       exact ext_cons_iff.mpr ⟨N', zadd u0' v0', by simp, h4⟩
-
-/-- **Lemma 3.12**. -/
-theorem RingSum.of_ext {a b c a₁ b₁ : List ℕ} (h : RingSum a b c) (ha : Ext a a₁) (hb : Ext b b₁) :
-    ∃ c₁, Ext c c₁ ∧ RingSum a₁ b₁ c₁ := by
-  obtain ⟨a', b', ha', hb', hl, rfl⟩ := h
-  set k := a₁.length + b₁.length + 1 with hk
-  have e1 : Ext a₁ (stretch k a') := ext_stretch_of ha' ha (by omega)
-  have e2 : Ext b₁ (stretch k b') := ext_stretch_of hb' hb (by omega)
-  refine ⟨zadd (stretch k a') (stretch k b'), ?_, ⟨stretch k a', stretch k b', e1, e2, ?_, rfl⟩⟩
-  · have := stretch_zipWith_add hl k
-    unfold zadd
-    rw [← this]
-    exact ext_stretch (by omega) _
-  · simp [length_stretch, hl]
 
 /-- **Lemma 3.13**. -/
 theorem RingSum.dom_of_dom {a b a₀ b₀ : List ℕ} (hab : a.length = b.length)

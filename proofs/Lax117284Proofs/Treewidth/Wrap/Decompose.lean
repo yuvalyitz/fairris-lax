@@ -21,12 +21,6 @@ open Lax117284Proofs.Treewidth.Trees Lax117284Proofs.Treewidth.Trees.NT
 /-- The adjacency function is symmetric on the vertex set `W`. -/
 def Adj.SymmOn (adj : Adj) (W : Finset ℕ) : Prop := ∀ u ∈ W, ∀ v ∈ W, adj u v = adj v u
 
-/-- On a set where `adj` is symmetric, `adj.graph` is "`adj` and distinct": what `nbrs` and `Good` implicitly use. -/
-theorem Adj.SymmOn.graph_adj_iff {adj : Adj} {W : Finset ℕ} (h : adj.SymmOn W) {u v : ℕ} (hu : u ∈ W) (hv : v ∈ W) :
-    adj.graph.Adj u v ↔ u ≠ v ∧ adj u v = true := by
-  rw [Adj.graph, SimpleGraph.fromRel_adj, h u hu v hv]
-  simp
-
 theorem hasTW_mono {adj : Adj} {U U' : Finset ℕ} {k : ℕ} (h : U' ⊆ U) : HasTW adj U k → HasTW adj U' k := by
   rintro ⟨t, htd, hw⟩
   refine ⟨t.restrict U', ?_, hw.restrict U'⟩
@@ -45,36 +39,6 @@ theorem hasTW_empty (adj : Adj) (k : ℕ) : HasTW adj ∅ k :=
 def ImproveSpec (adj : Adj) (W : Finset ℕ) : Prop :=
   ∀ (U : Finset ℕ) (nt : NT) (l k : ℕ), U ⊆ W → nt.IsNiceTD adj.graph U l →
     (improve adj k nt = none ↔ ¬ HasTW adj U k) ∧ (∀ t', improve adj k nt = some t' → t'.IsNiceTD adj.graph U k)
-
-theorem decompose_correct (adj : Adj) (W : Finset ℕ) (himp : ImproveSpec adj W) (k : ℕ) : ∀ i, Finset.range i ⊆ W →
-    (decompose adj k i = none ↔ ¬ HasTW adj (Finset.range i) k) ∧
-    (∀ t, decompose adj k i = some t → t.IsNiceTD adj.graph (Finset.range i) k) := by
-  intro i
-  induction i with
-  | zero =>
-    intro _
-    refine ⟨by simp [decompose, hasTW_empty], ?_⟩
-    intro t ht
-    simp only [decompose, Option.some.injEq] at ht
-    subst ht
-    exact ⟨trivial, ⟨rfl, fun u v _ hu _ => absurd hu (by simp), by simp [NT.toRT, RT.Conn, RT.ConnL]⟩,
-      by intro X hX; simp [NT.toRT, RT.bags, RT.bagsL] at hX; simp [hX]⟩
-  | succ i ih =>
-    intro hW
-    have hWi : Finset.range i ⊆ W := (Finset.range_subset_range.2 (Nat.le_succ i)).trans hW
-    obtain ⟨ih1, ih2⟩ := ih hWi
-    cases hd : decompose adj k i with
-    | none =>
-      have hn : ¬ HasTW adj (Finset.range i) k := ih1.1 hd
-      refine ⟨by simp [decompose, hd]; exact fun h => hn (hasTW_mono (Finset.range_subset_range.2 (Nat.le_succ i)) h),
-        by simp [decompose, hd]⟩
-    | some t =>
-      have ht := ih2 t hd
-      have hadd := addEverywhere_isNiceTD (v := i) ht (by simp)
-      rw [← Finset.range_add_one] at hadd
-      obtain ⟨j1, j2⟩ := himp _ _ _ k hW hadd
-      simp only [decompose, hd, Option.bind_some]
-      exact ⟨j1, j2⟩
 
 /-- The graph `adj.graph` restricted to `range n` is the graph of `G` when `adj` encodes `G`. -/
 theorem isTD_congr {G G' : SimpleGraph ℕ} {U : Finset ℕ} {t : RT} (h : ∀ u ∈ U, ∀ v ∈ U, G.Adj u v ↔ G'.Adj u v) :
@@ -119,19 +83,5 @@ theorem hasTW_iff_hasTreewidthAtMost {n : ℕ} {G : SimpleGraph (Fin n)} {adj : 
   constructor
   · rintro ⟨t, ht, hw⟩; exact ⟨t, (isTD_congr hcong).1 ht, hw⟩
   · rintro ⟨t, ht, hw⟩; exact ⟨t, (isTD_congr hcong).2 ht, hw⟩
-
-/-- **The word-level statement of `decompose`**, for a graph on `Fin n` whose adjacency function is `adj` on
-`range n`; `himp` is the conclusion of `improve_correct` (for vertex sets inside `range n`). -/
-theorem decompose_words {n : ℕ} (G : SimpleGraph (Fin n)) (adj : Adj)
-    (hadj : ∀ u v : Fin n, adj u.val v.val = true ↔ G.Adj u v ∨ G.Adj v u)
-    (himp : ImproveSpec adj (Finset.range n)) (k : ℕ) :
-    (decompose adj k n = none ↔ ¬ Lax228581.Treewidth.HasTreewidthAtMost G k) ∧
-    (∀ t, decompose adj k n = some t → Lax117284.GraphWords.NiceDecomposition G k t.encode) := by
-  obtain ⟨h1, h2⟩ := decompose_correct adj (Finset.range n) himp k n (Finset.Subset.refl _)
-  refine ⟨by rw [h1, hasTW_iff_hasTreewidthAtMost hadj], fun t ht => ?_⟩
-  have := h2 t ht
-  have hcong : ∀ u ∈ Finset.range n, ∀ v ∈ Finset.range n, adj.graph.Adj u v ↔ (liftGraph G).Adj u v :=
-    fun u hu v hv => graph_adj_of_encodes hadj (Finset.mem_range.1 hu) (Finset.mem_range.1 hv)
-  exact niceDecomposition_encode ⟨this.1, (isTD_congr hcong).1 this.2.1, this.2.2⟩
 
 end Lax117284Proofs.Treewidth.Chars

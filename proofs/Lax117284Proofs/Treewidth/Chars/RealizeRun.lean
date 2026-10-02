@@ -99,7 +99,6 @@ theorem DupOf.info {ns ns2 : List CNode} (h : DupOf ns ns2) :
   · exact ⟨n0, h1, rfl, fun J hJ => by simp at hJ⟩
 
 theorem av_bag (v : ℕ) (n : CNode) : (av v n).bag = insert v n.bag := rfl
-theorem av_junk (v : ℕ) (n : CNode) : (av v n).junk = n.junk := rfl
 
 /-! ## a chain whose middle segment receives `v` -/
 

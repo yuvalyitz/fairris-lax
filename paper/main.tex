@@ -346,6 +346,42 @@ clients add at most two to the treewidth.
 
 Combining \Cref{lem:14,lem:15} gives \Cref{thm:4a}: $4+2=6$.
 
+\subsection{Finding Nice Tree Decompositions}
+
+The dynamic programs below consume \emph{nice} tree decompositions, whose nodes are leaves,
+\emph{introduce} nodes that add one vertex to the bag of their child, \emph{forget} nodes that
+remove one, and \emph{join} nodes with two children of equal bag.
+% lax begin Lax117284.GraphWords
+For the word RAM, a graph on $n$ vertices is the word $n$ followed by its adjacency matrix row
+by row, and a nice decomposition is a word of $N$ records, one per node, listing its kind, its
+vertex and its second child, each node after its children; the bags are determined from the
+leaves upward.
+% lax end
+
+% lax begin Lax117284.BodlaenderKloks
+\begin{theorem}[Bodlaender and Kloks]
+Given a graph and a nice tree decomposition of width at most $\ell$, one can decide whether
+the treewidth is at most $k$ and, if so, find a nice decomposition of width at most $k$, in
+time $2^{\bigO(\ell^3)}\cdot\mathrm{poly}$.
+\end{theorem}
+% lax end
+
+% lax begin Lax117284.BodlaenderGeneral
+\begin{theorem}[Bodlaender]
+Given a graph and $k$, one can decide whether the treewidth is at most $k$ and, if so, find a
+nice decomposition of width at most $k$, in time $2^{\bigO(k^3)}\cdot\mathrm{poly}$.
+\end{theorem}
+% lax end
+Bodlaender's theorem is formalized with an algorithm that is done slightly differently than
+in the paper: the exact dynamic program of Bodlaender and Kloks over \emph{characteristics} of
+partial decompositions, applied vertex by vertex. A decomposition of the first $i$ vertices
+is extended to one of the first $i+1$ by inserting the new vertex into every bag, which raises
+the width by one, and the improvement step of the previous theorem brings the width back down.
+Its running time is proved on a verified virtual machine for a functional language, whose
+runs are transferred to the word RAM, and is polynomial in the length of the word times
+$2^{\bigO(k^3)}$. The statement used for \Cref{thm:4b} is its case for the overall conflict
+graph of an instance.
+
 \subsection{Fixed-Parameter Tractability}
 
 % lax begin Lax117284Proofs.TreewidthReal.fpt_byDaysAndTreewidth

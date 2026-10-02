@@ -20,29 +20,10 @@ def InR (z x y : ℕ) : Prop := min x y ≤ z ∧ z ≤ max x y
 
 instance (z x y : ℕ) : Decidable (InR z x y) := inferInstanceAs (Decidable (_ ∧ _))
 
-theorem InR.iff {z x y : ℕ} : InR z x y ↔ (x ≤ z ∧ z ≤ y) ∨ (y ≤ z ∧ z ≤ x) := by
-  unfold InR; omega
-
 theorem InR.left (x y : ℕ) : InR x x y := by unfold InR; omega
 theorem InR.right (x y : ℕ) : InR y x y := by unfold InR; omega
 theorem InR.symm {z x y : ℕ} (h : InR z x y) : InR z y x := by unfold InR at *; omega
 theorem InR.self_iff {z x : ℕ} : InR z x x ↔ z = x := by unfold InR; omega
-
-/-- The wording of the typical operation in Def. 3.5: for a non-empty interior `m` between `x`
-and `y`, "all `x ≤ a_k ≤ y`, or all `x ≥ a_k ≥ y`" is the same as "all in the interval". -/
-theorem typOp_iff {x y : ℕ} {m : List ℕ} (hm : m ≠ []) :
-    ((∀ z ∈ m, x ≤ z ∧ z ≤ y) ∨ (∀ z ∈ m, y ≤ z ∧ z ≤ x)) ↔ ∀ z ∈ m, InR z x y := by
-  obtain ⟨w, hw⟩ := List.exists_mem_of_ne_nil m hm
-  constructor
-  · rintro (h | h) z hz
-    · have := h z hz; unfold InR; omega
-    · have := h z hz; unfold InR; omega
-  · intro h
-    have hw' := h w hw
-    unfold InR at hw'
-    by_cases hxy : x ≤ y
-    · left; intro z hz; have := h z hz; unfold InR at this; omega
-    · right; intro z hz; have := h z hz; unfold InR at this; omega
 
 /-- One reduction step (Def. 3.5): removal of a consecutive repetition, or the typical
 operation (delete a non-empty interior all of whose entries lie between its two neighbours). -/
@@ -79,9 +60,6 @@ theorem Reach.sublist {a b : List ℕ} (h : Reach a b) : b.Sublist a := by
   | refl => exact List.Sublist.refl _
   | tail _ hr ih => exact hr.sublist.trans ih
 
-theorem Reach.length_le {a b : List ℕ} (h : Reach a b) : b.length ≤ a.length :=
-  h.sublist.length_le
-
 theorem Red.append_left (c : List ℕ) {a b : List ℕ} (h : Red a b) : Red (c ++ a) (c ++ b) := by
   cases h with
   | dup l x r => simpa [List.append_assoc] using Red.dup (c ++ l) x r
@@ -101,10 +79,6 @@ theorem Reach.append_right (c : List ℕ) {a b : List ℕ} (h : Reach a b) : Rea
   induction h with
   | refl => exact Relation.ReflTransGen.refl
   | tail _ hr ih => exact ih.tail (hr.append_right c)
-
-theorem Reach.append {a a' b b' : List ℕ} (ha : Reach a a') (hb : Reach b b') :
-    Reach (a ++ b) (a' ++ b') :=
-  (ha.append_right b).trans (hb.append_left a')
 
 theorem NF.append_left {a b : List ℕ} (h : NF (a ++ b)) : NF a := fun _ hc =>
   h _ (hc.append_right b)
@@ -149,13 +123,8 @@ theorem ent_append_right (a : List ℕ) {b : List ℕ} {i : ℕ} (h : a.length �
 @[simp] theorem ent_cons_succ (x : ℕ) (a : List ℕ) (i : ℕ) : ent (x :: a) (i + 1) = ent a i := by
   simp [ent]
 
-@[simp] theorem ent_nil (i : ℕ) : ent [] i = 0 := by simp [ent]
-
 theorem ent_eq_getElem {a : List ℕ} {i : ℕ} (h : i < a.length) : ent a i = a[i] := by
   unfold ent; exact List.getD_eq_getElem _ _ h
-
-theorem ent_of_le {a : List ℕ} {i : ℕ} (h : a.length ≤ i) : ent a i = 0 := by
-  unfold ent; exact List.getD_eq_default _ _ h
 
 theorem ent_mem {a : List ℕ} {i : ℕ} (h : i < a.length) : ent a i ∈ a := by
   rw [ent_eq_getElem h]; exact List.getElem_mem h

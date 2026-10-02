@@ -17,9 +17,6 @@ namespace E6b
 
 open ToVal Lax117284Proofs.Treewidth.Seq Lax117284Proofs.Treewidth.Chars Lax117284Proofs.Treewidth.Trees CT
 
-theorem maxEntry_node_le_iff {S : Finset ℕ} {y : List ℕ} {ks : List CT} {n : ℕ} :
-    maxEntry (node S y ks) ≤ n ↔ (∀ e ∈ y, e ≤ n) ∧ ∀ k ∈ ks, maxEntry k ≤ n := maxEntry_le_iff
-
 /-- `node S y ks` has `maxEntry + 1 ≤ K` iff entries and kids are `≤ K - 1` -/
 theorem me_succ_iff {S : Finset ℕ} {y : List ℕ} {ks : List CT} {K : ℕ} :
     maxEntry (node S y ks) + 1 ≤ K ↔ K ≥ 1 ∧ (∀ e ∈ y, e + 1 ≤ K) ∧ ∀ k ∈ ks, maxEntry k + 1 ≤ K := by
@@ -32,11 +29,6 @@ theorem me_succ_iff {S : Finset ℕ} {y : List ℕ} {ks : List CT} {K : ℕ} :
     have : maxEntry (node S y ks) ≤ K - 1 :=
       maxEntry_le_iff.2 ⟨fun e he => by have := h1 e he; omega, fun k hk => by have := h2 k hk; omega⟩
     omega
-
-theorem me_mono {t : CT} {K K' : ℕ} (h : maxEntry t ≤ K) (hK : K ≤ K') : maxEntry t ≤ K' := le_trans h hK
-
-theorem me_kid {S : Finset ℕ} {y : List ℕ} {ks : List CT} {K : ℕ} (h : maxEntry (node S y ks) ≤ K) :
-    ∀ k ∈ ks, maxEntry k ≤ K := (maxEntry_le_iff.1 h).2
 
 mutual
 theorem winPlans_me (v : ℕ) {K : ℕ} : ∀ (lo : ℕ) (t : CT), maxEntry t + 1 ≤ K →

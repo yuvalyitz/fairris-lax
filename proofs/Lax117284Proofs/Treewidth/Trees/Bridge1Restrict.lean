@@ -86,10 +86,6 @@ theorem Width.restrict {t : RT} {w : ℕ} (U : Finset ℕ) (h : t.Width w) : (re
   obtain ⟨Y, hY, rfl⟩ := (mem_bags_restrict U t X).1 hX
   exact le_trans (Finset.card_le_card Finset.inter_subset_left) (h Y hY)
 
-theorem IsTD.mono {G G' : SimpleGraph ℕ} {U : Finset ℕ} {t : RT} (h : t.IsTD G U) (hle : G' ≤ G) :
-    t.IsTD G' U :=
-  ⟨h.verts_eq, fun u v huv hu hv => h.edges u v (hle huv) hu hv, h.conn⟩
-
 theorem IsTD.restrict {G : SimpleGraph ℕ} {U₀ : Finset ℕ} {t : RT} (h : t.IsTD G U₀) (U : Finset ℕ) :
     (restrict U t).IsTD G (U₀ ∩ U) := by
   refine ⟨?_, ?_, Conn.restrict U t h.conn⟩

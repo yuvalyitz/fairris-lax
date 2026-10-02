@@ -65,14 +65,6 @@ theorem bagAtL_of_getElem? : ∀ (ks : List RT) (i : ℕ) (k : RT) (p : List ℕ
     simp only [List.getElem?_cons_succ] at h
     simp [bagAtL, bagAtL_of_getElem? ks i k p h]
 
-theorem bagAtL_of_getElem?_none : ∀ (ks : List RT) (i : ℕ) (p : List ℕ),
-    ks[i]? = none → bagAtL ks i p = ∅
-  | [], i, p, h => by cases i <;> simp [bagAtL]
-  | k' :: ks, 0, p, h => by simp at h
-  | k' :: ks, i + 1, p, h => by
-    simp only [List.getElem?_cons_succ] at h
-    simp [bagAtL, bagAtL_of_getElem?_none ks i p h]
-
 theorem bagAt_nil (b : Finset ℕ) (ks : List RT) : bagAt (.node b ks) [] = b := by simp [bagAt]
 
 theorem bagAt_cons (b : Finset ℕ) (ks : List RT) (i : ℕ) (k : RT) (p : List ℕ) (h : ks[i]? = some k) :

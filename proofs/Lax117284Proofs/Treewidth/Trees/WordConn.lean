@@ -66,67 +66,6 @@ lemma ConnOn.insert {A : Set ℕ} (hA : ConnOn D A) {x y : ℕ} (hy : y ∈ A) (
 
 /-! ## the cut argument -/
 
-/-- Neighbours of a node below `c` are below `c`, unless the node is `c` itself. -/
-lemma Lay.desc_closed (L : Lay n D) {c a b : ℕ} (hc : c < nodeCount D) (ha : a ∈ desc D c)
-    (hab : Adj' D a b) : b ∈ desc D c ∨ a = c := by
-  rcases hab with h | h
-  · by_cases hac : a = c
-    · exact Or.inr hac
-    · exact Or.inl (L.desc_step_up c a b hc ha hac h)
-  · left
-    have hlt := L.isChild_lt h
-    have hb : b ∈ desc D a := (L.mem_desc_iff hlt.2).2 (Or.inr ⟨b, h, self_mem_desc D b⟩)
-    exact L.desc_trans c b a hc hb ha
-
-/-- A chain of tree edges inside `S` leaving the subtree of `c` passes through `c`. -/
-lemma Lay.cut (L : Lay n D) {c : ℕ} (hc : c < nodeCount D) {S : Set ℕ} {x y : ℕ} (hx : x ∈ desc D c)
-    (hy : y ∉ desc D c) (h : Relation.ReflTransGen (RelOn D S) x y) : c ∈ S := by
-  have key : ∀ b, Relation.ReflTransGen (RelOn D S) x b → b ∈ desc D c ∨ c ∈ S := by
-    intro b hb
-    induction hb with
-    | refl => exact Or.inl hx
-    | tail _ hbd ih =>
-      rename_i b' d
-      rcases ih with hb' | hcS
-      · rcases L.desc_closed hc hb' hbd.2.2 with hd | rfl
-        · exact Or.inl hd
-        · exact Or.inr hbd.1
-      · exact Or.inr hcS
-  rcases key y h with h' | h'
-  · exact absurd h' hy
-  · exact h'
-
-/-- If every occurrence set is connected, the local conditions hold. -/
-lemma Lay.loc_of_connOn (L : Lay n D) (h : ∀ v, v < n → ConnOn D (Sv n D v)) :
-    ∀ j, j < nodeCount D → Loc n D j := by
-  intro j hj
-  cases j with
-  | zero => simp [Loc, kind_zero L]
-  | succ i =>
-    have hiN : i < nodeCount D := by omega
-    rcases L.node hj with ⟨h1, h2, h3⟩ | ⟨hkd, hv, hn⟩ | ⟨hkd, hv, hn⟩ | ⟨hkd, ho, hbe⟩
-    · simp [Loc, h1, h3]
-    · refine ⟨fun _ y hy hxy => ?_, fun h3 => by omega⟩
-      simp only [Nat.add_sub_cancel] at hy
-      have hyS : y ∈ Sv n D (vertex D (i + 1)) := ⟨by have := desc_le D i y hy; omega, hxy⟩
-      have hjS : i + 1 ∈ Sv n D (vertex D (i + 1)) := ⟨hj, by rw [bagN_succ_intro hkd hv]; simp⟩
-      have hpath := (h _ hv).2 y hyS (i + 1) hjS
-      have hnot : i + 1 ∉ desc D i := fun hm => by have := desc_le D i _ hm; omega
-      have := L.cut hiN hy hnot hpath
-      exact hn this.2
-    · exact ⟨fun h1 => by omega, fun h3 => by omega⟩
-    · refine ⟨fun h1 => by omega, fun _ x hx y hy u hux huy => ?_⟩
-      simp only [Nat.add_sub_cancel] at hx
-      have hu : u < n := lt_of_mem_bagN hux
-      have hxS : x ∈ Sv n D u := ⟨by have := desc_le D i x hx; omega, hux⟩
-      have hyS : y ∈ Sv n D u := ⟨by have := desc_le D _ y hy; omega, huy⟩
-      have hpath := (h u hu).2 x hxS y hyS
-      have hnot : y ∉ desc D i := fun hm =>
-        Finset.disjoint_left.1 (L.desc_disjoint hj hkd ho) hm hy
-      have := L.cut hiN hx hnot hpath
-      rw [bagN_succ_join hkd]
-      exact this.2
-
 /-! ## the gluing argument -/
 
 /-- The occurrences of `v` below the node `m`. -/

@@ -38,46 +38,4 @@ theorem solve_solves (Δ : ℕ → Option Tm) {N : ℕ} (hN : ∀ f, N ≤ f →
     obtain ⟨σ', hr, ho⟩ := solve_run Δ hN main fmt p h0 h1 h2 (hfmt x hx) (hruns x hx) (hlen x hx)
     exact ⟨_, σ', hr, ho⟩
 
-/-- **`compile_solves`** (WP V3). -/
-theorem compile_solves (Δ : ℕ → Option Tm) {N : ℕ} (hN : ∀ f, N ≤ f → Δ f = none) (main : ℕ) (fmt : Fmt) (p : KP)
-    (h0 : 1 ≤ p.c0) (h1 : 1 ≤ p.c1) (h2 : 1 ≤ p.c2) :
-    ∃ (Ly : Layout) (com : Com) (κ : ℕ), ∀ (D : Set (List ℕ)) (f : List ℕ → List ℕ),
-      (∀ x ∈ D, fmtLen fmt x = x.length) →
-      (∀ x ∈ D, Runs Δ (Bx p fmt x) main [toVal x] (toVal (f x)) (Kx p fmt x)) →
-      (∀ x ∈ D, (f x).length ≤ Kx p fmt x) →
-      Solves Ly com D f (fun x => 2 * Bx p fmt x + 4 * (Kx p fmt x + x.length + 8) + κ)
-        (fun x => κ * (Kx p fmt x + x.length + 1)) :=
-  ⟨solveLayout, solveCom Δ N main fmt p, kappa Δ N main p, fun D f hfmt hruns hlen =>
-    solve_solves Δ hN main fmt p h0 h1 h2 hfmt hruns hlen⟩
-
-/-- The functional run of a `call main [var 0]` term gives the `Runs` form. -/
-theorem runs_of_ev_call {Δ : ℕ → Option Tm} {B main : ℕ} {v y : Val} {c K : ℕ}
-    (h : Ev Δ B [v] (.call main [.var 0]) y c) (hc : c ≤ K) : Runs Δ B main [v] y K := by
-  cases h with
-  | call hargs hΔ hbody =>
-    rename_i vs c₁ c₂
-    cases hargs with
-    | cons hv hrest =>
-      cases hv with
-      | var hi =>
-        cases hrest
-        simp at hi
-        subst hi
-        exact ⟨_, hΔ, _, by omega, hbody⟩
-
-/-- `compile_solves` with the hypothesis in the shape produced by the algorithm embeddings
-(`Ev algΔ Bv [toVal x] (call main [var 0]) (toVal (f x)) c`, `c ≤ K x`). -/
-theorem compile_solves_ev (Δ : ℕ → Option Tm) {N : ℕ} (hN : ∀ f, N ≤ f → Δ f = none) (main : ℕ) (fmt : Fmt)
-    (p : KP) (h0 : 1 ≤ p.c0) (h1 : 1 ≤ p.c1) (h2 : 1 ≤ p.c2) :
-    ∃ (Ly : Layout) (com : Com) (κ : ℕ), ∀ (D : Set (List ℕ)) (f : List ℕ → List ℕ),
-      (∀ x ∈ D, fmtLen fmt x = x.length) →
-      (∀ x ∈ D, ∃ c ≤ Kx p fmt x, Ev Δ (Bx p fmt x) [toVal x] (.call main [.var 0]) (toVal (f x)) c) →
-      (∀ x ∈ D, (f x).length ≤ Kx p fmt x) →
-      Solves Ly com D f (fun x => 2 * Bx p fmt x + 4 * (Kx p fmt x + x.length + 8) + κ)
-        (fun x => κ * (Kx p fmt x + x.length + 1)) := by
-  obtain ⟨Ly, com, κ, h⟩ := compile_solves Δ hN main fmt p h0 h1 h2
-  refine ⟨Ly, com, κ, fun D f hfmt hev hlen => h D f hfmt (fun x hx => ?_) hlen⟩
-  obtain ⟨c, hc, hE⟩ := hev x hx
-  exact runs_of_ev_call hE hc
-
 end Lax117284Proofs.Treewidth.Fun.Load

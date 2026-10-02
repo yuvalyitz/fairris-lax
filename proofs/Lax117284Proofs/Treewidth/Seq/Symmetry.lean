@@ -20,23 +20,11 @@ theorem Red.reverse {a b : List ℕ} (h : Red a b) : Red a.reverse b.reverse := 
       (fun z hz' => (hz z (by simpa using hz')).symm)
     simpa [List.reverse_append] using this
 
-theorem Reach.reverse {a b : List ℕ} (h : Reach a b) : Reach a.reverse b.reverse := by
-  induction h with
-  | refl => exact Relation.ReflTransGen.refl
-  | tail _ hr ih => exact ih.tail hr.reverse
-
 theorem nf_reverse {a : List ℕ} (h : NF a) : NF a.reverse := by
   intro b hb
   have := hb.reverse
   rw [List.reverse_reverse] at this
   exact h _ this
-
-theorem nf_reverse_iff {a : List ℕ} : NF a.reverse ↔ NF a :=
-  ⟨fun h => by simpa using nf_reverse h, nf_reverse⟩
-
-/-- (H1): `τ` commutes with reversal. -/
-theorem typical_reverse (a : List ℕ) : typical a.reverse = (typical a).reverse :=
-  (eq_typical_of_reach_nf (reach_typical a).reverse (nf_reverse (nf_typical a))).symm
 
 /-! ### Shifting by a constant -/
 
@@ -62,22 +50,6 @@ theorem nf_map_add {a : List ℕ} (c : ℕ) (h : NF a) : NF (a.map (· + c)) := 
     have := h3 m hm1 hm2
     rw [ent_map_add (by omega), ent_map_add (by omega), ent_map_add h2] at this
     exact InR.add_iff.mp this
-
-theorem nf_map_add_iff {a : List ℕ} (c : ℕ) : NF (a.map (· + c)) ↔ NF a := by
-  constructor
-  · intro h
-    obtain ⟨hd, hw⟩ := nf_iff.mp h
-    rw [nf_iff]
-    refine ⟨fun k hk => ?_, fun k j hwin => ?_⟩
-    · obtain ⟨h1, h2⟩ := hk
-      apply hd k ⟨by simpa using h1, ?_⟩
-      rw [ent_map_add (by omega), ent_map_add h1]; omega
-    · obtain ⟨h1, h2, h3⟩ := hwin
-      apply hw k j
-      refine ⟨h1, by simpa using h2, fun m hm1 hm2 => ?_⟩
-      rw [ent_map_add (by omega), ent_map_add (by omega), ent_map_add h2]
-      exact InR.add_iff.mpr (h3 m hm1 hm2)
-  · exact nf_map_add c
 
 theorem Red.map_add {a b : List ℕ} (c : ℕ) (h : Red a b) :
     Red (a.map (· + c)) (b.map (· + c)) := by

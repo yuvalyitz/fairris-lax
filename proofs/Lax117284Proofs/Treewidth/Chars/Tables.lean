@@ -61,11 +61,6 @@ theorem tables_wf {adj : Adj} {k : ℕ} : ∀ {nt : NT}, nt.Good adj → ∀ c �
 /-- The hypothesis of the counting results holds. -/
 theorem tablesWf : TablesWf := fun hg c hc => tables_wf hg c hc
 
-/-- Every table has at most `charBound (ℓ+1) (k+1)` entries (unconditional). -/
-theorem tables_length_le' {adj : Adj} {k l : ℕ} {nt : NT} (hg : nt.Good adj) (hb : nt.bag.card ≤ l + 1) :
-    (tables adj k nt).length ≤ charBound (l + 1) (k + 1) :=
-  tables_length_le tablesWf hg hb
-
 /-- If a nice tree has width `≤ l`, every table of it is small (unconditional). -/
 theorem tables_length_le_of_width' {adj : Adj} {k l : ℕ} {nt : NT} (hg : nt.Good adj) (hw : nt.toRT.Width l) :
     (tables adj k nt).length ≤ charBound (l + 1) (k + 1) :=

@@ -46,12 +46,6 @@ theorem e2Tbl_disj_e1 (rid : ℕ) : ∀ f b, e2Tbl rid f = some b → E1.e1Tbl f
 def e12Tbl : ℕ → Option Tm := orElseΔ E1.e1Tbl (e2Tbl E1C.fRingTypList)
 def e12Δ : ℕ → Option Tm := Lib.extend e12Tbl
 
-theorem ext_e1 : E1.e1Δ ⊑ e12Δ :=
-  Ext.layer_mono (Ext.orElse_left E1.e1Tbl (e2Tbl E1C.fRingTypList))
-
-theorem ext_e2 : e2Δ E1C.fRingTypList ⊑ e12Δ :=
-  Ext.layer_mono (Ext.orElse_right (e2Tbl_disj_e1 E1C.fRingTypList))
-
 /-! ## the interface with `ringTypList` -/
 
 /-- the cost of one call of `ringTypList` on run sequences with entries `≤ k` and length `≤ 2k + 1` -/
@@ -140,8 +134,6 @@ theorem join_R0_bound (nb k : ℕ) : (2 * nb + 2) ^ 2 * R0k k ≤ 6000 * 2 ^ (48
   have h9 := le_trans (le_trans h5 (le_of_eq h6)) h8
   exact Nat.mul_le_mul_left 6000 h9
 
-theorem sq_ge_aux (C : ℕ) (hC : 200 ≤ C) : C + 1000 ≤ (C + 2) ^ 2 := by nlinarith
-
 theorem join_fit_arith (s E R : ℕ) (hE : 1 ≤ E) (hR : R ≤ 6000 * E) :
     28000 * (s + 1) * E + 2000 * (s + 1) + 2000 + R + 1000 ≤ (14000 * (s + 1) * E + 2) ^ 2 := by
   have h1 : 1 ≤ (s + 1) * E := Nat.mul_pos (by omega) hE
@@ -181,25 +173,7 @@ theorem domC_runs_e12 (L s : ℕ) (a b : CT) (hla : RB s L a) (hlb : RB s L b) (
     Runs Δ' B fDomC [toVal a, toVal b] (toVal (domCB a b)) ((30 * s + 60 * 3 ^ (2 * L) + 100) * (2 * count a)) :=
   domC_runs hΔ (Ext.trans E1.extA hE1) B L s a b hla hlb hsa hsb hB
 
-omit hΔ hE1 in
-/-- the unary `Embeds` form of `norm` -/
-theorem embeds_norm (hΔ : e2Δ E1C.fRingTypList ⊑ Δ') (hE1 : E1.e1Δ ⊑ Δ') :
-    Embeds Δ' fNorm (fun _ : CT => True) norm (fun c => 6200 * (sz c + 1) ^ 5) := by
-  intro B c _ hfit
-  have h1 : 1 ≤ (sz c + 1) ^ 5 := Nat.one_le_pow _ _ (by omega)
-  have h2 : 14000 * (sz c + 1) ^ 5 < B := by
-    have h3 : 14000 * (sz c + 1) ^ 5 ≤ ((toVal c).maxNat + 6200 * (sz c + 1) ^ 5 + 2) ^ 2 := by
-      nlinarith [Nat.zero_le ((toVal c).maxNat), Nat.zero_le ((sz c + 1) ^ 5)]
-    exact lt_of_le_of_lt h3 hfit
-  exact norm_runs_e12 hΔ hE1 B c (sz c) le_rfl h2
-
 /-! ### the `Fits` forms: the hypothesis on `B` is `(cost + 2)^2 < B` (what `Fits B v cost` provides) -/
-
-theorem norm_runs_fits (c : CT) (s : ℕ) (hc : sz c ≤ s) (hfit : (6200 * (s + 1) ^ 5 + 2) ^ 2 < B) :
-    Runs Δ' B fNorm [toVal c] (toVal (norm c)) (6200 * (s + 1) ^ 5) := by
-  have h1 : 1 ≤ (s + 1) ^ 5 := Nat.one_le_pow _ _ (by omega)
-  refine norm_runs_e12 hΔ hE1 B c s hc (lt_of_le_of_lt ?_ hfit)
-  nlinarith
 
 theorem forgetC_runs_fits (x : ℕ) (c : CT) (s : ℕ) (hc : sz c ≤ s) (hfit : (7000 * (s + 1) ^ 5 + 2) ^ 2 < B) :
     Runs Δ' B fForgetC [toVal x, toVal c] (toVal (forgetC x c)) (7000 * (s + 1) ^ 5) := by
@@ -217,16 +191,6 @@ theorem joinC_runs_fits {B0 : Finset ℕ} {kmax : ℕ} {a b : CT} (ha : a.Wf B0 
     le_trans (Nat.le_mul_of_pos_left (R0k kmax) (Nat.pow_pos (by omega : 0 < 2 * B0.card + 2))) hR
   have hE : 1 ≤ 2 ^ (48 * (B0.card + kmax + 2) ^ 3) := Nat.one_le_two_pow
   exact joinC_runs_e12 hΔ hE1 B ha hb s hsa hsb (lt_of_le_of_lt (join_fit_arith s _ _ hE hR1) hfit)
-
-theorem domC_runs_fits (L s : ℕ) (a b : CT) (hla : RB s L a) (hlb : RB s L b) (hsa : sz a ≤ s) (hsb : sz b ≤ s)
-    (hfit : ((30 * s + 60 * 3 ^ (2 * L) + 100) * (2 * count a) + 2) ^ 2 < B) :
-    Runs Δ' B fDomC [toVal a, toVal b] (toVal (domCB a b)) ((30 * s + 60 * 3 ^ (2 * L) + 100) * (2 * count a)) := by
-  have hcnt := count_ge_one a
-  have h1 : 100 ≤ 30 * s + 60 * 3 ^ (2 * L) + 100 := Nat.le_add_left _ _
-  have h2 : 2 ≤ 2 * count a := by omega
-  have hC : 200 ≤ (30 * s + 60 * 3 ^ (2 * L) + 100) * (2 * count a) := Nat.mul_le_mul h1 h2
-  exact domC_runs_e12 hΔ hE1 B L s a b hla hlb hsa hsb
-    (lt_of_le_of_lt (sq_ge_aux _ hC) hfit)
 
 end concrete
 

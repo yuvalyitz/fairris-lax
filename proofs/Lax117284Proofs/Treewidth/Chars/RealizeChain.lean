@@ -87,8 +87,6 @@ theorem csz_cutAt_t1 (y w : List ℕ) (f : ℕ) {ns : List CNode} (hi : w.getD f
   simp only [cutAt]
   exact csz_dupAfter hi
 
-theorem cutAt_t2_fst (y w : List ℕ) (f : ℕ) (ns : List CNode) : (cutAt y w (Cut.t2 f) ns).1 = ns := rfl
-
 theorem DupOf_cutAt {ns ns' : List CNode} (h : DupOf ns ns') (y w : List ℕ) (c : Cut) :
     DupOf ns (cutAt y w c ns').1 := by
   cases c with
@@ -284,10 +282,6 @@ theorem processRun_eq (v : ℕ) (pre : Option Cut) (w : WPlan) (S : Finset ℕ) 
 theorem processRun_chain_eq (v : ℕ) (pre : Option Cut) (w : WPlan) (S : Finset ℕ) (ns : List CNode) (ks : List AR) :
     (processRun v pre w (.run S ns ks)).chain =
       addV v (prStep pre w ns).2.1 (prStep pre w ns).2.2 (prStep pre w ns).1 := by
-  rw [processRun_eq]; rfl
-
-theorem processRun_S (v : ℕ) (pre : Option Cut) (w : WPlan) (S : Finset ℕ) (ns : List CNode) (ks : List AR) :
-    (processRun v pre w (.run S ns ks)).S = S := by
   rw [processRun_eq]; rfl
 
 theorem cA_sub_cB_t1 (s : List ℕ) (f : ℕ) : cA s (Cut.t1 f) - cB s (Cut.t1 f) = 1 := by simp [cA, cB]

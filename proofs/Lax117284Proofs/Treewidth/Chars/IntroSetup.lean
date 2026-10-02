@@ -92,10 +92,6 @@ def fkept (v : ℕ) (S1 : Finset ℕ) (ks : List FT) : List FT := ks.filter (fun
 theorem mem_kept {S : Finset ℕ} {ks : List FT} {K : FT} : K ∈ kept S ks ↔ K ∈ ks ∧ keep S (gA K) = true := by
   simp [kept]
 
-theorem mem_fkept {v : ℕ} {S1 : Finset ℕ} {ks : List FT} {K : FT} :
-    K ∈ fkept v S1 ks ↔ K ∈ ks ∧ keep S1 (fN v K) = true := by
-  simp [fkept]
-
 theorem order_perm (S : Finset ℕ) (ks : List FT) : (order S ks).Perm (kept S ks) :=
   List.mergeSort_perm _ _
 

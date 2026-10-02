@@ -68,8 +68,6 @@ theorem sz_finset_card (S : Finset ℕ) : S.card ≤ sz S := by rw [sz_finset]; 
 theorem sz_ct_node' (S : Finset ℕ) (y : List ℕ) (ks : List CT) :
     sz (node S y ks) = sz S + sz y + sz ks + 2 := by rw [sz_ct_node]; omega
 
-theorem sz_le_sz_ct_of_mem {k : CT} {ks : List CT} (h : k ∈ ks) : sz k ≤ sz ks := sz_le_of_mem h
-
 theorem card_vertsL_le (ks : List CT) (h : ∀ k ∈ ks, (verts k).card ≤ sz k) : (vertsL ks).card ≤ sz ks := by
   induction ks with
   | nil => simp [vertsL]

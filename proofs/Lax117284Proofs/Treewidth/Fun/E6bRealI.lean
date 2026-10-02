@@ -66,10 +66,6 @@ theorem cIP_le (Bs : Finset ℕ) (kmax U c : ℕ) (hb : Bs.card ≤ U) (hk : kma
 
 /-! ### numerical facts about `k` -/
 
-theorem sq_le_Yk (k : ℕ) : (k + 2) ^ 2 ≤ Yk k := by
-  unfold Yk
-  exact Nat.pow_le_pow_right (by omega) (by norm_num)
-
 theorem wf_sz_le {Bs : Finset ℕ} {k : ℕ} {t : CT} (hb : Bs.card ≤ k + 2) (h : t.Wf Bs (k + 1)) :
     sz t ≤ 128 * (k + 2) ^ 3 := by
   have h1 := Lax117284Proofs.Treewidth.Fun.CT.Wf.sz_le h

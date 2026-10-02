@@ -264,10 +264,6 @@ theorem analyze_toRT (B : Finset ℕ) : ∀ M : AR, Canon B M → analyze B (AR.
     have := h6 hks
     omega
 
-/-- The characteristic of the reassembled analysis is the characteristic (`B' = B`). -/
-theorem char_toRT_analyze (B : Finset ℕ) (t : RT) : (AR.toRT (analyze B t)).char B = t.char B := by
-  rw [char_eq_charF, analyze_toRT B _ (analyze_canon B t), ← char_eq_charF]
-
 /-! ## the reassembled analysis is the same tree up to the order of the kids -/
 
 theorem analyze_node_shape (B X : Finset ℕ) (ks : List RT) :
@@ -461,14 +457,6 @@ theorem conn_toRT_analyze (B : Finset ℕ) : ∀ t : RT, t.Conn → (AR.toRT (an
         simp [ψ, this]
       rw [e1, e2]
       exact List.Perm.append_left _ (hp.map AR.toRT)
-
-/-- The reassembled analysis is a tree decomposition of the same graph with the same width. -/
-theorem isTD_toRT_analyze {G : SimpleGraph ℕ} {U : Finset ℕ} (B : Finset ℕ) {t : RT} (h : t.IsTD G U) :
-    (AR.toRT (analyze B t)).IsTD G U := by
-  refine ⟨by rw [verts_toRT_analyze, h.verts_eq], ?_, conn_toRT_analyze B t h.conn⟩
-  intro u v huv hu hv
-  obtain ⟨X, hX, hxu, hxv⟩ := h.edges u v huv hu hv
-  exact ⟨X, (mem_bags_toRT_analyze B t X).2 hX, hxu, hxv⟩
 
 theorem width_toRT_analyze {t : RT} {w : ℕ} (B : Finset ℕ) (h : t.Width w) : (AR.toRT (analyze B t)).Width w :=
   fun X hX => h X ((mem_bags_toRT_analyze B t X).1 hX)

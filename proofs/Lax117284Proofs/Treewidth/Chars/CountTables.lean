@@ -23,17 +23,6 @@ theorem charBound_mono {b b' : ℕ} (k : ℕ) (h : b ≤ b') : charBound b k ≤
   have h2 : b + k + 2 ≤ b' + k + 2 := by omega
   exact Nat.mul_le_mul (Nat.mul_le_mul_left 16 h1) h2
 
-theorem arith_exp {l k : ℕ} (hk : k < l) (hl : 1 ≤ l) :
-    16 * (l + 1 + 1) ^ 2 * (l + 1 + (k + 1) + 2) ≤ 720 * l ^ 3 := by
-  have h1 : (l + 1 + 1) ^ 2 ≤ 9 * l ^ 2 := by nlinarith
-  have h2 : l + 1 + (k + 1) + 2 ≤ 5 * l := by omega
-  have h3 : (l + 1 + 1) ^ 2 * (l + 1 + (k + 1) + 2) ≤ (9 * l ^ 2) * (5 * l) := Nat.mul_le_mul h1 h2
-  nlinarith
-
-theorem charBound_le {l k : ℕ} (hk : k < l) (hl : 1 ≤ l) : charBound (l + 1) (k + 1) ≤ 2 ^ (720 * l ^ 3) := by
-  unfold charBound
-  exact Nat.pow_le_pow_right (by norm_num) (arith_exp hk hl)
-
 /-! ## tables -/
 
 theorem tables_nodup (adj : Adj) (k : ℕ) (nt : NT) : (tables adj k nt).Nodup := by

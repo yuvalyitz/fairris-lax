@@ -8,7 +8,7 @@ paper's theorems, proves every construction correct, and proves the running time
 reductions and of the algorithms as programs for the word RAM. See `abstract.md` for the
 mathematics.
 
-The development contains 38 concepts and 84 tagged proofs. Supporting results are proved
+The development contains 41 concepts and 86 tagged proofs. Supporting results are proved
 locally or supplied by the archive dependencies listed below. Final archive validation
 requires all external dependencies to be registered and pinned to their registered commits.
 
@@ -42,8 +42,9 @@ For archive validation, run:
 
     lax build .
 
-Every dependency is registered and pinned to its registered commit: ISEM (`lax-888481`),
-Tovey (`lax-345332`), RJLMax (`lax-391470`) and flexflowjit (`lax-496464`).
+Every dependency is pinned to a git commit: ISEM (`lax-888481`), Tovey (`lax-345332`) and
+RJLMax (`lax-391470`) are registered; flexflowjit (`lax-496464`) is pinned to its submitted commit
+and `lax build .` reports it as a draft dependency until it is registered.
 
 The full build takes a while; on a machine with limited memory, cap Lake's parallelism, for
 example `LEAN_NUM_THREADS=2 lake build` from `proofs/`, or it will start one Lean process per
@@ -119,7 +120,7 @@ verified virtual machine and transfers the runs to the word RAM (`Fun/Final.lean
 
     manifest.yaml     id, title, authors, pinned Lean + mathlib, bibliography
     abstract.md       the prose account, rendered on the archive website
-    concepts/         statements only, as axioms — 38 modules
+    concepts/         statements only, as axioms — 41 modules
     proofs/           the proofs, each tagged with the statement it discharges
 
 A concept module states results as `axiom`s. A proof is a `theorem` whose docstring carries

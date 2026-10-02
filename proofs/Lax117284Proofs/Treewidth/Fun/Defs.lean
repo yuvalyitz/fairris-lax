@@ -10,6 +10,7 @@ telling the other owners (change = coordinate through the coordinator).
 
 namespace Lax117284Proofs.Treewidth.Fun
 
+set_option genSizeOfSpec false in
 /-- Values: naturals and pairs (lists are `cons a (cons b … (nat 0))`). -/
 inductive Val where
   | nat (n : ℕ)
@@ -23,6 +24,8 @@ def Val.maxNat : Val → ℕ
   | .nat n => n
   | .cons a b => max a.maxNat b.maxNat
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 /-- Terms: first-order, call by value, de Bruijn variables into the environment list; recursion through
 the function table; `callv` calls a function whose id is a run-time natural (defunctionalised higher order). -/
 inductive Tm where

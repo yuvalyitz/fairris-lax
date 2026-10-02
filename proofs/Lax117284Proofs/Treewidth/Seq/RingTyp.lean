@@ -173,16 +173,6 @@ theorem mem_ringTyp {a b c : List ℕ} (ha : a ≠ []) :
     obtain ⟨c'', hc'', -, hty, -⟩ := RingSum.short hc' ha
     exact ⟨c'', hc'', hty⟩
 
-/-- The typical ring sum is a function of `a` and `b`; replacing `a, b` by `τ a, τ b` changes
-the set but not its `≺`-cover (Lemmas 3.14, 3.13 with Cor. 3.11): every element of
-`ringTyp a b` dominates an element of `ringTyp (τ a) (τ b)` ... -/
-theorem ringTyp_cover_left {a b c : List ℕ} (ha : a ≠ []) (hc : c ∈ ringTyp a b) :
-    ∃ c' ∈ ringTyp (typical a) (typical b), Dom c' c := by
-  obtain ⟨c0, h0, rfl⟩ := (mem_ringTyp ha).mp hc
-  obtain ⟨c1, h1, hd⟩ := RingSum.dom_typical h0
-  exact ⟨typical c1, (mem_ringTyp (typical_ne_nil ha)).mpr ⟨c1, h1, rfl⟩,
-    dom_typical_iff.mp hd⟩
-
 /-- ... and conversely every element of `ringTyp (τ a) (τ b)` is dominated by an element of
 `ringTyp a b`. -/
 theorem ringTyp_cover_right {a b c' : List ℕ} (ha : a ≠ []) (hc : c' ∈ ringTyp (typical a) (typical b)) :

@@ -96,11 +96,6 @@ theorem chain_norm (B'' ℓ : Finset ℕ) : ∀ (c : List CNode) (K : List RT), 
         rw [← typical_append_typical_right]; simp [csz]
       rw [this, e]
 
-/-- The normal form of a raw tree with the same kid normal forms is the same. -/
-theorem norm_node_congr (S : Finset ℕ) (y : List ℕ) {K1 K2 : List CT} (h : K1.map norm = K2.map norm) :
-    norm (node S y K1) = norm (node S y K2) := by
-  rw [norm_node', norm_node', h]
-
 /-! ## survival -/
 
 theorem keep_of_mem_verts {σ : Finset ℕ} {p : CT} {v : ℕ} (hv : v ∈ verts p) (hσ : v ∉ σ) :

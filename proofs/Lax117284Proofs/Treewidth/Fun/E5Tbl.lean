@@ -57,8 +57,6 @@ theorem e5_eq : E5W.Δ = e5Δ := by
 /-- the last layer is the whole E5 table. -/
 theorem ext : E5W.Δ ⊑ e5Δ := by rw [e5_eq]; exact Ext.refl _
 
-theorem extE1 : E1.e1Δ ⊑ e5Δ := Ext.trans E5W.extE1 ext
-
 /-- ids of the E5 table: `448 ≤ f < 536` -/
 theorem e5Tbl_range {f : ℕ} {b : Tm} (h : e5Tbl f = some b) : 448 ≤ f ∧ f < 536 := by
   have h' : e5Δ f = some b := by
@@ -94,33 +92,6 @@ theorem ext_asm (T : ℕ → Option Tm) (h1 : E1.e1Tbl ⊑ T) (h5 : e5Tbl ⊑ T)
       simp [layerΔ, h128, h1 f b h]
     · simp only [h128, if_false] at h
       simp [layerΔ, h128, h]
-
-/-- the assembly `layerΔ Lib.Δ 128 (orElseΔ (orElseΔ e1Tbl e5Tbl) tbl₂)` -/
-theorem ext_orElse_left (tbl₂ : ℕ → Option Tm) :
-    e5Δ ⊑ layerΔ Lib.Δ 128 (orElseΔ (orElseΔ E1.e1Tbl e5Tbl) tbl₂) :=
-  ext_asm _ (Ext.trans (Ext.orElse_left _ _) (Ext.orElse_left _ _))
-    (Ext.trans (Ext.orElse_right (fun f b h => by
-      have := e5Tbl_ge h
-      by_contra hne
-      obtain ⟨c, hc⟩ := Option.ne_none_iff_exists'.1 hne
-      have := E1.e1Tbl_lt hc
-      omega)) (Ext.orElse_left _ _))
-
-/-- `e1Tbl` and `e5Tbl` have no id in common -/
-theorem e5_e1_disjoint {f : ℕ} {b : Tm} (h : e5Tbl f = some b) : E1.e1Tbl f = none := by
-  by_contra hne
-  obtain ⟨c, hc⟩ := Option.ne_none_iff_exists'.1 hne
-  have := E1.e1Tbl_lt hc
-  have := e5Tbl_ge h
-  omega
-
-/-- the assembly `layerΔ Lib.Δ 128 (orElseΔ tbl₁ (orElseΔ e1Tbl e5Tbl))`, `tbl₁` having no id of `e1Tbl`, `e5Tbl` -/
-theorem ext_orElse_right (tbl₁ : ℕ → Option Tm) (hd1 : ∀ f b, E1.e1Tbl f = some b → tbl₁ f = none)
-    (hd5 : ∀ f b, e5Tbl f = some b → tbl₁ f = none) :
-    e5Δ ⊑ layerΔ Lib.Δ 128 (orElseΔ tbl₁ (orElseΔ E1.e1Tbl e5Tbl)) :=
-  ext_asm _
-    (fun f b h => by simp [orElseΔ, hd1 f b h, h])
-    (fun f b h => by simp [orElseΔ, hd5 f b h, e5_e1_disjoint h, h])
 
 end E5Tbl
 end Lax117284Proofs.Treewidth.Fun

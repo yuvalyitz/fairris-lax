@@ -26,10 +26,6 @@ theorem candFn_runs (U : ℕ) (N : Finset ℕ) (c : List ℕ) (hN : N.card ≤ U
     have e2 : U + 1 ≤ (U + 1) * (U + 1) := by nlinarith
     omega
 
-omit hΔ in
-theorem length_chainCands (S N : Finset ℕ) : (chainCands S N).length = 2 ^ (S \ N).card := by
-  simp [chainCands, List.length_sublists]
-
 theorem chainCands_runs (U : ℕ) (S N : Finset ℕ) (hS : S.card ≤ U) (hN : N.card ≤ U) (hB : 10 * U + 400 < B) :
     Runs Δ' B fChainCands [toVal S, toVal N] (toVal (chainCands S N))
       (500 * ((U + 1) * (U + 1)) * (chainCands S N).length) := by

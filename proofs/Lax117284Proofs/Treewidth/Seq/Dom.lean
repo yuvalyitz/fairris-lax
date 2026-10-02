@@ -19,9 +19,6 @@ def DomEquiv (a b : List ℕ) : Prop := Dom a b ∧ Dom b a
 
 theorem Dom.refl (a : List ℕ) : Dom a a := ⟨a, a, Ext.refl a, Ext.refl a, LeSeq.refl a⟩
 
-theorem Dom.of_ext_le {a b a' b' : List ℕ} (h1 : Ext a a') (h2 : Ext b b') (h : LeSeq a' b') :
-    Dom a b := ⟨a', b', h1, h2, h⟩
-
 /-- **Lemma 3.7**: `≺` is transitive. -/
 theorem Dom.trans {a b c : List ℕ} (h1 : Dom a b) (h2 : Dom b c) : Dom a c := by
   obtain ⟨a1, b1, ha1, hb1, hab⟩ := h1
@@ -33,14 +30,8 @@ theorem Dom.trans {a b c : List ℕ} (h1 : Dom a b) (h2 : Dom b c) : Dom a c := 
   obtain ⟨y, hy, hyw⟩ := ext_lift e2 (R := fun p q => q ≤ p) hbc.flip'
   exact ⟨x, y, ha1.trans hx, hc2.trans hy, LeSeq.trans hxw (LeSeq.flip hyw)⟩
 
-theorem DomEquiv.refl (a : List ℕ) : DomEquiv a a := ⟨Dom.refl a, Dom.refl a⟩
-theorem DomEquiv.symm {a b : List ℕ} (h : DomEquiv a b) : DomEquiv b a := ⟨h.2, h.1⟩
 theorem DomEquiv.trans {a b c : List ℕ} (h1 : DomEquiv a b) (h2 : DomEquiv b c) : DomEquiv a c :=
   ⟨h1.1.trans h2.1, h2.2.trans h1.2⟩
-
-/-- **Corollary 3.8**: `≡` is an equivalence relation. -/
-theorem domEquiv_equivalence : Equivalence DomEquiv :=
-  ⟨DomEquiv.refl, DomEquiv.symm, DomEquiv.trans⟩
 
 /-- Preorder instance, for `calc`/`gcongr`-style use. -/
 instance : Trans Dom Dom Dom := ⟨Dom.trans⟩
@@ -144,9 +135,6 @@ theorem above_of_red {a b : List ℕ} (h : Red a b) : Above a b := by
     have := Above.append (Above.refl l) (Above.append (above_window hz) (Above.refl r))
     simpa using this
 
-theorem dom_equiv_of_red {a b : List ℕ} (h : Red a b) : DomEquiv b a :=
-  ⟨(below_of_red h).dom, (above_of_red h).dom⟩
-
 theorem below_of_reach {a b : List ℕ} (h : Reach a b) : Below a b := by
   induction h with
   | refl => exact Below.refl _
@@ -172,10 +160,6 @@ theorem dom_typical_iff {a b : List ℕ} : Dom a b ↔ Dom (typical a) (typical 
     exact ((domEquiv_typical a).1.trans h).trans (domEquiv_typical b).2
   · intro h
     exact ((domEquiv_typical a).2.trans h).trans (domEquiv_typical b).1
-
-theorem domEquiv_typical_iff {a b : List ℕ} : DomEquiv a b ↔ DomEquiv (typical a) (typical b) :=
-  ⟨fun h => ⟨dom_typical_iff.mp h.1, dom_typical_iff.mp h.2⟩,
-   fun h => ⟨dom_typical_iff.mpr h.1, dom_typical_iff.mpr h.2⟩⟩
 
 /-- Extensions are equivalent (Lemma 3.9 for repetitions). -/
 theorem domEquiv_of_ext {a a' : List ℕ} (h : Ext a a') : DomEquiv a' a :=

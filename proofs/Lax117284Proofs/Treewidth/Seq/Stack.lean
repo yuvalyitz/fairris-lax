@@ -93,8 +93,6 @@ theorem push_ne_nil (t : List ℕ) (y : ℕ) : push t y ≠ [] := by simp [push]
 
 theorem push_getLast (t : List ℕ) (y : ℕ) : (push t y).getLast? = some y := by simp [push]
 
-theorem push_length_pos (t : List ℕ) (y : ℕ) : 0 < (push t y).length := by simp [push]
-
 theorem nf_singleton (x : ℕ) : NF [x] := by
   rw [nf_iff]
   refine ⟨fun k hk => ?_, fun k j hw => ?_⟩

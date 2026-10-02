@@ -107,44 +107,4 @@ theorem conv_size_kid (X : Finset ℕ) (k : RT) :
   obtain ⟨-, -, -, -, -, -, c7⟩ := conv_spec X (niceOf k) a1
   rw [c7, a2]
 
-theorem edge_le {b X V : Finset ℕ} (hb : b ⊆ V) (hX : X ⊆ V) : (b \ X).card + (X \ b).card ≤ V.card := by
-  have h1 := Finset.card_sdiff_add_card_inter b X
-  have h2 := Finset.card_sdiff_add_card_inter X b
-  have h3 := Finset.card_union_add_card_inter b X
-  have h4 : (b ∪ X).card ≤ V.card := Finset.card_le_card (Finset.union_subset hb hX)
-  rw [Finset.inter_comm X b] at h2
-  omega
-
-/-- **Unconditional size bound.** -/
-theorem niceOf_size_le_uncond (t : RT) : (niceOf t).size ≤ 2 * (t.verts.card + 1) * t.size := by
-  have key : ∀ (c : ℕ) (t : RT), t.verts.card ≤ c → (niceOf t).size + (c + 1) ≤ 2 * (c + 1) * t.size := by
-    intro c t
-    induction t using RT.ind with
-    | _ X ks ih =>
-      intro hc
-      have hXc : X.card ≤ c := (Finset.card_le_card (by
-        intro u hu; rw [RT.verts_node]; exact Or.inl hu)).trans hc
-      rcases ks with _ | ⟨k, ks'⟩
-      · rw [niceOf_size_nil]; simp [RT.size_node]; nlinarith
-      · rw [RT.size_node]
-        have hk : ∀ k' ∈ k :: ks', (conv X (niceOf k')).size + 1 ≤ 2 * (c + 1) * k'.size := by
-          intro k' hk'
-          have hv : k'.verts.card ≤ c := (Finset.card_le_card (RT.sub_verts hk')).trans hc
-          have := ih k' hk' hv
-          rw [conv_size_kid]
-          have he' : (k'.rootBag \ X).card + (X \ k'.rootBag).card ≤ c :=
-            (edge_le (b := k'.rootBag) (X := X) (V := (RT.node X (k :: ks')).verts)
-              ((RT.rootBag_sub_verts k').trans (RT.sub_verts hk')) (fun u hu => by
-                rw [RT.verts_node]; exact Or.inl hu)).trans hc
-          omega
-        have hsum := niceOf_size_cons X k ks'
-        have hle : ((k :: ks').map (fun k' => (conv X (niceOf k')).size + 1)).sum ≤
-            ((k :: ks').map (fun k' => 2 * (c + 1) * k'.size)).sum :=
-          List.sum_le_sum hk
-        rw [List.sum_map_mul_left] at hle
-        rw [Nat.mul_add, Nat.mul_one]
-        nlinarith
-  have := key t.verts.card t le_rfl
-  have hpos := RT.size_pos t
-  nlinarith
 end Lax117284Proofs.Treewidth.Chars

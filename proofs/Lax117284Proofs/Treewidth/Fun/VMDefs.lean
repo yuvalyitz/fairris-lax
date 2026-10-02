@@ -22,6 +22,8 @@ the top value, discarding the callee's frame down to the saved height.
 
 namespace Lax117284Proofs.Treewidth.Fun.VM
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 /-- The instruction set (17 instructions; each carries at most one natural operand). -/
 inductive Instr where
   | lit (n : ℕ) | var (i : ℕ)
@@ -31,6 +33,8 @@ inductive Instr where
   | call (n : ℕ) | ret | halt
   deriving DecidableEq
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 /-- A machine program: code array (default `halt` outside), function-entry table, code length, tag bound `B`. -/
 structure Prog where
   code : ℕ → Instr
@@ -38,6 +42,8 @@ structure Prog where
   len : ℕ
   B : ℕ
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 /-- Machine state: pc, value stack (top first), return stack (top first), heap (bottom first, append-only). -/
 structure St where
   pc : ℕ
@@ -169,8 +175,6 @@ def HExt (H H' : List (ℕ × ℕ)) : Prop := ∃ t, H' = H ++ t
 theorem HExt.refl (H : List (ℕ × ℕ)) : HExt H H := ⟨[], by simp⟩
 theorem HExt.trans {H₁ H₂ H₃ : List (ℕ × ℕ)} (h₁ : HExt H₁ H₂) (h₂ : HExt H₂ H₃) : HExt H₁ H₃ := by
   obtain ⟨a, rfl⟩ := h₁; obtain ⟨b, rfl⟩ := h₂; exact ⟨a ++ b, by simp⟩
-theorem HExt.length_le {H H' : List (ℕ × ℕ)} (h : HExt H H') : H.length ≤ H'.length := by
-  obtain ⟨t, rfl⟩ := h; simp
 theorem HExt.getElem? {H H' : List (ℕ × ℕ)} (h : HExt H H') {p : ℕ} {c : ℕ × ℕ} (hp : H[p]? = some c) :
     H'[p]? = some c := by
   obtain ⟨t, rfl⟩ := h
@@ -225,25 +229,5 @@ theorem Rep.cons_inv {B : ℕ} {H : List (ℕ × ℕ)} {w : ℕ} {u v : Val} (h 
     ∃ p a b, w = B + p ∧ H[p]? = some (a, b) ∧ Rep B H a u ∧ Rep B H b v := by
   cases h with
   | cons hp h₁ h₂ => exact ⟨_, _, _, rfl, hp, h₁, h₂⟩
-
-/-- A word represents at most one value. -/
-theorem Rep.det {B : ℕ} {H : List (ℕ × ℕ)} {w : ℕ} {v v' : Val} (h : Rep B H w v) (h' : Rep B H w v') :
-    v = v' := by
-  induction h generalizing v' with
-  | nat hn =>
-    cases h' with
-    | nat _ => rfl
-    | cons _ _ _ => omega
-  | @cons p a b u v hp _ _ ih₁ ih₂ =>
-    cases v' with
-    | nat n => have := h'.nat_inv; omega
-    | cons u' v'' =>
-      obtain ⟨p', a', b', hw, hp', h₁', h₂'⟩ := h'.cons_inv
-      have : p' = p := by omega
-      subst this
-      have hc := hp.symm.trans hp'
-      simp only [Option.some.injEq, Prod.mk.injEq] at hc
-      obtain ⟨rfl, rfl⟩ := hc
-      rw [ih₁ h₁', ih₂ h₂']
 
 end Lax117284Proofs.Treewidth.Fun.VM

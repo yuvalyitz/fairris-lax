@@ -18,7 +18,7 @@ a simpler linear-time FPT algorithm"*, arXiv:1912.09144 (2020), §3; the stateme
 2.10 of H. L. Bodlaender, *"A linear-time algorithm for finding tree-decompositions of small
 treewidth"*, SIAM Journal on Computing 25 (1996) 1305–1317, where it is used as a black box.
 
-This is the *second stage* of Bodlaender's algorithm, `Bodlaender.niceDecomposition_computable`
+This is the *second stage* of Bodlaender's algorithm, `BodlaenderGeneral.niceDecomposition_computable`
 being the first: the latter builds the decomposition of width at most $2k+1$ this one
 consumes.
 

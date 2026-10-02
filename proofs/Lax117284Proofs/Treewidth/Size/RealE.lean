@@ -79,12 +79,4 @@ theorem extract_size_aux {adj : Adj} {k : ℕ} {W : Finset ℕ} (hs : adj.SymmOn
       nlinarith
     · simp [he] at hf
 
-/-- **`extract_size_le`** (WP P1 (c)). -/
-theorem extract_size_le' {adj : Adj} {k : ℕ} {W : Finset ℕ} (hs : adj.SymmOn W) {nt : NT} (hg : nt.Good adj)
-    (hW : nt.under ⊆ W) (hw : nt.toRT.Width (k + 1)) : ∀ c ∈ tables adj k nt, ∀ t, extract adj k nt c = some t →
-      t.size ≤ 4 * (k + 3) * nt.size := by
-  intro c hc t ht
-  have := extract_size_aux hs hg hW hw c hc t ht
-  refine le_trans this (Nat.mul_le_mul_right _ (by omega))
-
 end Lax117284Proofs.Treewidth.Chars

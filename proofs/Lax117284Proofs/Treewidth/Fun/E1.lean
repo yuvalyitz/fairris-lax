@@ -75,48 +75,7 @@ theorem extB : E1B.Δ ⊑ e1Δ := Ext.trans E1D.extB ext
 theorem extC : E1C.Δ ⊑ e1Δ := Ext.trans E1D.extC ext
 theorem extLib : Lib.Δ ⊑ e1Δ := Lib.ext_extend e1Tbl
 
-/-- the ids of the E1 table are `≥ 128` -/
-theorem e1Tbl_ge {f : ℕ} {b : Tm} (h : e1Tbl f = some b) : 128 ≤ f := by
-  by_contra hf
-  have hf' : f < 128 := by omega
-  simp only [e1Tbl] at h
-  split_ifs at h <;> first
-    | (exfalso; omega)
-    | (unfold E1A.tbl at h; split at h <;> first | (exfalso; omega) | simp at h)
-
-/-- the assembly with another owner's table (disjoint ids, both `≥ 128`): `e1Δ` is contained in it. -/
-theorem ext_orElse_left (tbl₂ : ℕ → Option Tm) : e1Δ ⊑ layerΔ Lib.Δ 128 (orElseΔ e1Tbl tbl₂) :=
-  Ext.layer_mono (Ext.orElse_left e1Tbl tbl₂)
-
-/-- ... and in the other order (if `tbl₁` has no id in common with `e1Tbl`). -/
-theorem ext_orElse_right (tbl₁ : ℕ → Option Tm) (hd : ∀ f b, e1Tbl f = some b → tbl₁ f = none) :
-    e1Δ ⊑ layerΔ Lib.Δ 128 (orElseΔ tbl₁ e1Tbl) :=
-  Ext.layer_mono (Ext.orElse_right hd)
-
 /-! ### the statements for the assembled table `e1Δ` (use `Embeds.ext` to pass to a larger table) -/
-
-open Lax117284Proofs.Treewidth.Seq Lax117284Proofs.Treewidth.Chars in
-theorem E_typical : Embeds e1Δ E1A.fTypical (fun _ : List ℕ => True) typical (osCost 3 typical) :=
-  E1A.embeds_typical_os extA
-
-open Lax117284Proofs.Treewidth.Seq in
-theorem E_domB : Embeds e1Δ E1A.fDomBP (fun _ : List ℕ × List ℕ => True) (fun p => domB p.1 p.2)
-    (fun p => 60 * 3 ^ (p.1.length + p.2.length) + 8) :=
-  E1A.embeds_domB extA
-
-open Lax117284Proofs.Treewidth.Chars in
-theorem E_witnesses : Embeds e1Δ E1B.fWitnesses (fun _ : List ℕ => True) witnesses (osCost 3 witnesses) :=
-  E1B.embeds_witnesses_os extB
-
-open Lax117284Proofs.Treewidth.Chars in
-theorem E_ringTypList : Embeds e1Δ E1C.fRingTypListP (fun _ : List ℕ × List ℕ => True)
-    (fun p => CT.ringTypList p.1 p.2) E1C.ringCost :=
-  E1C.embeds_ringTypList extC
-
-open Lax117284Proofs.Treewidth.Chars in
-theorem E_findPath : Embeds e1Δ E1D.fFindPathP (fun _ : List ℕ × List ℕ × ℕ × List ℕ => True)
-    (fun p => findPath p.1 p.2.1 p.2.2.1 p.2.2.2) E1D.findPathCost :=
-  E1D.embeds_findPath ext
 
 end E1
 end Lax117284Proofs.Treewidth.Fun

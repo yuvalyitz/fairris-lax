@@ -174,11 +174,6 @@ theorem IsSplit.dom_append {a a₁ a₂ : List ℕ} (h : IsSplit a a₁ a₂) : 
   · exact Dom.refl _
   · exact (domEquiv_of_ext (ext_dup p q x)).2
 
-theorem IsSplit.append_dom {a a₁ a₂ : List ℕ} (h : IsSplit a a₁ a₂) : Dom (a₁ ++ a₂) a := by
-  rcases h with ⟨-, -, rfl⟩ | ⟨p, x, q, rfl, rfl, rfl⟩
-  · exact Dom.refl _
-  · exact (domEquiv_of_ext (ext_dup p q x)).1
-
 theorem IsSplit.ne_nil_left {a a₁ a₂ : List ℕ} (h : IsSplit a a₁ a₂) : a₁ ≠ [] := by
   rcases h with ⟨h1, -, -⟩ | ⟨p, x, q, -, rfl, -⟩
   · exact h1
@@ -198,27 +193,5 @@ theorem split_up_of_dom {y a a₁ a₂ : List ℕ} (h : Dom y a) (hs : IsSplit a
   obtain ⟨d₁, d₂, hd, h1, h2⟩ := dom_append_split (h.trans hs.dom_append) hs.ne_nil_left
     hs.ne_nil_right
   exact ⟨d₁, d₂, mem_splits_of_isSplit hd, h1, h2⟩
-
-/-- **Split transport, downwards** (general form, no typicality needed).  If `a ≺ y` and `(d₁, d₂)` is
-a split of `y`, then `a` has an exact split with parts `≺ d₁`, `≺ d₂`. -/
-theorem split_down_of_dom {y a d₁ d₂ : List ℕ} (h : Dom a y) (hs : (d₁, d₂) ∈ splits y) :
-    ∃ a₁ a₂, IsSplit a a₁ a₂ ∧ Dom a₁ d₁ ∧ Dom a₂ d₂ := by
-  have hs' := isSplit_of_mem_splits hs
-  exact dom_append_split (h.trans hs'.dom_append) hs'.ne_nil_left hs'.ne_nil_right
-
-/-- **Split transport, upwards** (the blueprint's `split_transport_up`; `typical y = y` is not
-needed, `split_up_of_dom` is the general form). -/
-theorem split_transport_up {y a a₁ a₂ : List ℕ} (_hy : typical y = y) (h : Dom y a)
-    (hs : IsSplit a a₁ a₂) :
-    ∃ d₁ d₂, (d₁, d₂) ∈ splits y ∧ Dom d₁ a₁ ∧ Dom d₂ a₂ :=
-  split_up_of_dom h hs
-
-/-- **Split transport, downwards** (the blueprint's `split_transport_down`; `typical y = y` is not
-needed, `split_down_of_dom` is the general form). -/
-theorem split_transport_down {y a d₁ d₂ : List ℕ} (_hy : typical y = y) (h : Dom (typical a) y)
-    (hs : (d₁, d₂) ∈ splits y) :
-    ∃ a₁ a₂, IsSplit a a₁ a₂ ∧ Dom (typical a₁) d₁ ∧ Dom (typical a₂) d₂ := by
-  obtain ⟨a₁, a₂, hsp, h1, h2⟩ := split_down_of_dom ((domEquiv_typical a).2.trans h) hs
-  exact ⟨a₁, a₂, hsp, (domEquiv_typical a₁).1.trans h1, (domEquiv_typical a₂).1.trans h2⟩
 
 end Lax117284Proofs.Treewidth.Seq

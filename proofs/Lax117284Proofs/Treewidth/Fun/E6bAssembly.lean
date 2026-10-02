@@ -58,29 +58,5 @@ theorem Ext6.of_tbl {T : ℕ → Option Tm} (ha : E3.asmTbl ⊑ T) (h4 : E4.e4Tb
     Ext.trans E5Tbl.ext (E5Tbl.ext_asm T (Ext.trans (Ext.orElse_left E1.e1Tbl _ : E1.e1Tbl ⊑ E3.asmTbl) ha) h5),
     Ext.layer_mono h6⟩
 
-theorem ext6_asm : Ext6 asm6Δ :=
-  Ext6.of_tbl
-    (Ext.trans (Ext.orElse_left _ _) (Ext.trans (Ext.orElse_left _ _) (Ext.orElse_left _ _)))
-    (Ext.trans (Ext.orElse_right E4.e4Tbl_disj_asm) (Ext.trans (Ext.orElse_left _ _) (Ext.orElse_left _ _)))
-    (Ext.trans (Ext.orElse_right e5Tbl_disj_asm4) (Ext.orElse_left _ _))
-    (Ext.orElse_right e6bTbl_disj)
-
-/-- **`E_extract` in the assembled table.** -/
-theorem E_extract_asm :
-    Embeds asm6Δ fExtractUn
-      (fun p : List ℕ × ℕ × NT × CT => ExtOk p.1 p.2.1 p.2.2.1 ∧ mx p.2.2.1 ≤ p.1.length ∧
-        p.2.2.2 ∈ tables (E4.adjOfWord p.1) p.2.1 p.2.2.1)
-      (fun p => extract (E4.adjOfWord p.1) p.2.1 p.2.2.1 p.2.2.2)
-      (fun p => (p.1.length + sz p.2.2.1 + 1) ^ 62 * 2 ^ (103680 * (p.2.1 + 2) ^ 3) + 20) :=
-  E_extract ext6_asm
-
-/-- the general form (labels not bounded by the word length) -/
-theorem embeds_extract_asm :
-    Embeds asm6Δ fExtractUn
-      (fun p : List ℕ × ℕ × NT × CT => ExtOk p.1 p.2.1 p.2.2.1 ∧ p.2.2.2 ∈ tables (E4.adjOfWord p.1) p.2.1 p.2.2.1)
-      (fun p => extract (E4.adjOfWord p.1) p.2.1 p.2.2.1 p.2.2.2)
-      (fun p => p.2.2.1.size ^ 2 * Wx (p.1.length + sz p.2.2.1 + mx p.2.2.1) p.2.1 + 20) :=
-  embeds_extract ext6_asm
-
 end E6b
 end Lax117284Proofs.Treewidth.Fun

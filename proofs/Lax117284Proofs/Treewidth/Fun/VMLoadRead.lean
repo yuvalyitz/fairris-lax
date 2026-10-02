@@ -36,16 +36,6 @@ theorem wordMax_lt {l : List ℕ} {B : ℕ} (hB : 0 < B) (h : ∀ v ∈ l, v < B
     simp only [wordMax, List.foldr_cons] at *
     omega
 
-theorem wordMax_take_le (x : List ℕ) (i : ℕ) : wordMax (x.take i) ≤ wordMax x := by
-  have : x = x.take i ++ x.drop i := (List.take_append_drop i x).symm
-  conv_rhs => rw [this]
-  clear this
-  generalize x.take i = a
-  generalize x.drop i = b
-  induction a with
-  | nil => simp [wordMax]
-  | cons c a ih => simp only [List.cons_append, wordMax, List.foldr_cons] at *; omega
-
 theorem wordMax_getD_le (x : List ℕ) (j : ℕ) : x.getD j 0 ≤ wordMax x := by
   induction x generalizing j with
   | nil => simp

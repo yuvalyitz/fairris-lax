@@ -21,11 +21,6 @@ abbrev IEnv : Type := Lax808846Proofs.Imp.Env
 def mkProgF (Δ : ℕ → Option Tm) (N main k B : ℕ) : Prog :=
   { mkProg Δ N main k B with ft := fun f => if f < N then offset Δ f else 0 }
 
-theorem mkProgF_code (Δ : ℕ → Option Tm) (N main k B : ℕ) :
-    (mkProgF Δ N main k B).code = (mkProg Δ N main k B).code := rfl
-theorem mkProgF_len (Δ : ℕ → Option Tm) (N main k B : ℕ) :
-    (mkProgF Δ N main k B).len = (mkProg Δ N main k B).len := rfl
-theorem mkProgF_B (Δ : ℕ → Option Tm) (N main k B : ℕ) : (mkProgF Δ N main k B).B = B := rfl
 theorem mkProgF_ft (Δ : ℕ → Option Tm) (N main k B f : ℕ) :
     (mkProgF Δ N main k B).ft f = if f < N then offset Δ f else 0 := rfl
 

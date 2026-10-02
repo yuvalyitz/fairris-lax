@@ -126,8 +126,6 @@ theorem Δ_jnOuter : e6bΔ fJnOuter = some jnOuterTm := by
   simp [e6bΔ, layerΔ_ge e6bTbl (show 128 ≤ fJnOuter by decide)]; rfl
 theorem Δ_jnInner : e6bΔ fJnInner = some jnInnerTm := by
   simp [e6bΔ, layerΔ_ge e6bTbl (show 128 ≤ fJnInner by decide)]; rfl
-theorem Δ_extractUn : e6bΔ fExtractUn = some extractUnTm := by
-  simp [e6bΔ, layerΔ_ge e6bTbl (show 128 ≤ fExtractUn by decide)]; rfl
 theorem Δ_extractFirst : e6bΔ fExtractFirst = some extractFirstTm := by
   simp [e6bΔ, layerΔ_ge e6bTbl (show 128 ≤ fExtractFirst by decide)]; rfl
 

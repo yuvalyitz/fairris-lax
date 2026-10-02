@@ -78,9 +78,6 @@ theorem ext1 : Lib1.Δ ⊑ Δ := Ext.trans Lib3.ext1 ext3
 
 theorem Δ_find : Δ fFind = some findTm := by simp [Δ, layerΔ_ge tbl (show 64 ≤ fFind by decide)]; rfl
 theorem Δ_findSome : Δ fFindSome = some findSomeTm := by simp [Δ, layerΔ_ge tbl (show 64 ≤ fFindSome by decide)]; rfl
-theorem Δ_filterMap : Δ fFilterMap = some filterMapTm := by simp [Δ, layerΔ_ge tbl (show 64 ≤ fFilterMap by decide)]; rfl
-theorem Δ_sum : Δ fSum = some sumTm := by simp [Δ, layerΔ_ge tbl (show 64 ≤ fSum by decide)]; rfl
-theorem Δ_head : Δ fHead = some headTm := by simp [Δ, layerΔ_ge tbl (show 64 ≤ fHead by decide)]; rfl
 theorem Δ_toFinset : Δ fToFinset = some toFinsetTm := by simp [Δ, layerΔ_ge tbl (show 64 ≤ fToFinset by decide)]; rfl
 theorem Δ_sublists : Δ fSublists = some sublistsTm := by simp [Δ, layerΔ_ge tbl (show 64 ≤ fSublists by decide)]; rfl
 theorem Δ_pairUp : Δ fPairUp = some pairUpTm := by simp [Δ, layerΔ_ge tbl (show 64 ≤ fPairUp by decide)]; rfl
@@ -113,89 +110,6 @@ theorem find_runs (fid : ℕ) (ctx : Val) (p : α → Bool) (cf : α → ℕ) (l
       ev_start
       · ev_run
       · simp; omega
-
-theorem findSome_runs (fid : ℕ) (ctx : Val) (f : α → Option β) (cf : α → ℕ) (l : List α)
-    (hf : ∀ a ∈ l, Runs Δ' B fid [ctx, toVal a] (toVal (f a)) (cf a)) (hB : 1 < B) :
-    Runs Δ' B fFindSome [.nat fid, ctx, toVal l] (toVal (l.findSome? f)) (24 * l.length + 6 + (l.map cf).sum) := by
-  induction l with
-  | nil =>
-    refine Runs.mk (hΔ _ _ Δ_findSome) ?_
-    ev_start
-    · ev_run
-    · simp
-  | cons a l ih =>
-    have ih := ih (fun x hx => hf x (List.mem_cons_of_mem _ hx))
-    have h1 := hf a (List.mem_cons_self ..)
-    refine Runs.mk (hΔ _ _ Δ_findSome) ?_
-    cases hp : f a with
-    | none =>
-      simp only [hp] at h1
-      simp only [List.findSome?_cons, hp]
-      ev_start
-      · ev_run
-      · simp; omega
-    | some b =>
-      simp only [hp] at h1
-      simp only [List.findSome?_cons, hp]
-      ev_start
-      · ev_run
-      · simp; omega
-
-theorem filterMap_runs (fid : ℕ) (ctx : Val) (f : α → Option β) (cf : α → ℕ) (l : List α)
-    (hf : ∀ a ∈ l, Runs Δ' B fid [ctx, toVal a] (toVal (f a)) (cf a)) :
-    Runs Δ' B fFilterMap [.nat fid, ctx, toVal l] (toVal (l.filterMap f)) (30 * l.length + 6 + (l.map cf).sum) := by
-  induction l with
-  | nil =>
-    refine Runs.mk (hΔ _ _ Δ_filterMap) ?_
-    ev_start
-    · ev_run
-    · simp
-  | cons a l ih =>
-    have ih := ih (fun x hx => hf x (List.mem_cons_of_mem _ hx))
-    have h1 := hf a (List.mem_cons_self ..)
-    refine Runs.mk (hΔ _ _ Δ_filterMap) ?_
-    cases hp : f a with
-    | none =>
-      simp only [hp] at h1
-      simp only [List.filterMap_cons, hp]
-      ev_start
-      · ev_run
-      · simp; omega
-    | some b =>
-      simp only [hp] at h1
-      simp only [List.filterMap_cons, hp]
-      ev_start
-      · ev_run
-      · simp; omega
-
-theorem sum_runs (l : List ℕ) (hB : l.sum + 2 < B) :
-    Runs Δ' B fSum [toVal l] (toVal l.sum) (14 * l.length + 6) := by
-  induction l with
-  | nil =>
-    refine Runs.mk (hΔ _ _ Δ_sum) ?_
-    ev_start
-    · ev_run
-    · simp
-  | cons a l ih =>
-    simp only [List.sum_cons] at hB
-    have ih := ih (by omega)
-    refine Runs.mk (hΔ _ _ Δ_sum) ?_
-    ev_start
-    · ev_run
-    · simp; omega
-
-theorem head_runs (l : List α) (hB : 1 < B) :
-    Runs Δ' B fHead [toVal l] (toVal l.head?) 12 := by
-  refine Runs.mk (hΔ _ _ Δ_head) ?_
-  cases l with
-  | nil =>
-    ev_start
-    · ev_run
-    · simp
-  | cons a l =>
-    ev_start
-    · ev_run
-    · simp
 
 theorem toFinset_runs (l : List ℕ) :
     Runs Δ' B fToFinset [toVal l] (toVal l.toFinset) (60 * (l.length + 1) ^ 2) := by

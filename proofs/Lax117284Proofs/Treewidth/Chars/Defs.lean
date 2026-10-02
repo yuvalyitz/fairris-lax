@@ -201,6 +201,7 @@ end
 
 def plus1 (y : List ℕ) : List ℕ := y.map (· + 1)
 
+set_option genSizeOfSpec false in
 /-- A cut of a typical sequence: first type at `f` (the entry `y_f` is duplicated), second type after `f`. -/
 inductive Cut where
   | t1 (f : ℕ)
@@ -211,12 +212,16 @@ def Cut.isT1 : Cut → Bool
   | .t1 _ => true
   | .t2 _ => false
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 /-- How the new vertex's region `W` sits in a run whose first tree node is in `W`: it ends inside the run, or it
 covers the whole run and continues (or not) into each kid run. -/
 inductive WPlan where
   | endAt (c : Cut)
   | whole (kids : List (Option WPlan))
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 /-- An option for the introduction of a vertex: a new leaf branch hanging at a tree node of a run (case (b)), or a
 region `W` meeting the core with its topmost tree node inside a run (case (a)). -/
 inductive Plan where

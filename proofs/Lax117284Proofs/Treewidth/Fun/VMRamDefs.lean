@@ -51,12 +51,6 @@ theorem Pfx.left {l m a : List ℕ} (h : Pfx (l ++ m) a) : Pfx l a := by
   have := h j (by simp; omega)
   rwa [List.getElem?_append_left hj] at this
 
-theorem Pfx.take {l a : List ℕ} (h : Pfx l a) (n : ℕ) : Pfx (l.take n) a := by
-  intro j hj
-  simp only [List.length_take] at hj
-  rw [List.getElem?_take_of_lt (by omega)]
-  exact h j (by omega)
-
 theorem Pfx.get {l a : List ℕ} (h : Pfx l a) {j x : ℕ} (hj : l[j]? = some x) : a[j]? = some x := by
   have hlt : j < l.length := (List.getElem?_eq_some_iff.mp hj).1
   rw [h j hlt]; exact hj

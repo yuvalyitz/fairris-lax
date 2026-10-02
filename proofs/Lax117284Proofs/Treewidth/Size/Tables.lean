@@ -17,10 +17,6 @@ namespace Lax117284Proofs.Treewidth.Chars
 
 open Lax117284Proofs.Treewidth.Seq Lax117284Proofs.Treewidth.Trees CT
 
-theorem pow_mul_pow_le {a b c d : ℕ} (h : a + b + c ≤ d) : 2 ^ a * (2 ^ b * 2 ^ c) ≤ 2 ^ d := by
-  rw [← pow_add, ← pow_add]
-  exact Nat.pow_le_pow_right (by norm_num) (by omega)
-
 theorem pow_mul_pow_le' {a b d : ℕ} (h : a + b ≤ d) : 2 ^ a * 2 ^ b ≤ 2 ^ d := by
   rw [← pow_add]
   exact Nat.pow_le_pow_right (by norm_num) h
@@ -76,15 +72,6 @@ theorem joinC_length_le_k {k : ℕ} {B : Finset ℕ} {a b : CT} (hB : B.card ≤
   calc 16 * (B.card + (k + 1) + 2) ^ 3 ≤ 16 * (3 * (k + 2)) ^ 3 := Nat.mul_le_mul_left _ h2
     _ = 432 * (k + 2) ^ 3 := by ring
 
-/-- The forget step before `dedup`. -/
-theorem forgetTable_pre_le {adj : Adj} {k x : ℕ} {c : NT} (hg : c.Good adj) (hw : c.toRT.Width (k + 1)) :
-    ((tables adj k c).map (CT.forgetC x)).length ≤ 2 ^ (96 * (k + 2) ^ 3) := by
-  rw [List.length_map]; exact tables_length_le_pow hg hw
-
-theorem forgetTable_le {adj : Adj} {k x : ℕ} {c : NT} (hg : c.Good adj) (hw : c.toRT.Width (k + 1)) :
-    (forgetTable x (tables adj k c)).length ≤ 2 ^ (96 * (k + 2) ^ 3) :=
-  le_trans ((List.dedup_sublist _).length_le) (forgetTable_pre_le hg hw)
-
 /-- The introduce step before `dedup`. -/
 theorem introTable_pre_le {adj : Adj} {k v : ℕ} {c : NT} (hg : c.Good adj) (hw : c.toRT.Width (k + 1))
     (N : Finset ℕ) :
@@ -96,38 +83,5 @@ theorem introTable_pre_le {adj : Adj} {k v : ℕ} {c : NT} (hg : c.Good adj) (hw
     exact introC_length_le hB (tables_wf hg t ht)
   · refine le_trans (Nat.mul_le_mul_right _ h1) ?_
     exact pow_mul_pow_le' (by omega)
-
-theorem introTable_le {adj : Adj} {k v : ℕ} {c : NT} (hg : c.Good adj) (hw : c.toRT.Width (k + 1))
-    (N : Finset ℕ) : (introTable (k + 1) v N (tables adj k c)).length ≤ 2 ^ (1824 * (k + 2) ^ 3) :=
-  le_trans ((List.dedup_sublist _).length_le) (introTable_pre_le hg hw N)
-
-/-- The join step before `dedup`. -/
-theorem joinTable_pre_le {adj : Adj} {k : ℕ} {a b : NT} (hg : (NT.join a b).Good adj)
-    (hw : (NT.join a b).toRT.Width (k + 1)) :
-    ((tables adj k a).flatMap fun ca => (tables adj k b).flatMap fun cb => CT.joinC (k + 1) ca cb).length ≤
-      2 ^ (624 * (k + 2) ^ 3) := by
-  have hg' : a.bag = b.bag ∧ a.under ∩ b.under ⊆ a.bag ∧ NT.Good adj a ∧ NT.Good adj b ∧
-      (∀ u ∈ a.under, ∀ v ∈ b.under, (adj u v = true ∨ adj v u = true) → u ∈ a.bag ∨ v ∈ a.bag) := hg
-  obtain ⟨hab, -, hga, hgb, -⟩ := hg'
-  have hwa := NT.width_join_left hw
-  have hwb := NT.width_join_right hw
-  have hB : a.bag.card ≤ k + 2 := bag_card_le_of_width hwa
-  have ha := tables_length_le_pow hga hwa
-  have hb := tables_length_le_pow hgb hwb
-  refine le_trans (length_flatMap_le (n := 2 ^ (96 * (k + 2) ^ 3) * 2 ^ (432 * (k + 2) ^ 3)) ?_) ?_
-  · intro ca hca
-    refine le_trans (length_flatMap_le (n := 2 ^ (432 * (k + 2) ^ 3)) ?_) (Nat.mul_le_mul_right _ hb)
-    intro cb hcb
-    have h1 := tables_wf hga ca hca
-    have h2 := tables_wf hgb cb hcb
-    rw [← hab] at h2
-    exact joinC_length_le_k hB h1 h2
-  · refine le_trans (Nat.mul_le_mul_right _ ha) ?_
-    exact pow_mul_pow_le (by omega)
-
-theorem joinTable_le {adj : Adj} {k : ℕ} {a b : NT} (hg : (NT.join a b).Good adj)
-    (hw : (NT.join a b).toRT.Width (k + 1)) :
-    (joinTable (k + 1) (tables adj k a) (tables adj k b)).length ≤ 2 ^ (624 * (k + 2) ^ 3) :=
-  le_trans ((List.dedup_sublist _).length_le) (joinTable_pre_le hg hw)
 
 end Lax117284Proofs.Treewidth.Chars

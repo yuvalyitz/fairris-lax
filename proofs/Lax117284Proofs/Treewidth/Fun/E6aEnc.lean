@@ -141,41 +141,9 @@ theorem encode_runs (nt : NT) (hB : 8 * nt.size + 1000 < B) :
 
 end recs
 
-theorem sz_ge_size (nt : NT) : nt.size ≤ sz nt := by
-  have := size_le_sz_nt nt; have := NT.size_pos_aux nt; omega
-
 section embeds
 variable {Δ' : ℕ → Option Tm} (hΔ : e6aΔ ⊑ Δ')
 include hΔ
-
-/-- **`NT.encode`** (`fEncode`, argument `nt`) -/
-theorem embeds_encode : Embeds Δ' fEncode (fun _ : NT => True) NT.encode
-    (fun nt => 300 * (sz nt + sz nt.encode + 1) ^ 2) := by
-  intro B nt _ hfit
-  have hc : 300 * (sz nt + sz nt.encode + 1) ^ 2 + 3 < B := hfit.cost_lt
-  have hs := sz_ge_size nt
-  have hp := NT.size_pos_aux nt
-  have h1 : nt.size ^ 2 ≤ (sz nt + sz nt.encode + 1) ^ 2 := Nat.pow_le_pow_left (by omega) 2
-  have h2 : nt.size + 3 ≤ (sz nt + sz nt.encode + 1) ^ 2 := by nlinarith [sz_pos nt.encode]
-  have h3 : 8 * nt.size + 1000 < B := by nlinarith
-  exact (encode_runs (Δ' := Δ') hΔ B nt h3).mono (by show _ ≤ 300 * (sz nt + sz nt.encode + 1) ^ 2; omega)
-
-/-- **`NT.addEverywhere`** (`fAddEvP`, argument `(v, nt)`) -/
-theorem embeds_addEverywhere : Embeds Δ' fAddEvP (fun _ : ℕ × NT => True) (fun p => NT.addEverywhere p.1 p.2)
-    (fun p => 100 * (sz p + sz (NT.addEverywhere p.1 p.2) + 1)) := by
-  intro B p _ hfit
-  obtain ⟨v, nt⟩ := p
-  have hc : 100 * (sz (v, nt) + sz (NT.addEverywhere v nt) + 1) + 3 < B := hfit.cost_lt
-  have hs := sz_ge_size nt
-  have hp := NT.size_pos_aux nt
-  have hsz : sz (v, nt) = sz nt + 2 := by simp [sz_pair]; omega
-  have h1 : 4 < B := by omega
-  have h2 := addEv_runs (Δ' := Δ') hΔ B v h1 nt
-  refine Runs.mk (hΔ _ _ Δ_addEvP) ?_
-  ev_start
-  · ev_run
-  · show _ ≤ 100 * (sz (v, nt) + sz (NT.addEverywhere v nt) + 1)
-    rw [hsz]; omega
 
 end embeds
 

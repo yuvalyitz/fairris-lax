@@ -185,16 +185,6 @@ theorem chainOK_chain (b : Finset ℕ) (s : Bool) : ∀ (l : List (Finset ℕ)),
       obtain ⟨h4, h5, h6⟩ := h3
       exact List.IsChain.cons_cons (h5 rfl) (ih X true ⟨h4, h5, h6⟩)
 
-theorem chainOK_getLast (b : Finset ℕ) (s : Bool) : ∀ (l : List (Finset ℕ)), ChainOK b s l → l.getLastD b ⊆ b := by
-  intro l
-  induction l generalizing b s with
-  | nil => intro _; simp
-  | cons X r ih =>
-    intro h
-    obtain ⟨h1, h2, h3⟩ := h
-    rw [List.getLastD_cons]
-    exact (ih X true h3).trans h1
-
 /-- **`allChains` enumerates exactly the chains described in its docstring.** -/
 theorem mem_allChains {S N : Finset ℕ} {chain : List (Finset ℕ)} {M : Finset ℕ} :
     (chain, M) ∈ allChains S N ↔

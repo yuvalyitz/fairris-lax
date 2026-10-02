@@ -93,52 +93,6 @@ section proofs
 variable {Δ' : ℕ → Option Tm} (hΔ : E3C.Δ ⊑ Δ')
 include hΔ
 
-/-- `introC` on the packed argument -/
-theorem introCUn_runs (B kmax v : ℕ) (N : Finset ℕ) (t : CT) (Bs : Finset ℕ) (hw : t.Wf Bs kmax)
-    (U : ℕ) (hU : sz t ≤ U) (hM : mx t ≤ U) (hv : v ≤ U) (hN : N.card ≤ U) (hk : kmax ≤ U)
-    (hnorm : ∀ (c : CT) (s : ℕ), sz c ≤ s → 14000 * (s + 1) ^ 5 < B →
-      Runs Δ' B E3C.fNormId [toVal c] (toVal (norm c)) (6200 * (s + 1) ^ 5))
-    (hnsz : ∀ c : CT, sz (norm c) ≤ sz c)
-    (hB : E3C.introCCost (U + 1) (Bs.card + kmax + 2) + 3 < B) :
-    Runs Δ' B E3C.fIntroCUn [toVal (kmax, v, N, t)] (toVal (introC kmax v N t))
-      (E3C.introCCost (U + 1) (Bs.card + kmax + 2) + 20) := by
-  have hmain := E3C.introC_runs_wf hΔ B kmax v N t Bs hw U hU hM hv hN hk hnorm hnsz (by omega)
-  refine Runs.mk (hΔ _ _ E3C.Δ_introCUn) ?_
-  simp only [toVal_pair]
-  ev_start
-  · ev_run
-  · omega
-
-/-- **`E_introC`** (the shape of `proofs-todo/Machine.lean`): `CT.introC` on the packed argument is computed by the
-function `fIntroCUn` within the closed-form cost, on every input with a well-formed `t`. -/
-theorem introC_embeds
-    (hnorm : ∀ (B : ℕ) (c : CT) (s : ℕ), sz c ≤ s → 14000 * (s + 1) ^ 5 < B →
-      Runs Δ' B E3C.fNormId [toVal c] (toVal (norm c)) (6200 * (s + 1) ^ 5))
-    (hnsz : ∀ c : CT, sz (norm c) ≤ sz c) :
-    Embeds Δ' E3C.fIntroCUn (fun p : ℕ × ℕ × Finset ℕ × CT => ∃ Bs : Finset ℕ, p.2.2.2.Wf Bs p.1)
-      (fun p => introC p.1 p.2.1 p.2.2.1 p.2.2.2)
-      (fun p => E3C.introCCost (sz p + mx p + 1) (p.2.2.2.verts.card + p.1 + 2) + 20) := by
-  rintro B ⟨kmax, v, N, t⟩ ⟨Bs, hw⟩ hfit
-  have hcost := hfit.cost_lt
-  have hv : Bs = t.verts := hw.verts_eq.symm
-  have h1 : sz (kmax, v, N, t) = 2 + (sz v + (sz N + sz t + 1) + 1) := by
-    simp only [sz_pair, sz_nat]; omega
-  have h2 : mx (kmax, v, N, t) = max kmax (max v (max (mx N) (mx t))) := by
-    simp only [mx_pair, mx_nat]
-  have h3 := sz_finset N
-  have h4 := sz_pos t
-  have hU : sz t ≤ sz (kmax, v, N, t) + mx (kmax, v, N, t) := by simp only [sz_pair, sz_nat] at h1 ⊢; omega
-  have hM : mx t ≤ sz (kmax, v, N, t) + mx (kmax, v, N, t) := by rw [h2]; omega
-  have hv' : v ≤ sz (kmax, v, N, t) + mx (kmax, v, N, t) := by rw [h2]; omega
-  have hN : N.card ≤ sz (kmax, v, N, t) + mx (kmax, v, N, t) := by omega
-  have hk : kmax ≤ sz (kmax, v, N, t) + mx (kmax, v, N, t) := by rw [h2]; omega
-  have hcard : Bs.card = t.verts.card := by rw [hv]
-  dsimp only at hcost hw ⊢
-  have := introCUn_runs hΔ B kmax v N t Bs hw _ hU hM hv' hN hk (hnorm B) hnsz
-    (by rw [hcard]; omega)
-  rw [hcard] at this
-  exact this
-
 end proofs
 
 end E3

@@ -37,9 +37,6 @@ def LStep (p q : ℕ × ℕ) : Prop :=
 def PathTo (i j : ℕ) (P : List (ℕ × ℕ)) : Prop :=
   P.head? = some (0, 0) ∧ P.getLast? = some (i, j) ∧ P.IsChain LStep
 
-theorem isLatticePath_iff {a b : List ℕ} {P : List (ℕ × ℕ)} :
-    IsLatticePath a b P ↔ PathTo (a.length - 1) (b.length - 1) P := Iff.rfl
-
 theorem PathTo.snoc {i j : ℕ} {P : List (ℕ × ℕ)} (h : PathTo i j P) {q : ℕ × ℕ} (hq : LStep (i, j) q) :
     PathTo q.1 q.2 (P ++ [q]) := by
   obtain ⟨h1, h2, h3⟩ := h
@@ -407,14 +404,6 @@ theorem latticeStates_sound {a b : List ℕ} {s : LState} (h : s ∈ latticeStat
 theorem latticeStates_complete {a b : List ℕ} {P : List (ℕ × ℕ)} (hP : IsLatticePath a b P) (ha : a ≠ [])
     (hb : b ≠ []) : ∃ s ∈ latticeStates a b, s.1 = typical (pathSum a b P) :=
   (latticeStates_cell ha hb).2.1 P hP
-
-/-- **NEW** the states have distinct `τ`-components. -/
-theorem latticeStates_nodup {a b : List ℕ} : ((latticeStates a b).map Prod.fst).Nodup := by
-  by_cases ha : a = []
-  · subst ha; simp
-  by_cases hb : b = []
-  · subst hb; simp
-  exact (latticeStates_cell ha hb).2.2
 
 /-! ## `findPath` -/
 

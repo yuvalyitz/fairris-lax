@@ -65,8 +65,6 @@ theorem extLib : Lib.Δ ⊑ Δ := Ext.trans E1C.extLib extC
 theorem Δ_subC : Δ fSubC = some subCTm := by simp [Δ, layerΔ_ge tbl (show 154 ≤ fSubC by decide)]; rfl
 theorem Δ_predDom : Δ fPredDom = some predDomTm := by simp [Δ, layerΔ_ge tbl (show 154 ≤ fPredDom by decide)]; rfl
 theorem Δ_findPath : Δ fFindPath = some findPathTm := by simp [Δ, layerΔ_ge tbl (show 154 ≤ fFindPath by decide)]; rfl
-theorem Δ_findPathP : Δ fFindPathP = some findPathPTm := by
-  simp [Δ, layerΔ_ge tbl (show 154 ≤ fFindPathP by decide)]; rfl
 
 theorem pathTo_length_le : ∀ (n i j : ℕ) (P : List (ℕ × ℕ)), i + j = n → PathTo i j P → P.length ≤ i + j + 1 := by
   intro n
@@ -209,37 +207,6 @@ def findPathCost (p : List ℕ × List ℕ × ℕ × List ℕ) : ℕ :=
       (100 * 3 ^ (2 * (maxOf p.1 + maxOf p.2.1) + 1 + p.2.2.2.length) +
         100 * (2 * (maxOf p.1 + maxOf p.2.1) + 1) + 100) +
     12 * (p.1.length + p.2.1.length) + 220
-
-theorem findPathP_runs (hB : 200 < B) (a b : List ℕ) (c : ℕ) (want : List ℕ) (L₁ L₂ : ℕ)
-    (ha : ∀ x ∈ a, x ≤ L₁) (hb : ∀ x ∈ b, x ≤ L₂) (hBB : L₁ + L₂ + a.length + b.length + 8 < B) :
-    Runs Δ' B fFindPathP [toVal (a, b, c, want)] (toVal (findPath a b c want))
-      (6000 * (a.length + 1) * (b.length + 1) * (4 ^ (L₁ + L₂ + 1) + 1) ^ 2 * (2 * (L₁ + L₂) + 1 + 2) ^ 2 +
-        4 ^ (L₁ + L₂ + 1) * (100 * 3 ^ (2 * (L₁ + L₂) + 1 + want.length) + 100 * (2 * (L₁ + L₂) + 1) + 100) +
-        12 * (a.length + b.length) + 220) := by
-  have h := findPath_runs hΔ B hB a b c want L₁ L₂ ha hb hBB
-  refine Runs.mk (hΔ _ _ Δ_findPathP) ?_
-  ev_start
-  · ev_run
-  · omega
-
-omit hΔ in
-theorem findPathCost_ge (p : List ℕ × List ℕ × ℕ × List ℕ) :
-    maxOf p.1 + maxOf p.2.1 + p.1.length + p.2.1.length + 8 + 3 ≤ findPathCost p ∧ 200 ≤ findPathCost p := by
-  have h1 := ringCost_ge (p.1, p.2.1)
-  have h2 := ringCost_ge200 (p.1, p.2.1)
-  unfold ringCost at h1 h2
-  unfold findPathCost
-  simp only [] at h1 h2
-  omega
-
-/-- unary `Embeds` form: `findPath` on the tuple `(sa, sb, c, want)`. -/
-theorem embeds_findPath : Embeds Δ' fFindPathP (fun _ : List ℕ × List ℕ × ℕ × List ℕ => True)
-    (fun p => findPath p.1 p.2.1 p.2.2.1 p.2.2.2) findPathCost := by
-  intro B p _ hfit
-  have h1 := hfit.cost_lt
-  obtain ⟨h2, h3⟩ := findPathCost_ge p
-  exact findPathP_runs hΔ B (by omega) p.1 p.2.1 p.2.2.1 p.2.2.2 (maxOf p.1) (maxOf p.2.1)
-    (fun x hx => le_maxOf hx) (fun x hx => le_maxOf hx) (by omega)
 
 end proofs
 end E1D

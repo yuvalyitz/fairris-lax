@@ -131,10 +131,6 @@ theorem Cst.of_arrays {P : Prog} {W Bi : ℕ} {σ : Lax808846Proofs.Imp.Env} (ht
   bW := hbW
   bi := hbi
 
-theorem mkProg_code_halt (Δ : ℕ → Option Tm) (N main k B : ℕ) : (mkProg Δ N main k B).code 2 = .halt := by
-  have := (mkProg_stub Δ N main k B).2 2 (by simp [stub])
-  simpa [stub] using this
-
 /-- The result of a finished run: the stack has the result on top, above the untouched `stk₀`. -/
 theorem Abs.result {σ : Lax808846Proofs.Imp.Env} {w : ℕ} {stk₀ : List ℕ} {H' : List (ℕ × ℕ)}
     (hA : Abs ⟨2, w :: stk₀, [], H'⟩ σ) :
@@ -144,28 +140,5 @@ theorem Abs.result {σ : Lax808846Proofs.Imp.Env} {w : ℕ} {stk₀ : List ℕ} 
   simpa using this
 
 /-! ## The combined theorem -/
-
-/-- **`vm_ram_correct` (WP V2).**  Let the V1 hypotheses hold (`Runs Δ B main xs y c`, arguments laid out as words `ws`
-on the stack above `stk₀`, heap `H` representing them, all naturals of the initial state `≤ W₀`).  Put
-`P := mkProg Δ N main xs.length B` and `W := W₀ + P.len + B + 3c + 3`.  If `σ` represents the initial state
-(`Abs`, `Cst` for `P, W, Bi`) with `run = 1`, then `vmLoop` runs from `σ` in at most `124 · (3c + 4)` IMP+ steps
-(every value below `Bi`) to an `σ'` with `run = 0` that represents the halted state `⟨2, w :: stk₀, [], H'⟩`, where
-`H'` extends `H` by at most `c` cells and `Rep B H' w y`. -/
-theorem vm_ram_correct (Δ : ℕ → Option Tm) {N : ℕ} (hN : ∀ f, N ≤ f → Δ f = none) {B : ℕ} (hB : 2 ≤ B)
-    {main : ℕ} {xs : List Val} {y : Val} {c : ℕ} (h : Runs Δ B main xs y c) {ws stk₀ : List ℕ}
-    {H : List (ℕ × ℕ)} (hrep : RepL B H ws xs) {W₀ : ℕ} (hbd : St.Bd W₀ ⟨0, ws ++ stk₀, [], H⟩)
-    {Bi : ℕ} {σ : Lax808846Proofs.Imp.Env}
-    (hA : Abs ⟨0, ws ++ stk₀, [], H⟩ σ)
-    (hC : Cst (mkProg Δ N main xs.length B)
-      (W₀ + (mkProg Δ N main xs.length B).len + B + 3 * c + 3) Bi σ)
-    (hrun : σ.vars "run" = 1) :
-    ∃ (w : ℕ) (H' : List (ℕ × ℕ)) (σ' : Lax808846Proofs.Imp.Env),
-      Run Bi vmLoop σ σ' (124 * (3 * c + 4)) ∧ Abs ⟨2, w :: stk₀, [], H'⟩ σ' ∧
-      Cst (mkProg Δ N main xs.length B) (W₀ + (mkProg Δ N main xs.length B).len + B + 3 * c + 3) Bi σ' ∧
-      σ'.vars "run" = 0 ∧ HExt H H' ∧ Rep B H' w y ∧ H'.length ≤ H.length + c := by
-  obtain ⟨n, hn, w, H', hs, -, hx, hr, hh⟩ := vm_correct Δ hN hB h hrep hbd
-  obtain ⟨σ', hrunσ, hA', hC', hrun'⟩ :=
-    loop_run hs (by simpa using mkProg_code_halt Δ N main xs.length B) σ hA hC hrun
-  exact ⟨w, H', σ', hrunσ.mono (by omega), hA', hC', hrun', hx, hr, hh⟩
 
 end Lax117284Proofs.Treewidth.Fun.VM.Ram

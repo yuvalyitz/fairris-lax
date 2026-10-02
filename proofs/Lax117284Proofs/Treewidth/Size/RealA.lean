@@ -133,7 +133,4 @@ theorem analyze_nsz_le (B : Finset ℕ) : ∀ t : RT, (analyze B t).nsz ≤ t.si
     rw [hks]
     exact analyzeNode_gen (X ∩ B) X _ (fun p => p.2.isLeaf && decide (p.2.S ⊆ X ∩ B)) hk
 
-theorem analyze_toRT_size_le (B : Finset ℕ) (t : RT) : (AR.toRT (analyze B t)).size ≤ t.size := by
-  rw [toRT_size]; exact analyze_nsz_le B t
-
 end Lax117284Proofs.Treewidth.Chars

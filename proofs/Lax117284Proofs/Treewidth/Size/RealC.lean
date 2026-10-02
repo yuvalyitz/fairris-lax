@@ -41,13 +41,6 @@ theorem LB.of_good {B : Finset ℕ} : ∀ {t : CT}, Good B t → LB B.card t := 
     intro hg
     exact ⟨Finset.card_le_card hg.label_sub, LBL_iff.2 fun k hk => ih k hk (hg.kids k hk)⟩
 
-theorem LB.mono {b b' : ℕ} (h : b ≤ b') : ∀ {t : CT}, LB b t → LB b' t := by
-  intro t
-  induction t using CT.ind with
-  | h S y ks ih =>
-    intro hl
-    exact ⟨le_trans hl.1 h, LBL_iff.2 fun k hk => ih k hk (hl.kids k hk)⟩
-
 /-! ## `DomC` preserves shape -/
 
 mutual

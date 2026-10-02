@@ -241,25 +241,6 @@ theorem witnesses_runs (a : List ℕ) (hj : a.length + 150 < B) :
         _ ≤ (a.length + 1) ^ 3 := Nat.pow_le_pow_right (by omega) (by omega)
     omega
 
-/-- unary `Embeds` form: `witnesses`. -/
-theorem embeds_witnesses : Embeds Δ' fWitnesses (fun _ : List ℕ => True) witnesses
-    (fun a => 150 * (a.length + 1) ^ 3) := by
-  intro B a _ hfit
-  have : 150 * (a.length + 1) ^ 3 + 3 < B := hfit.cost_lt
-  have h1 : a.length + 1 ≤ (a.length + 1) ^ 3 := by
-    calc a.length + 1 = (a.length + 1) ^ 1 := by simp
-      _ ≤ (a.length + 1) ^ 3 := Nat.pow_le_pow_right (by omega) (by omega)
-  exact witnesses_runs hΔ B a (by omega)
-
-theorem embeds_witnesses_os : Embeds Δ' fWitnesses (fun _ : List ℕ => True) witnesses (osCost 3 witnesses) := by
-  refine Embeds.mono_cost (embeds_witnesses hΔ) (fun a _ => ?_)
-  have h1 : sz a = 2 * a.length + 1 := sz_list_nat a
-  have h2 : 1 ≤ sz (witnesses a) := sz_pos _
-  have h3 : (2 * a.length + 2) ^ 3 ≤ (sz a + sz (witnesses a) + 1) ^ 3 := Nat.pow_le_pow_left (by omega) 3
-  have h4 : (2 * a.length + 2) ^ 3 = 8 * (a.length + 1) ^ 3 := by ring
-  unfold osCost
-  omega
-
 end proofs
 end E1B
 end Lax117284Proofs.Treewidth.Fun

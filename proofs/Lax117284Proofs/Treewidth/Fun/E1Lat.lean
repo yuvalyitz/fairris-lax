@@ -133,8 +133,6 @@ theorem Δ_latticeStates : Δ fLatticeStates = some latticeStatesTm := by
 theorem Δ_fstF : Δ fFstF = some fstFTm := by simp [Δ, layerΔ_ge tbl (show 142 ≤ fFstF by decide)]; rfl
 theorem Δ_ringTypList : Δ fRingTypList = some ringTypListTm := by
   simp [Δ, layerΔ_ge tbl (show 142 ≤ fRingTypList by decide)]; rfl
-theorem Δ_ringTypListP : Δ fRingTypListP = some ringTypListPTm := by
-  simp [Δ, layerΔ_ge tbl (show 142 ≤ fRingTypListP by decide)]; rfl
 
 /-- the size bounds carried by a state list of the lattice DP -/
 def Good (N Lt : ℕ) (C : List LState) : Prop := C.length ≤ N ∧ ∀ s ∈ C, s.1.length ≤ Lt
@@ -599,62 +597,10 @@ theorem ringTypList_runs (hB : 200 < B) (a b : List ℕ) (L₁ L₂ : ℕ) (ha :
   · simp only [rowB, cellB, NB, LB] at *
     omega
 
-theorem ringTypListP_runs (hB : 200 < B) (a b : List ℕ) (L₁ L₂ : ℕ) (ha : ∀ x ∈ a, x ≤ L₁)
-    (hb : ∀ x ∈ b, x ≤ L₂) (hBB : L₁ + L₂ + a.length + b.length + 8 < B) :
-    Runs Δ' B fRingTypListP [toVal (a, b)] (toVal (ringTypList a b))
-      (6000 * (a.length + 1) * (b.length + 1) * (4 ^ (L₁ + L₂ + 1) + 1) ^ 2 * (2 * (L₁ + L₂) + 1 + 2) ^ 2 + 8) := by
-  have h := ringTypList_runs hΔ B hB a b L₁ L₂ ha hb hBB
-  refine Runs.mk (hΔ _ _ Δ_ringTypListP) ?_
-  ev_start
-  · ev_run
-  · omega
-
 /-- the cost of `ringTypList a b` in the entries' maxima -/
 def ringCost (p : List ℕ × List ℕ) : ℕ :=
   6000 * (p.1.length + 1) * (p.2.length + 1) * (4 ^ (maxOf p.1 + maxOf p.2 + 1) + 1) ^ 2 *
     (2 * (maxOf p.1 + maxOf p.2) + 1 + 2) ^ 2 + 8
-
-omit hΔ in
-theorem ringCost_ge200 (p : List ℕ × List ℕ) : 200 ≤ ringCost p := by
-  unfold ringCost
-  have h : 0 < (p.1.length + 1) * (p.2.length + 1) * (4 ^ (maxOf p.1 + maxOf p.2 + 1) + 1) ^ 2 *
-    (2 * (maxOf p.1 + maxOf p.2) + 1 + 2) ^ 2 := by positivity
-  have e : 6000 * (p.1.length + 1) * (p.2.length + 1) * (4 ^ (maxOf p.1 + maxOf p.2 + 1) + 1) ^ 2 *
-    (2 * (maxOf p.1 + maxOf p.2) + 1 + 2) ^ 2 = 6000 * ((p.1.length + 1) * (p.2.length + 1) *
-      (4 ^ (maxOf p.1 + maxOf p.2 + 1) + 1) ^ 2 * (2 * (maxOf p.1 + maxOf p.2) + 1 + 2) ^ 2) := by ring
-  rw [e]
-  omega
-
-omit hΔ in
-theorem ringCost_ge (p : List ℕ × List ℕ) :
-    maxOf p.1 + maxOf p.2 + p.1.length + p.2.length + 8 + 3 ≤ ringCost p := by
-  unfold ringCost
-  set na := p.1.length
-  set nb := p.2.length
-  set L := maxOf p.1 + maxOf p.2
-  have hR : 1 ≤ (4 ^ (L + 1) + 1) ^ 2 := Nat.one_le_pow _ _ (Nat.succ_pos _)
-  have hQ : 2 * L + 3 ≤ (2 * L + 1 + 2) ^ 2 := by nlinarith
-  have hP : na + nb + 1 ≤ (na + 1) * (nb + 1) := by nlinarith [Nat.zero_le (na * nb)]
-  have h1 : (na + 1) * (nb + 1) * (2 * L + 3) ≤ (na + 1) * (nb + 1) * (2 * L + 1 + 2) ^ 2 :=
-    Nat.mul_le_mul_left _ hQ
-  have h2 : (na + 1) * (nb + 1) * (2 * L + 1 + 2) ^ 2 ≤
-      (na + 1) * (nb + 1) * (2 * L + 1 + 2) ^ 2 * (4 ^ (L + 1) + 1) ^ 2 := Nat.le_mul_of_pos_right _ (by positivity)
-  have h3 : (na + nb + 1) * (2 * L + 3) ≥ na + nb + 2 * L + 3 := by nlinarith
-  have h4 : (na + nb + 1) * (2 * L + 3) ≤ (na + 1) * (nb + 1) * (2 * L + 3) := Nat.mul_le_mul_right _ hP
-  have e : 6000 * (na + 1) * (nb + 1) * (4 ^ (L + 1) + 1) ^ 2 * (2 * L + 1 + 2) ^ 2 =
-      6000 * ((na + 1) * (nb + 1) * (2 * L + 1 + 2) ^ 2 * (4 ^ (L + 1) + 1) ^ 2) := by ring
-  rw [e]
-  omega
-
-/-- unary `Embeds` form: `ringTypList` on a pair of sequences. -/
-theorem embeds_ringTypList : Embeds Δ' fRingTypListP (fun _ : List ℕ × List ℕ => True)
-    (fun p => ringTypList p.1 p.2) ringCost := by
-  intro B p _ hfit
-  have h1 := hfit.cost_lt
-  have h2 := ringCost_ge p
-  have h3 := ringCost_ge200 p
-  exact ringTypListP_runs hΔ B (by omega) p.1 p.2 (maxOf p.1) (maxOf p.2) (fun x hx => le_maxOf hx) (fun x hx => le_maxOf hx)
-    (by omega)
 
 end proofs
 end E1C

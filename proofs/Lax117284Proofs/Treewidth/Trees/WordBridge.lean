@@ -22,10 +22,6 @@ lemma Lay.mem_vs_iff (L : Lay n D) (u : ℕ) :
   rw [L.mem_vs_ofWord _ (by omega), L.desc_full]
   simp only [Finset.mem_range]
 
-lemma Lay.size_ofWord_last (L : Lay n D) : (ofWord D (nodeCount D - 1)).size = nodeCount D := by
-  have hN := L.nonempty
-  rw [L.size_ofWord _ (by omega), L.desc_full, Finset.card_range]
-
 /-- The bags of the tree are the bags `bagN` of the nodes. -/
 lemma Lay.mem_bs_iff (L : Lay n D) (X : Finset ℕ) :
     X ∈ (ofWord D (nodeCount D - 1)).bs ↔ ∃ j, j < nodeCount D ∧ X = bagN n D j := by
@@ -35,39 +31,6 @@ lemma Lay.mem_bs_iff (L : Lay n D) (X : Finset ℕ) :
 
 lemma card_bagN (n : ℕ) (D : List ℕ) (i : ℕ) : (bagN n D i).card = (bagAt n D i).card := by
   simp [bagN]
-
-/-- **The layout half plus the graph fields give a nice tree decomposition.** -/
-theorem Lay.isNiceTD_ofWord (L : Lay n D) {G : SimpleGraph (Fin n)} {w : ℕ}
-    (hcov : ∀ v : Fin n, ∃ i, i < nodeCount D ∧ v ∈ bagAt n D i)
-    (hedges : ∀ u v : Fin n, G.Adj u v → ∃ i, i < nodeCount D ∧ u ∈ bagAt n D i ∧ v ∈ bagAt n D i)
-    (hconn : ∀ v : Fin n,
-      ((treeGraph D).induce {i : Fin (nodeCount D) | v ∈ bagAt n D i}).Connected)
-    (hwidth : ∀ i, i < nodeCount D → (bagAt n D i).card ≤ w + 1) :
-    (ofWord D (nodeCount D - 1)).IsNiceTD (liftGraph G) (Finset.range n) w := by
-  have hN := L.nonempty
-  have hwf := L.wf_ofWord (nodeCount D - 1) (by omega)
-  refine ⟨hwf, ⟨?_, ?_, ?_⟩, ?_⟩
-  · show (ofWord D (nodeCount D - 1)).vs = _
-    ext u
-    rw [L.mem_vs_iff, Finset.mem_range]
-    constructor
-    · rintro ⟨j, -, hj⟩; exact lt_of_mem_bagN hj
-    · intro hu
-      obtain ⟨j, hj, hv⟩ := hcov ⟨u, hu⟩
-      exact ⟨j, hj, (mem_bagN_fin (⟨u, hu⟩ : Fin n)).2 hv⟩
-  · intro a b hab _ _
-    obtain ⟨-, x, y, hxy, rfl, rfl⟩ := hab
-    obtain ⟨i, hi, hxi, hyi⟩ := hedges x y hxy
-    refine ⟨bagN n D i, ?_, (mem_bagN_fin x).2 hxi, (mem_bagN_fin y).2 hyi⟩
-    exact (L.mem_bs_iff _).2 ⟨i, hi, rfl⟩
-  · refine (NT.conn_toRT_iff hwf).2 ?_
-    rw [L.nconn_ofWord _ (by omega), L.desc_full]
-    have hc : ∀ v, v < n → ConnOn D (Sv n D v) := fun v hv =>
-      (L.connected_bagAt_iff ⟨v, hv⟩).1 (hconn ⟨v, hv⟩)
-    exact fun j hj => L.loc_of_connOn hc j (Finset.mem_range.1 hj)
-  · intro X hX
-    obtain ⟨j, hj, rfl⟩ := (L.mem_bs_iff X).1 hX
-    rw [card_bagN]; exact hwidth j hj
 
 /-- **A word with the layout conditions whose tree is a nice tree decomposition is a `NiceDecomposition`.** -/
 theorem Lay.niceDecomposition_of_isNiceTD (L : Lay n D) {G : SimpleGraph (Fin n)} {w : ℕ}

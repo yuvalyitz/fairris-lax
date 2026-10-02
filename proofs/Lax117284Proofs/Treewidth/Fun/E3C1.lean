@@ -18,9 +18,7 @@ include hΔ
 theorem xB : E3B.Δ ⊑ Δ' := Ext.trans extB hΔ
 theorem xA : E3A.Δ ⊑ Δ' := Ext.trans E3B.extA (xB hΔ)
 theorem y1 : Lib1.Δ ⊑ Δ' := Ext.trans Lib.ext1 (Ext.trans E3A.extLib (xA hΔ))
-theorem y2 : Lib2.Δ ⊑ Δ' := Ext.trans Lib.ext2 (Ext.trans E3A.extLib (xA hΔ))
 theorem y3 : Lib3.Δ ⊑ Δ' := Ext.trans Lib.ext3 (Ext.trans E3A.extLib (xA hΔ))
-theorem y4 : Lib4.Δ ⊑ Δ' := Ext.trans Lib.ext4 (Ext.trans E3A.extLib (xA hΔ))
 
 theorem subN_runs (N : Finset ℕ) (pl : CT.Plan) (c : CT) (s : Finset ℕ) (hB : 1 < B) :
     Runs Δ' B fSubN [toVal N, toVal (pl, c, s)] (toVal (decide (N ⊆ s)))

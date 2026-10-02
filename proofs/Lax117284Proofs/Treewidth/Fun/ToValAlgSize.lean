@@ -50,8 +50,6 @@ theorem sz_ct_eq (c : CT) : sz c = c.vsz := by
     rw [sz_ct_node, sz_finset, sz_list_nat, sz_ctl_of ks ih]
     simp only [CT.vsz]
 
-theorem sz_ctl_eq (ks : List CT) : sz ks = CT.vszL ks := sz_ctl_of ks fun k _ => sz_ct_eq k
-
 theorem count_le_sz (c : CT) : c.count ≤ sz c := by
   have hL : ∀ ks : List CT, (∀ k ∈ ks, k.count ≤ sz k) → CT.countL ks ≤ sz ks := by
     intro ks
@@ -79,14 +77,6 @@ theorem tables_sz_le {adj : Adj} {k : ℕ} {nt : NT} (hg : nt.Good adj) (hw : nt
     ∀ c ∈ tables adj k nt, sz c ≤ 128 * (k + 2) ^ 3 := by
   intro c hc; rw [sz_ct_eq]; exact CT.tables_vsz_le hg hw c hc
 
-/-- The whole table (as a list value) has at most `1 + 2^(C0 (k+2)^3) · (128 (k+2)^3 + 1)` cells. -/
-theorem sz_tables_le {adj : Adj} {k : ℕ} {nt : NT} (hg : nt.Good adj) (hw : nt.toRT.Width (k + 1)) :
-    sz (tables adj k nt) ≤ 1 + 2 ^ (sizeC0 * (k + 2) ^ 3) * (128 * (k + 2) ^ 3 + 1) := by
-  refine le_trans (sz_list_le (tables_sz_le hg hw)) ?_
-  have := tables_length_le_C0 hg hw
-  have := Nat.mul_le_mul_right (128 * (k + 2) ^ 3 + 1) this
-  omega
-
 /-! ## `RT` -/
 
 theorem sz_rt_node (X : Finset ℕ) (ks : List RT) : sz (RT.node X ks) = sz X + sz ks + 1 := by
@@ -105,8 +95,6 @@ theorem sz_rt_eq (t : RT) : sz t = rvsz t := by
   | h X ks ih =>
     rw [sz_rt_node, sz_finset, sz_rtl_of ks ih]
     simp only [rvsz]
-
-theorem sz_rtl_eq (ks : List RT) : sz ks = rvszL ks := sz_rtl_of ks fun k _ => sz_rt_eq k
 
 theorem size_le_sz (t : RT) : t.size ≤ sz t := by
   have hL : ∀ ks : List RT, (∀ k ∈ ks, k.size ≤ sz k) → RT.sizeL ks ≤ sz ks := by
@@ -235,16 +223,6 @@ theorem mx_ct_le_iff (c : CT) {M : ℕ} : mx c ≤ M ↔ (∀ v ∈ c.verts, v �
     · rintro ⟨h1, h2, h3⟩
       refine ⟨fun v hv => h1 v (Or.inl hv), h2, fun k hk => (ih k hk).2 ⟨fun v hv => h1 v (Or.inr ⟨k, hk, hv⟩), h3 k hk⟩⟩
 
-/-- **`mx` of a characteristic** as a maximum. -/
-theorem mx_ct_eq (c : CT) : mx c = max (c.verts.sup id) c.maxEntry := by
-  apply le_antisymm
-  · have := (mx_ct_le_iff c (M := max (c.verts.sup id) c.maxEntry)).2
-      ⟨fun v hv => le_trans (Finset.le_sup (f := id) hv) (le_max_left _ _), le_max_right _ _⟩
-    exact this
-  · refine max_le (Finset.sup_le fun v hv => ?_) ?_
-    · exact ((mx_ct_le_iff c).1 le_rfl).1 v hv
-    · exact ((mx_ct_le_iff c).1 le_rfl).2
-
 /-- Natural numbers inside a well-formed characteristic over `B` with entries `≤ kmax`. -/
 theorem mx_ct_le_of_wf {B : Finset ℕ} {kmax : ℕ} {t : CT} (h : t.Wf B kmax) {M : ℕ}
     (hB : ∀ v ∈ B, v ≤ M) (hk : kmax ≤ M) : mx t ≤ M :=
@@ -265,11 +243,6 @@ theorem mx_rt_le_iff (t : RT) {M : ℕ} : mx t ≤ M ↔ ∀ v ∈ t.verts, v �
       · exact (ih k hk).1 (h2 k hk) v hv
     · intro h
       exact ⟨fun v hv => h v (Or.inl hv), fun k hk => (ih k hk).2 fun v hv => h v (Or.inr ⟨k, hk, hv⟩)⟩
-
-theorem mx_rt_eq (t : RT) : mx t = t.verts.sup id := by
-  apply le_antisymm
-  · exact (mx_rt_le_iff t (M := t.verts.sup id)).2 fun v hv => Finset.le_sup (f := id) hv
-  · exact Finset.sup_le fun v hv => (mx_rt_le_iff t).1 le_rfl v hv
 
 /-- The vertices named by `intro`/`forget` constructors of a nice tree. -/
 def _root_.Lax117284Proofs.Treewidth.Trees.NT.mentioned : NT → Finset ℕ

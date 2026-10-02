@@ -128,10 +128,6 @@ theorem AR.char_eq_charF : ∀ r : AR, AR.char r = AR.charF Finset.card r := by
 @[simp] theorem AR.S_charF (f : Finset ℕ → ℕ) (r : AR) : (AR.charF f r).S = r.S := by
   cases r; rfl
 
-@[simp] theorem AR.kids_charF (f : Finset ℕ → ℕ) (r : AR) :
-    (AR.charF f r).kids = r.kids.map (AR.charF f) := by
-  cases r; simp [AR.charF_run, CT.kids, AR.kids]
-
 theorem AR.isLeaf_charF (f : Finset ℕ → ℕ) (r : AR) : (AR.charF f r).isLeaf = r.isLeaf := by
   cases r with
   | run S c ks => cases ks <;> simp [AR.charF_run, CT.isLeaf, AR.isLeaf, CT.kids, AR.kids]

@@ -103,32 +103,5 @@ theorem asmTbl_lt {f : ℕ} {b : Tm} (h : E3.asmTbl f = some b) : f < 333 := by
     · have := (E2.e2Tbl_lt _ h2).2; omega
   · have := E1.e1Tbl_lt h1; omega
 
-theorem e5Tbl_disj_asm : ∀ f b, E5Tbl.e5Tbl f = some b → E3.asmTbl f = none := by
-  intro f b h
-  by_contra hne
-  obtain ⟨c, hc⟩ := Option.ne_none_iff_exists'.1 hne
-  have := asmTbl_lt hc
-  have := E5Tbl.e5Tbl_ge h
-  omega
-
-theorem asm_ext_asm5 : E3.asmΔ ⊑ asm5Δ := Ext.layer_mono (Ext.orElse_left _ _)
-
-theorem asm5_ext_e1 : E1.e1Δ ⊑ asm5Δ := Ext.trans E3.asm_ext_e1 asm_ext_asm5
-theorem asm5_ext_e2 : E2.e2Δ E1C.fRingTypList ⊑ asm5Δ := Ext.trans E3.asm_ext_e2 asm_ext_asm5
-theorem asm5_ext_e3 : E3C.Δ ⊑ asm5Δ := Ext.trans E3.asm_ext_e3 asm_ext_asm5
-
-/-- the E5 layers are contained in the assembled table -/
-theorem asm5_ext_e5 : E5W.Δ ⊑ asm5Δ :=
-  Ext.trans E5Tbl.ext (E5Tbl.ext_asm asm5Tbl
-    (Ext.trans (Ext.orElse_left E1.e1Tbl (orElseΔ (E2.e2Tbl E1C.fRingTypList) E3.e3Tbl))
-      (Ext.orElse_left E3.asmTbl E5Tbl.e5Tbl))
-    (Ext.orElse_right e5Tbl_disj_asm))
-
-/-- **`analyze`, worked example**: in the assembled table, with `Ext5` from E2 (run sequences `≤ L`). -/
-theorem embeds_analyze_asm5 (L : ℕ) :
-    Embeds asm5Δ E5W.fAnalyzeP (fun _ : Finset ℕ × RT => True) (fun a => analyze a.1 a.2)
-      (E5W.costAnalyze (ext5_e2 L asm5_ext_e2 asm5_ext_e1)) :=
-  E5W.embeds_analyze asm5_ext_e5 (ext5_e2 L asm5_ext_e2 asm5_ext_e1)
-
 end E5Inst
 end Lax117284Proofs.Treewidth.Fun

@@ -28,14 +28,6 @@ def F4 {α β γ δ : Type} (P : α → β → γ → δ → Prop) : List α →
   | a :: as, b :: bs, c :: cs, d :: ds => P a b c d ∧ F4 P as bs cs ds
   | _, _, _, _ => False
 
-theorem F3.length_eq {α β γ : Type} {P : α → β → γ → Prop} :
-    ∀ {as : List α} {bs : List β} {cs : List γ}, F3 P as bs cs → as.length = bs.length ∧ as.length = cs.length
-  | [], [], [], _ => ⟨rfl, rfl⟩
-  | a :: as, b :: bs, c :: cs, h => by
-    have := F3.length_eq h.2
-    simp only [List.length_cons]
-    constructor <;> omega
-
 theorem F4.length_eq {α β γ δ : Type} {P : α → β → γ → δ → Prop} :
     ∀ {as : List α} {bs : List β} {cs : List γ} {ds : List δ}, F4 P as bs cs ds →
       as.length = bs.length ∧ as.length = cs.length ∧ as.length = ds.length
@@ -44,51 +36,6 @@ theorem F4.length_eq {α β γ δ : Type} {P : α → β → γ → δ → Prop}
     have := F4.length_eq h.2
     simp only [List.length_cons]
     refine ⟨?_, ?_, ?_⟩ <;> omega
-
-theorem F3.mono {α β γ : Type} {P Q : α → β → γ → Prop} (as : List α) :
-    ∀ {bs : List β} {cs : List γ}, (∀ a ∈ as, ∀ b c, P a b c → Q a b c) → F3 P as bs cs → F3 Q as bs cs := by
-  induction as with
-  | nil => intro bs cs _ h; cases bs <;> cases cs <;> simpa [F3] using h
-  | cons a as ih =>
-    intro bs cs hPQ h
-    cases bs with
-    | nil => exact absurd h (by simp [F3])
-    | cons b bs =>
-      cases cs with
-      | nil => exact absurd h (by simp [F3])
-      | cons c cs =>
-        exact ⟨hPQ a (by simp) b c h.1, ih (fun a' ha' => hPQ a' (List.mem_cons_of_mem _ ha')) h.2⟩
-
-theorem F4.mono {α β γ δ : Type} {P Q : α → β → γ → δ → Prop} (as : List α) :
-    ∀ {bs : List β} {cs : List γ} {ds : List δ}, (∀ a ∈ as, ∀ b c d, P a b c d → Q a b c d) →
-      F4 P as bs cs ds → F4 Q as bs cs ds := by
-  induction as with
-  | nil => intro bs cs ds _ h; cases bs <;> cases cs <;> cases ds <;> simpa [F4] using h
-  | cons a as ih =>
-    intro bs cs ds hPQ h
-    cases bs with
-    | nil => exact absurd h (by simp [F4])
-    | cons b bs =>
-      cases cs with
-      | nil => exact absurd h (by simp [F4])
-      | cons c cs =>
-        cases ds with
-        | nil => exact absurd h (by simp [F4])
-        | cons d ds =>
-          exact ⟨hPQ a (by simp) b c d h.1, ih (fun a' ha' => hPQ a' (List.mem_cons_of_mem _ ha')) h.2⟩
-
-/-- Combine a `F3` and a `F4` relation over the same three lists. -/
-theorem F4.and_F3 {α β γ δ : Type} {P : α → β → γ → δ → Prop} {Q : α → β → γ → Prop} :
-    ∀ {as : List α} {bs : List β} {cs : List γ} {ds : List δ}, F4 P as bs cs ds → F3 Q as bs cs →
-      F4 (fun a b c d => P a b c d ∧ Q a b c) as bs cs ds
-  | [], [], [], [], _, _ => trivial
-  | a :: as, b :: bs, c :: cs, d :: ds, h, h' => ⟨⟨h.1, h'.1⟩, F4.and_F3 h.2 h'.2⟩
-  | [], [], [], _ :: _, h, _ => absurd h (by simp [F4])
-  | [], [], _ :: _, _, h, _ => absurd h (by simp [F4])
-  | [], _ :: _, _, _, h, _ => absurd h (by simp [F4])
-  | _ :: _, [], _, _, h, _ => absurd h (by simp [F4])
-  | _ :: _, _ :: _, [], _, h, _ => absurd h (by simp [F4])
-  | _ :: _, _ :: _, _ :: _, [], h, _ => absurd h (by simp [F4])
 
 /-! ## inversion of `joinC` -/
 

@@ -26,35 +26,6 @@ theorem storeSeq_ok {L : Layout} {a : String} (ha : a ∈ L.arrays) (h0 : 0 < L.
     intro i
     exact ⟨⟨ha, trivial, trivial, h0⟩, ih (i + 1)⟩
 
-theorem storeSeq_wvars (a : String) : ∀ (l : List ℕ) (i : ℕ), (storeSeq a i l).wvars = [] := by
-  intro l
-  induction l with
-  | nil => intro i; rfl
-  | cons v vs ih => intro i; simp [storeSeq, Com.wvars, ih]
-
-theorem storeSeq_warrs (a : String) : ∀ (l : List ℕ) (i : ℕ), ∀ b ∈ (storeSeq a i l).warrs, b = a := by
-  intro l
-  induction l with
-  | nil => intro i b hb; simp [storeSeq, Com.warrs] at hb
-  | cons v vs ih =>
-    intro i b hb
-    simp only [storeSeq, Com.warrs, List.mem_append, List.mem_singleton] at hb
-    rcases hb with hb | hb
-    · exact hb
-    · exact ih _ b hb
-
-theorem storeSeq_noWrite (a : String) : ∀ (l : List ℕ) (i : ℕ), (storeSeq a i l).NoWrite := by
-  intro l
-  induction l with
-  | nil => intro i; exact Com.noWrite_skip
-  | cons v vs ih => intro i; exact ⟨trivial, ih _⟩
-
-theorem storeSeq_noReads (a : String) : ∀ (l : List ℕ) (i : ℕ), ¬ (storeSeq a i l).reads := by
-  intro l
-  induction l with
-  | nil => intro i; simp [storeSeq, Com.reads]
-  | cons v vs ih => intro i; simp [storeSeq, Com.reads, ih]
-
 /-- The function an array becomes after `storeSeq`. -/
 def stored (i : ℕ) (l : List ℕ) (f : ℕ → ℕ) : ℕ → ℕ :=
   fun k => if i ≤ k ∧ k < i + l.length then l.getD (k - i) 0 else f k

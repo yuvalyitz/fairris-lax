@@ -26,9 +26,6 @@ open Lax117284Proofs.Treewidth.Seq Lax117284Proofs.Treewidth.Trees CT
 theorem InR_of_range {z a b x y : ℕ} (h : InR z a b) (ha : InR a x y) (hb : InR b x y) : InR z x y := by
   unfold InR at *; omega
 
-theorem InR_of_range_left {z a x y : ℕ} (h : InR z a y) (ha : InR a x y) : InR z x y :=
-  InR_of_range h ha (InR.right x y)
-
 /-! ## the invariant of the stack of pairs -/
 
 /-- Entries strictly between two consecutive stack indices lie between their values. -/

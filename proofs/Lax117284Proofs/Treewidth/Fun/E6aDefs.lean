@@ -138,7 +138,6 @@ theorem e6aTbl_lt {f : ℕ} {b : Tm} (h : e6aTbl f = some b) : 640 ≤ f ∧ f <
 theorem ext_lib : Lib.Δ ⊑ e6aΔ := Ext.layer e6aTbl (fun _ _ h => Lib.Δ_lt h)
 
 theorem ext1 {Δ' : ℕ → Option Tm} (hΔ : e6aΔ ⊑ Δ') : Lib1.Δ ⊑ Δ' := Ext.trans Lib.ext1 (Ext.trans ext_lib hΔ)
-theorem ext2 {Δ' : ℕ → Option Tm} (hΔ : e6aΔ ⊑ Δ') : Lib2.Δ ⊑ Δ' := Ext.trans Lib.ext2 (Ext.trans ext_lib hΔ)
 theorem ext3 {Δ' : ℕ → Option Tm} (hΔ : e6aΔ ⊑ Δ') : Lib3.Δ ⊑ Δ' := Ext.trans Lib.ext3 (Ext.trans ext_lib hΔ)
 
 theorem Δ_flatKids : e6aΔ fFlatKids = some flatKidsTm := by
@@ -163,8 +162,6 @@ theorem Δ_niceOf : e6aΔ fNiceOf = some niceOfTm := by
   simp [e6aΔ, layerΔ_ge e6aTbl (show 128 ≤ fNiceOf by decide)]; rfl
 theorem Δ_addEv : e6aΔ fAddEv = some addEvTm := by
   simp [e6aΔ, layerΔ_ge e6aTbl (show 128 ≤ fAddEv by decide)]; rfl
-theorem Δ_addEvP : e6aΔ fAddEvP = some addEvPTm := by
-  simp [e6aΔ, layerΔ_ge e6aTbl (show 128 ≤ fAddEvP by decide)]; rfl
 theorem Δ_recs : e6aΔ fRecs = some recsTm := by
   simp [e6aΔ, layerΔ_ge e6aTbl (show 128 ≤ fRecs by decide)]; rfl
 theorem Δ_triple : e6aΔ fTriple = some tripleTm := by

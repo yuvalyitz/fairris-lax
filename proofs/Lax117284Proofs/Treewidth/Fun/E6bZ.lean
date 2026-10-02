@@ -54,8 +54,6 @@ theorem zb_cmul {c x p : ℕ} (hc : c ≤ Z) (h : x ≤ Z ^ p) : c * x ≤ Z ^ (
   have := zb_mul (zb_num hc) h
   simpa [add_comm] using this
 
-theorem zb_one (p : ℕ) (hZ : 1 ≤ Z) : 1 ≤ Z ^ p := Nat.one_le_pow _ _ (by omega)
-
 theorem cnum {c : ℕ} (hc : c ≤ 2 ^ 200) (hZ : 2 ^ 200 ≤ Z) : c ≤ Z := le_trans hc hZ
 
 /-! ### the cost functions of E2, E5 -/

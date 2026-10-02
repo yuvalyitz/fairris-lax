@@ -30,6 +30,8 @@ abbrev idNorm : ℕ := 166
 abbrev idJoinC : ℕ := 177
 abbrev idDomC : ℕ := 181
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 /-- The E2 functions used by `sortAR`, `RT.char`, `realIntro`, `realJoin`. -/
 structure Ext5 (Δ' : ℕ → Option Tm) where
   cKey : ℕ → ℕ
@@ -45,6 +47,8 @@ structure Ext5 (Δ' : ℕ → Option Tm) where
   domC : ∀ (B s : ℕ) (a b : CT), PD s a b → sz a ≤ s → sz b ≤ s → cDom s < B →
     Runs Δ' B idDomC [toVal a, toVal b] (toVal (CT.domCB a b)) (cDom s)
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 /-- `CT.joinC` (E2). -/
 structure ExtJ (Δ' : ℕ → Option Tm) where
   PJ : ℕ → CT → CT → Prop
@@ -52,6 +56,8 @@ structure ExtJ (Δ' : ℕ → Option Tm) where
   joinC : ∀ (B kmax : ℕ) (a b : CT), PJ kmax a b → cJ kmax a b < B →
     Runs Δ' B idJoinC [toVal kmax, toVal a, toVal b] (toVal (CT.joinC kmax a b)) (cJ kmax a b)
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 /-- `CT.introPlans` (E3), called through the id `ip`. -/
 structure ExtIP (Δ' : ℕ → Option Tm) where
   ip : ℕ

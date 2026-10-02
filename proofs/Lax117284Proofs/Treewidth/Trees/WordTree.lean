@@ -30,24 +30,6 @@ lemma Lay.bag_ofWord (L : Lay n D) : ∀ i, i < nodeCount D → (ofWord D i).bag
       · rw [ofWord_forget hkd, bagN_succ_forget hkd hv, NT.bag_forget, ih']
       · rw [ofWord_join hkd ho, bagN_succ_join hkd, NT.bag_join, ih']
 
-lemma Lay.wf_ofWord (L : Lay n D) : ∀ i, i < nodeCount D → (ofWord D i).Wf := by
-  intro i
-  induction i using Nat.strong_induction_on with
-  | _ i ih =>
-    intro hi
-    cases i with
-    | zero => simp [ofWord_zero, NT.Wf]
-    | succ i =>
-      have ih' := ih i (by omega) (by omega)
-      have hb := L.bag_ofWord i (by omega)
-      rcases L.node hi with ⟨h1, h2, h3⟩ | ⟨hkd, hv, hn⟩ | ⟨hkd, hv, hn⟩ | ⟨hkd, ho, hbe⟩
-      · rw [ofWord_leaf h1 h2 h3]; trivial
-      · rw [ofWord_intro hkd]; exact ⟨by rw [hb]; exact hn, ih'⟩
-      · rw [ofWord_forget hkd]; exact ⟨by rw [hb]; exact hn, ih'⟩
-      · rw [ofWord_join hkd ho]
-        refine ⟨?_, ih', ih _ (by omega) (by omega)⟩
-        rw [hb, L.bag_ofWord _ (by omega), hbe]
-
 lemma Lay.mem_vs_ofWord (L : Lay n D) : ∀ i, i < nodeCount D → ∀ u,
     u ∈ (ofWord D i).vs ↔ ∃ j ∈ desc D i, u ∈ bagN n D j := by
   intro i
@@ -105,30 +87,6 @@ lemma Lay.mem_bs_ofWord (L : Lay n D) : ∀ i, i < nodeCount D → ∀ X,
         have hbi := L.bag_ofWord i (by omega)
         simp only [NT.bs_join, List.mem_cons, List.mem_append, ih', ih'', Finset.mem_insert,
           Finset.mem_union, or_and_right, exists_or, exists_eq_left, hbi, ← bagN_succ_join hkd]
-
-lemma Lay.size_ofWord (L : Lay n D) : ∀ i, i < nodeCount D → (ofWord D i).size = (desc D i).card := by
-  intro i
-  induction i using Nat.strong_induction_on with
-  | _ i ih =>
-    intro hi
-    cases i with
-    | zero => simp [ofWord_zero, desc_zero, NT.size]
-    | succ i =>
-      have ih' := ih i (by omega) (by omega)
-      rcases L.node hi with ⟨h1, h2, h3⟩ | ⟨hkd, hv, hn⟩ | ⟨hkd, hv, hn⟩ | ⟨hkd, ho, hbe⟩
-      · rw [ofWord_leaf h1 h2 h3, desc_leaf h1 h2 h3]; simp [NT.size]
-      · rw [ofWord_intro hkd, desc_intro hkd, Finset.card_insert_of_notMem, NT.size, ih']
-        intro h; have := desc_le D i _ h; omega
-      · rw [ofWord_forget hkd, desc_forget hkd, Finset.card_insert_of_notMem, NT.size, ih']
-        intro h; have := desc_le D i _ h; omega
-      · have hnot : i + 1 ∉ desc D i ∪ desc D (other D (i + 1)) := by
-          intro h
-          rcases Finset.mem_union.1 h with h | h
-          · have := desc_le D i _ h; omega
-          · have := desc_le D _ _ h; omega
-        rw [ofWord_join hkd ho, desc_join hkd ho, Finset.card_insert_of_notMem hnot, NT.size, ih',
-          ih (other D (i + 1)) (by omega) (by omega),
-          Finset.card_union_of_disjoint (L.desc_disjoint hi hkd ho)]
 
 /-- The local connectedness conditions at node `j`. -/
 def Loc (n : ℕ) (D : List ℕ) (j : ℕ) : Prop :=

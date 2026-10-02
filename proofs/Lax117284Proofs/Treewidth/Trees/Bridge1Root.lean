@@ -42,15 +42,6 @@ theorem ne_par (h : Rooted r par d) {x : V} (hx : x ≠ r) : par x ≠ x := by
   rw [e] at this
   omega
 
-theorem d_pos (h : Rooted r par d) {x : V} (hx : x ≠ r) : 0 < d x := by
-  have := h.d_par x hx
-  omega
-
-theorem eq_root_of_d_zero (h : Rooted r par d) {x : V} (hx : d x = 0) : x = r := by
-  by_contra hne
-  have := h.d_pos hne
-  omega
-
 theorem adj_par (h : Rooted r par d) {x : V} (hx : x ≠ r) : (rgraph par).Adj x (par x) :=
   rgraph_adj.2 ⟨(h.ne_par hx).symm, Or.inl rfl⟩
 
