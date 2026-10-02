@@ -48,8 +48,9 @@ theorem forgetMany_spec : ∀ (l : List ℕ) (t : NT), l.Nodup → (∀ x ∈ l,
   induction l with
   | nil =>
     intro t _ _ hw
-    refine ⟨hw, by simp [forgetMany_nil], rfl, fun Y hY => ⟨Y, hY, Finset.Subset.refl _⟩, fun Y hY => hY,
-      fun h => h, by simp [forgetMany_nil]⟩
+    rw [forgetMany_nil]
+    refine ⟨hw, by simp, rfl, fun Y hY => ⟨Y, hY, Finset.Subset.refl _⟩, fun Y hY => hY,
+      fun h => h, by simp⟩
   | cons x l ih =>
     intro t hnd hmem hw
     have hx : x ∈ t.bag := hmem x (by simp)
@@ -86,8 +87,9 @@ theorem introMany_spec : ∀ (l : List ℕ) (t : NT), l.Nodup → (∀ x ∈ l, 
   induction l with
   | nil =>
     intro t _ _ hw
-    refine ⟨hw, by simp [introMany_nil], by simp [introMany_nil], fun Y hY => Or.inl hY, fun Y hY => hY,
-      fun _ h => h, by simp [introMany_nil]⟩
+    rw [introMany_nil]
+    refine ⟨hw, by simp, by simp, fun Y hY => Or.inl hY, fun Y hY => hY,
+      fun _ h => h, by simp⟩
   | cons x l ih =>
     intro t hnd hmem hw
     have hx : x ∉ t.bag := hmem x (by simp)

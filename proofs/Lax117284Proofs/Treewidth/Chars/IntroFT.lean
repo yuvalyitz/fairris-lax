@@ -103,14 +103,6 @@ theorem mem_covL {x : ℕ} {ks : List FT} : x ∈ covL ks ↔ ∃ k ∈ ks, x �
   | nil => simp [covL]
   | cons k ks ih => simp [covL, ih]
 
-theorem cov_node (S : Finset ℕ) (e : ℕ) (w : Bool) (ks : List FT) :
-    cov (node S e w ks) = (if w then S else ∅) ∪ ks.foldr (fun k acc => cov k ∪ acc) ∅ := by
-  simp only [cov]
-  congr 1
-  induction ks with
-  | nil => rfl
-  | cons k ks ih => simp [covL, ih]
-
 mutual
 /-- Well-formedness. -/
 def FOk (v : ℕ) : FT → Prop
@@ -132,19 +124,24 @@ theorem FOkL_iff {v : ℕ} {ks : List FT} : FOkL v ks ↔ ∀ k ∈ ks, FOk v k 
 /-! ## unflagged trees -/
 
 mutual
-theorem fT_of_not_occ (v : ℕ) : ∀ K : FT, occ K = false → fT v K = uT K
+theorem fT_of_not_occ_rec (v : ℕ) : ∀ K : FT, occ K = false → fT v K = uT K
   | node S e w ks, h => by
     simp only [occ, Bool.or_eq_false_iff] at h
     obtain ⟨rfl, h2⟩ := h
     simp only [fT, uT, if_neg (by simp : ¬ (false = true))]
-    rw [fTL_of_not_occ v ks h2]
-theorem fTL_of_not_occ (v : ℕ) : ∀ ks : List FT, occL ks = false → fTL v ks = uTL ks
+    rw [fTL_of_not_occ_rec v ks h2]
+theorem fTL_of_not_occ_rec (v : ℕ) : ∀ ks : List FT, occL ks = false → fTL v ks = uTL ks
   | [], _ => rfl
   | k :: ks, h => by
     simp only [occL, Bool.or_eq_false_iff] at h
     simp only [fTL, uTL]
-    rw [fT_of_not_occ v k h.1, fTL_of_not_occ v ks h.2]
+    rw [fT_of_not_occ_rec v k h.1, fTL_of_not_occ_rec v ks h.2]
 end
+
+theorem fT_of_not_occ_pair : (type_of% @fT_of_not_occ_rec) ∧ (type_of% @fTL_of_not_occ_rec) :=
+  ⟨@fT_of_not_occ_rec, @fTL_of_not_occ_rec⟩
+
+theorem fT_of_not_occ : type_of% @fT_of_not_occ_rec := fT_of_not_occ_pair.1
 
 theorem occ_of_occL_false {ks : List FT} (h : occL ks = false) : ∀ k ∈ ks, occ k = false := by
   intro k hk
@@ -155,19 +152,7 @@ theorem occ_of_occL_false {ks : List FT} (h : occL ks = false) : ∀ k ∈ ks, o
 /-! ## labels and vertices -/
 
 mutual
-theorem verts_uT_not_v (v : ℕ) : ∀ K : FT, FOk v K → v ∉ CT.verts (uT K)
-  | node S e w ks, h => by
-    rw [uT, CT.verts_node, uTL_eq_map]
-    simp only [Finset.mem_union, not_or]
-    refine ⟨h.1, ?_⟩
-    rw [CT.mem_vertsL]
-    rintro ⟨k, hk, hv⟩
-    obtain ⟨k0, hk0, rfl⟩ := List.mem_map.1 hk
-    exact verts_uT_not_v v k0 ((FOkL_iff.1 h.2.2.2.2) k0 hk0) hv
-end
-
-mutual
-theorem cov_le_verts : ∀ K : FT, cov K ⊆ CT.verts (uT K)
+theorem cov_le_verts_rec : ∀ K : FT, cov K ⊆ CT.verts (uT K)
   | node S e w ks => by
     rw [uT, CT.verts_node]
     simp only [cov]
@@ -176,41 +161,51 @@ theorem cov_le_verts : ∀ K : FT, cov K ⊆ CT.verts (uT K)
     · split_ifs at h with hw
       · exact Finset.mem_union_left _ h
       · simp at h
-    · exact Finset.mem_union_right _ (covL_le_vertsL ks h)
-theorem covL_le_vertsL : ∀ ks : List FT, covL ks ⊆ CT.vertsL (uTL ks)
+    · exact Finset.mem_union_right _ (covL_le_vertsL_rec ks h)
+theorem covL_le_vertsL_rec : ∀ ks : List FT, covL ks ⊆ CT.vertsL (uTL ks)
   | [] => by simp [covL]
   | k :: ks => by
     intro x hx
     simp only [covL, Finset.mem_union] at hx
     simp only [uTL, CT.vertsL, Finset.mem_union]
     rcases hx with h | h
-    · exact Or.inl (cov_le_verts k h)
-    · exact Or.inr (covL_le_vertsL ks h)
+    · exact Or.inl (cov_le_verts_rec k h)
+    · exact Or.inr (covL_le_vertsL_rec ks h)
 end
 
+theorem cov_le_verts_pair : (type_of% @cov_le_verts_rec) ∧ (type_of% @covL_le_vertsL_rec) :=
+  ⟨@cov_le_verts_rec, @covL_le_vertsL_rec⟩
+
+theorem cov_le_verts : type_of% @cov_le_verts_rec := cov_le_verts_pair.1
+
 mutual
-theorem v_mem_verts_fT (v : ℕ) : ∀ K : FT, occ K = true → v ∈ CT.verts (fT v K)
+theorem v_mem_verts_fT_rec (v : ℕ) : ∀ K : FT, occ K = true → v ∈ CT.verts (fT v K)
   | node S e w ks, h => by
     rw [fT, CT.verts_node]
     simp only [occ, Bool.or_eq_true] at h
     rcases h with hw | hk
     · subst hw
       exact Finset.mem_union_left _ (by simp)
-    · exact Finset.mem_union_right _ (v_mem_vertsL_fTL v ks hk)
-theorem v_mem_vertsL_fTL (v : ℕ) : ∀ ks : List FT, occL ks = true → v ∈ CT.vertsL (fTL v ks)
+    · exact Finset.mem_union_right _ (v_mem_vertsL_fTL_rec v ks hk)
+theorem v_mem_vertsL_fTL_rec (v : ℕ) : ∀ ks : List FT, occL ks = true → v ∈ CT.vertsL (fTL v ks)
   | [], h => by simp [occL] at h
   | k :: ks, h => by
     simp only [occL, Bool.or_eq_true] at h
     simp only [fTL, CT.vertsL, Finset.mem_union]
     rcases h with h | h
-    · exact Or.inl (v_mem_verts_fT v k h)
-    · exact Or.inr (v_mem_vertsL_fTL v ks h)
+    · exact Or.inl (v_mem_verts_fT_rec v k h)
+    · exact Or.inr (v_mem_vertsL_fTL_rec v ks h)
 end
+
+theorem v_mem_verts_fT_pair : (type_of% @v_mem_verts_fT_rec) ∧ (type_of% @v_mem_vertsL_fTL_rec) :=
+  ⟨@v_mem_verts_fT_rec, @v_mem_vertsL_fTL_rec⟩
+
+theorem v_mem_verts_fT : type_of% @v_mem_verts_fT_rec := v_mem_verts_fT_pair.1
 
 /-! ## flag correspondences -/
 
 mutual
-theorem nested_flag (v : ℕ) : ∀ (K : FT), FOk v K → (K.w = true ∨ occ K = false) → ∀ σ : Finset ℕ,
+theorem nested_flag_rec (v : ℕ) : ∀ (K : FT), FOk v K → (K.w = true ∨ occ K = false) → ∀ σ : Finset ℕ,
     (Nested (insert v σ) (fT v K) ↔ Nested σ (uT K))
   | node S e w ks, hok, hK, σ => by
     have hvS := hok.1
@@ -227,20 +222,25 @@ theorem nested_flag (v : ℕ) : ∀ (K : FT), FOk v K → (K.w = true ∨ occ K 
       rw [Finset.insert_subset_insert_iff hvS]
       refine and_congr_right (fun _ => ?_)
       have hkids := hok.2.2.1 rfl
-      exact nestedL_flag v ks (FOkL_iff.1 hok.2.2.2.2)
+      exact nestedL_flag_rec v ks (FOkL_iff.1 hok.2.2.2.2)
         (fun k hk => by
           by_cases hk' : occ k = true
           · exact Or.inl (hkids k hk hk')
           · exact Or.inr (by simpa using hk')) S
-theorem nestedL_flag (v : ℕ) : ∀ (ks : List FT), (∀ k ∈ ks, FOk v k) → (∀ k ∈ ks, k.w = true ∨ occ k = false) →
+theorem nestedL_flag_rec (v : ℕ) : ∀ (ks : List FT), (∀ k ∈ ks, FOk v k) → (∀ k ∈ ks, k.w = true ∨ occ k = false) →
     ∀ σ : Finset ℕ, (NestedL (insert v σ) (fTL v ks) ↔ NestedL σ (uTL ks))
   | [], _, _, σ => by simp [fTL, uTL, NestedL]
   | k :: ks, hok, hK, σ => by
-    have h1 := nested_flag v k (hok k (by simp)) (hK k (by simp)) σ
-    have h2 := nestedL_flag v ks (fun k' hk' => hok k' (by simp [hk'])) (fun k' hk' => hK k' (by simp [hk'])) σ
+    have h1 := nested_flag_rec v k (hok k (by simp)) (hK k (by simp)) σ
+    have h2 := nestedL_flag_rec v ks (fun k' hk' => hok k' (by simp [hk'])) (fun k' hk' => hK k' (by simp [hk'])) σ
     simp only [fTL, uTL, NestedL]
     rw [h1, h2]
 end
+
+theorem nested_flag_pair : (type_of% @nested_flag_rec) ∧ (type_of% @nestedL_flag_rec) :=
+  ⟨@nested_flag_rec, @nestedL_flag_rec⟩
+
+theorem nested_flag : type_of% @nested_flag_rec := nested_flag_pair.1
 
 /-- Below a flagged parent (or below an unflagged one, for unoccupied subtrees) pruning is unchanged. -/
 theorem keep_flag (v : ℕ) {K : FT} (hok : FOk v K) (hK : K.w = true ∨ occ K = false) (σ : Finset ℕ) :

@@ -31,7 +31,7 @@ theorem me_succ_iff {S : Finset ℕ} {y : List ℕ} {ks : List CT} {K : ℕ} :
     omega
 
 mutual
-theorem winPlans_me (v : ℕ) {K : ℕ} : ∀ (lo : ℕ) (t : CT), maxEntry t + 1 ≤ K →
+theorem winPlans_me_rec (v : ℕ) {K : ℕ} : ∀ (lo : ℕ) (t : CT), maxEntry t + 1 ≤ K →
     ∀ x ∈ winPlans v lo t, maxEntry x.2.1 ≤ K
   | lo, node S y ks, ht, x, hx => by
     obtain ⟨hK, hy, hks⟩ := me_succ_iff.1 ht
@@ -56,30 +56,36 @@ theorem winPlans_me (v : ℕ) {K : ℕ} : ∀ (lo : ℕ) (t : CT), maxEntry t + 
       intro k hk
       simp only [List.mem_singleton] at hk; subst hk
       exact hnode _ _ (fun e he => hy' e (hdrop _ e he)) hks' _
-    · have := kidChoices_me v ks hks combo hcombo
+    · have := kidChoices_me_rec v ks hks combo hcombo
       refine hnode _ _ (hp1 _ (fun e he => hdrop _ e he)) ?_ _
       intro k hk
       obtain ⟨o, ho, rfl⟩ := List.mem_map.1 hk
       exact this o ho
-theorem kidChoices_me (v : ℕ) {K : ℕ} : ∀ (ks : List CT), (∀ k ∈ ks, maxEntry k + 1 ≤ K) →
+theorem kidChoices_me_rec (v : ℕ) {K : ℕ} : ∀ (ks : List CT), (∀ k ∈ ks, maxEntry k + 1 ≤ K) →
     ∀ combo ∈ kidChoices v ks, ∀ o ∈ combo, maxEntry o.2.1 ≤ K
   | [], _, combo, h => by
     simp only [kidChoices, List.mem_singleton] at h; subst h; simp
   | k :: ks, hk, combo, h => by
     simp only [kidChoices, List.mem_flatMap, List.mem_map] at h
     obtain ⟨o, ho, combo', hcombo', rfl⟩ := h
-    have ih := kidChoices_me v ks (fun k' hk' => hk k' (List.mem_cons_of_mem _ hk')) combo' hcombo'
+    have ih := kidChoices_me_rec v ks (fun k' hk' => hk k' (List.mem_cons_of_mem _ hk')) combo' hcombo'
     have hk0 := hk k (by simp)
     have ho' : maxEntry o.2.1 ≤ K := by
       rcases List.mem_cons.1 ho with rfl | ho
       · simp only []; omega
       · obtain ⟨p, hp, rfl⟩ := List.mem_map.1 ho
-        exact winPlans_me v 0 k hk0 p hp
+        exact winPlans_me_rec v 0 k hk0 p hp
     intro o' hmem
     rcases List.mem_cons.1 hmem with rfl | hmem
     · exact ho'
     · exact ih o' hmem
 end
+
+theorem winPlans_me_pair : (type_of% @winPlans_me_rec) ∧ (type_of% @kidChoices_me_rec) :=
+  ⟨@winPlans_me_rec, @kidChoices_me_rec⟩
+
+theorem winPlans_me : type_of% @winPlans_me_rec := winPlans_me_pair.1
+
 
 theorem wtopPlans_me (v : ℕ) {K : ℕ} {t : CT} (ht : maxEntry t + 1 ≤ K) :
     ∀ x ∈ wtopPlans v t, maxEntry x.2.1 ≤ K := by

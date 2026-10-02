@@ -46,17 +46,6 @@ theorem normF_merge (S : Finset ℕ) {s y : List ℕ} (hs : s ≠ []) {F : List 
 
 /-! ## comparison of normal-form computations up to a permutation of the kids -/
 
-theorem align {S1 : Finset ℕ} {y y' : List ℕ} (hy : Dom y y') {X : Type} (σ τ : List X)
-    (hperm : τ.Perm σ) (h1 h2 : X → CT) (hd : ∀ K ∈ τ, DomC (h1 K) (h2 K))
-    (hkd : (σ.map h2).Pairwise (fun a b => key S1 a ≠ key S1 b)) :
-    DomC (normF S1 y (τ.map h1)) (normF S1 y' (σ.map h2)) := by
-  have hL : DomCL (τ.map h1) (τ.map h2) := by
-    rw [domCL_iff, List.forall₂_map_left_iff, List.forall₂_map_right_iff]
-    exact List.forall₂_same.2 hd
-  have h := normF_mono (S := S1) hy hL
-  rw [normF_perm (hperm.map h2) hkd] at h
-  exact h
-
 /-! ## junk: nested run trees -/
 
 mutual
@@ -171,17 +160,22 @@ theorem yne_normF {S : Finset ℕ} {y : List ℕ} (hy : y ≠ []) {F : List CT} 
     exact hF k (mem_sortKids.1 hk)
 
 mutual
-theorem yne_norm : ∀ q : CT, YNe q → YNe (norm q)
+theorem yne_norm_rec : ∀ q : CT, YNe q → YNe (norm q)
   | node S y ks, h => by
     rw [norm_node']
     apply yne_normF h.1
     intro k hk
     obtain ⟨k0, hk0, rfl⟩ := List.mem_map.1 (List.mem_filter.1 hk).1
-    exact (YNeL_iff.1 (yneL_normL ks h.2)) (norm k0) (by rw [normL_eq_map]; exact List.mem_map.2 ⟨k0, hk0, rfl⟩)
-theorem yneL_normL : ∀ ks : List CT, YNeL ks → YNeL (normL ks)
+    exact (YNeL_iff.1 (yneL_normL_rec ks h.2)) (norm k0) (by rw [normL_eq_map]; exact List.mem_map.2 ⟨k0, hk0, rfl⟩)
+theorem yneL_normL_rec : ∀ ks : List CT, YNeL ks → YNeL (normL ks)
   | [], _ => trivial
-  | k :: ks, h => ⟨yne_norm k h.1, yneL_normL ks h.2⟩
+  | k :: ks, h => ⟨yne_norm_rec k h.1, yneL_normL_rec ks h.2⟩
 end
+
+theorem yne_norm_pair : (type_of% @yne_norm_rec) ∧ (type_of% @yneL_normL_rec) :=
+  ⟨@yne_norm_rec, @yneL_normL_rec⟩
+
+theorem yne_norm : type_of% @yne_norm_rec := yne_norm_pair.1
 
 end CT
 

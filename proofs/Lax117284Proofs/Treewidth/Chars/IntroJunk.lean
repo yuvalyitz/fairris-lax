@@ -43,32 +43,42 @@ theorem dom_singleton_le {c : ℕ} {y : List ℕ} (h : Dom [c] y) : ∀ x ∈ y,
 /-! ## induction principle for `FT` -/
 
 mutual
-theorem FT.ind {P : FT → Prop} (h : ∀ S e w ks, (∀ k ∈ ks, P k) → P (FT.node S e w ks)) : ∀ K : FT, P K
-  | FT.node S e w ks => h S e w ks (FT.indL h ks)
-theorem FT.indL {P : FT → Prop} (h : ∀ S e w ks, (∀ k ∈ ks, P k) → P (FT.node S e w ks)) :
+theorem FT.ind_rec {P : FT → Prop} (h : ∀ S e w ks, (∀ k ∈ ks, P k) → P (FT.node S e w ks)) : ∀ K : FT, P K
+  | FT.node S e w ks => h S e w ks (FT.indL_rec h ks)
+theorem FT.indL_rec {P : FT → Prop} (h : ∀ S e w ks, (∀ k ∈ ks, P k) → P (FT.node S e w ks)) :
     ∀ ks : List FT, ∀ k ∈ ks, P k
   | [] => by intro k hk; simp at hk
   | k :: ks => by
     intro k' hk'
     rcases List.mem_cons.1 hk' with e | hk''
-    · exact e ▸ FT.ind h k
-    · exact FT.indL h ks k' hk''
+    · exact e ▸ FT.ind_rec h k
+    · exact FT.indL_rec h ks k' hk''
 end
+
+theorem FT.ind_pair : (type_of% @FT.ind_rec) ∧ (type_of% @FT.indL_rec) :=
+  ⟨@FT.ind_rec, @FT.indL_rec⟩
+
+theorem FT.ind : type_of% @FT.ind_rec := FT.ind_pair.1
 
 namespace FT
 
 mutual
-theorem cov_of_not_occ : ∀ K : FT, occ K = false → cov K = ∅
+theorem cov_of_not_occ_rec : ∀ K : FT, occ K = false → cov K = ∅
   | node S e w ks, h => by
     simp only [occ, Bool.or_eq_false_iff] at h
     obtain ⟨rfl, h2⟩ := h
-    simp [cov, covL_of_not_occ ks h2]
-theorem covL_of_not_occ : ∀ ks : List FT, occL ks = false → covL ks = ∅
+    simp [cov, covL_of_not_occ_rec ks h2]
+theorem covL_of_not_occ_rec : ∀ ks : List FT, occL ks = false → covL ks = ∅
   | [], _ => rfl
   | k :: ks, h => by
     simp only [occL, Bool.or_eq_false_iff] at h
-    simp [covL, cov_of_not_occ k h.1, covL_of_not_occ ks h.2]
+    simp [covL, cov_of_not_occ_rec k h.1, covL_of_not_occ_rec ks h.2]
 end
+
+theorem cov_of_not_occ_pair : (type_of% @cov_of_not_occ_rec) ∧ (type_of% @covL_of_not_occ_rec) :=
+  ⟨@cov_of_not_occ_rec, @covL_of_not_occ_rec⟩
+
+theorem cov_of_not_occ : type_of% @cov_of_not_occ_rec := cov_of_not_occ_pair.1
 
 end FT
 

@@ -76,8 +76,6 @@ theorem Δ_lt {f : ℕ} {b : Tm} (h : Δ f = some b) : f < size := by
   rw [this] at h; cases h
 
 theorem ext3 : E5C3.Δ ⊑ Δ := Ext.layer tbl (fun f b h => by have := E5C3.Δ_lt h; simp [E5C3.size] at this; omega)
-theorem ext2 : E5C2.Δ ⊑ Δ := Ext.trans E5C3.ext2 ext3
-theorem ext1 : E5C1.Δ ⊑ Δ := Ext.trans E5C3.ext1 ext3
 theorem extB : E5B.Δ ⊑ Δ := Ext.trans E5C3.extB ext3
 theorem extA : E5A.Δ ⊑ Δ := Ext.trans E5C3.extA ext3
 theorem extE1 : E1.e1Δ ⊑ Δ := Ext.trans E5C3.extE1 ext3
@@ -146,11 +144,11 @@ theorem entLeY_runs (kmax : ℕ) (hB : 1 < B) : ∀ y : List ℕ,
       · simp only [List.length_cons]; omega
 
 mutual
-theorem entLe_runs (kmax : ℕ) (hB : 1 < B) (hk : fEntLe < B) : ∀ c : CT,
+theorem entLe_runs_rec (kmax : ℕ) (hB : 1 < B) (hk : fEntLe < B) : ∀ c : CT,
     Runs Δ' B fEntLe [toVal kmax, toVal c] (toVal (decide (c.maxEntry ≤ kmax))) (30 * sz c + 10)
   | .node S y ks => by
     have h1 := entLeY_runs hΔ B kmax hB y
-    have h2 := entLeL_runs kmax hB hk ks
+    have h2 := entLeL_runs_rec kmax hB hk ks
     have hkl : fEntLeL < B := by
       have : fEntLeL < fEntLe := by decide
       omega
@@ -187,7 +185,7 @@ theorem entLe_runs (kmax : ℕ) (hB : 1 < B) (hk : fEntLe < B) : ∀ c : CT,
       · ev_run
         all_goals (first | omega | (simp; done) | (simp; omega))
       · have := sz_pos S; omega
-theorem entLeL_runs (kmax : ℕ) (hB : 1 < B) (hk : fEntLe < B) : ∀ ks : List CT,
+theorem entLeL_runs_rec (kmax : ℕ) (hB : 1 < B) (hk : fEntLe < B) : ∀ ks : List CT,
     Runs Δ' B fEntLeL [toVal kmax, toVal ks] (toVal (decide (CT.maxEntryL ks ≤ kmax))) (30 * sz ks + 10)
   | [] => by
     refine Runs.mk (hΔ _ _ Δ_entLeL) ?_
@@ -196,8 +194,8 @@ theorem entLeL_runs (kmax : ℕ) (hB : 1 < B) (hk : fEntLe < B) : ∀ ks : List 
     · ev_run
     · simp
   | k :: ks => by
-    have h1 := entLe_runs kmax hB hk k
-    have h2 := entLeL_runs kmax hB hk ks
+    have h1 := entLe_runs_rec kmax hB hk k
+    have h2 := entLeL_runs_rec kmax hB hk ks
     have hkc : fEntLeL < B := by
       have : fEntLeL < fEntLe := by decide
       omega
@@ -229,6 +227,17 @@ theorem entLeL_runs (kmax : ℕ) (hB : 1 < B) (hk : fEntLe < B) : ∀ ks : List 
         all_goals (first | omega | (simp; done) | (simp; omega))
       · omega
 end
+
+end proofs
+
+theorem entLe_runs_pair : (type_of% @entLe_runs_rec) ∧ (type_of% @entLeL_runs_rec) :=
+  ⟨@entLe_runs_rec, @entLeL_runs_rec⟩
+
+theorem entLe_runs : type_of% @entLe_runs_rec := entLe_runs_pair.1
+
+section proofs
+variable {Δ' : ℕ → Option Tm} (hΔ : Δ ⊑ Δ') (B : ℕ)
+include hΔ
 
 omit hΔ in
 theorem sz_plan_res_le (r : List ℕ × CT.Plan × CT) : sz r.2.2 ≤ sz r ∧ sz r.1 ≤ sz r ∧ sz r.2.1 ≤ sz r := by

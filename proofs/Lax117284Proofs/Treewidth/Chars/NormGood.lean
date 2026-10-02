@@ -37,24 +37,34 @@ theorem GoodL_iff {B : Finset ℕ} {ks : List CT} : GoodL B ks ↔ ∀ k ∈ ks,
   | cons k ks ih => simp [GoodL, ih]
 
 mutual
-theorem loc_of_good {B : Finset ℕ} : ∀ q : CT, Good B q → Loc B q
-  | node S y ks, h => ⟨h.1, h.2.1, h.2.2.1, h.2.2.2.1, locL_of_goodL ks h.2.2.2.2.2.2.2.2⟩
-theorem locL_of_goodL {B : Finset ℕ} : ∀ ks : List CT, GoodL B ks → LocL B ks
+theorem loc_of_good_rec {B : Finset ℕ} : ∀ q : CT, Good B q → Loc B q
+  | node S y ks, h => ⟨h.1, h.2.1, h.2.2.1, h.2.2.2.1, locL_of_goodL_rec ks h.2.2.2.2.2.2.2.2⟩
+theorem locL_of_goodL_rec {B : Finset ℕ} : ∀ ks : List CT, GoodL B ks → LocL B ks
   | [], _ => trivial
-  | k :: ks, h => ⟨loc_of_good k h.1, locL_of_goodL ks h.2⟩
+  | k :: ks, h => ⟨loc_of_good_rec k h.1, locL_of_goodL_rec ks h.2⟩
 end
 
+theorem loc_of_good_pair : (type_of% @loc_of_good_rec) ∧ (type_of% @locL_of_goodL_rec) :=
+  ⟨@loc_of_good_rec, @locL_of_goodL_rec⟩
+
+theorem loc_of_good : type_of% @loc_of_good_rec := loc_of_good_pair.1
+
 mutual
-theorem loc_relabel_erase {B : Finset ℕ} (x : ℕ) : ∀ q : CT, Loc B q → Loc (B.erase x) (relabel (fun S => S.erase x) q)
+theorem loc_relabel_erase_rec {B : Finset ℕ} (x : ℕ) : ∀ q : CT, Loc B q → Loc (B.erase x) (relabel (fun S => S.erase x) q)
   | node S y ks, h => by
     refine ⟨Finset.erase_subset_erase x h.1, h.2.1, h.2.2.1, fun e he => ?_, ?_⟩
     · exact (Finset.card_erase_le).trans (h.2.2.2.1 e he)
-    · exact locL_relabel_erase x ks h.2.2.2.2
-theorem locL_relabel_erase {B : Finset ℕ} (x : ℕ) : ∀ ks : List CT, LocL B ks →
+    · exact locL_relabel_erase_rec x ks h.2.2.2.2
+theorem locL_relabel_erase_rec {B : Finset ℕ} (x : ℕ) : ∀ ks : List CT, LocL B ks →
     LocL (B.erase x) (relabelL (fun S => S.erase x) ks)
   | [], _ => trivial
-  | k :: ks, h => ⟨loc_relabel_erase x k h.1, locL_relabel_erase x ks h.2⟩
+  | k :: ks, h => ⟨loc_relabel_erase_rec x k h.1, locL_relabel_erase_rec x ks h.2⟩
 end
+
+theorem loc_relabel_erase_pair : (type_of% @loc_relabel_erase_rec) ∧ (type_of% @locL_relabel_erase_rec) :=
+  ⟨@loc_relabel_erase_rec, @locL_relabel_erase_rec⟩
+
+theorem loc_relabel_erase : type_of% @loc_relabel_erase_rec := loc_relabel_erase_pair.1
 
 /-- The cut-down sequence of a run is typical. -/
 theorem typical_take_one {y : List ℕ} (hy : y ≠ []) : typical (y.take 1) = y.take 1 := by
@@ -104,21 +114,26 @@ theorem good_normF {B S : Finset ℕ} {y : List ℕ} {F : List CT} (hS : S ⊆ B
     · rw [GoodL_iff]; intro k hk; rw [mem_sortKids] at hk; exact (hF k hk).1
 
 mutual
-theorem good_norm {B : Finset ℕ} : ∀ q : CT, Loc B q → Conn q → Good B (norm q)
+theorem good_norm_rec {B : Finset ℕ} : ∀ q : CT, Loc B q → Conn q → Good B (norm q)
   | node S y ks, h, hc => by
     rw [norm_node']
     apply good_normF h.1 h.2.1 h.2.2.1 h.2.2.2.1
     · intro n hn
       obtain ⟨hn1, hn2⟩ := List.mem_filter.1 hn
       refine ⟨?_, keep_eq_true_iff.1 hn2⟩
-      have := goodL_normL ks h.2.2.2.2 hc.1
+      have := goodL_normL_rec ks h.2.2.2.2 hc.1
       rw [normL_eq_map, GoodL_iff] at this
       exact this n hn1
     · exact survivors_keys_distinct hc
-theorem goodL_normL {B : Finset ℕ} : ∀ ks : List CT, LocL B ks → ConnL ks → GoodL B (normL ks)
+theorem goodL_normL_rec {B : Finset ℕ} : ∀ ks : List CT, LocL B ks → ConnL ks → GoodL B (normL ks)
   | [], _, _ => trivial
-  | k :: ks, h, hc => ⟨good_norm k h.1 hc.1, goodL_normL ks h.2 hc.2⟩
+  | k :: ks, h, hc => ⟨good_norm_rec k h.1 hc.1, goodL_normL_rec ks h.2 hc.2⟩
 end
+
+theorem good_norm_pair : (type_of% @good_norm_rec) ∧ (type_of% @goodL_normL_rec) :=
+  ⟨@good_norm_rec, @goodL_normL_rec⟩
+
+theorem good_norm : type_of% @good_norm_rec := good_norm_pair.1
 
 /-! ## the largest entry -/
 
@@ -169,35 +184,45 @@ theorem maxEntry_normF_le {S : Finset ℕ} {y : List ℕ} {K : List CT} {n : ℕ
     exact ⟨hy, fun k hk => hF k (mem_sortKids.1 hk)⟩
 
 mutual
-theorem maxEntry_norm_le : ∀ q : CT, maxEntry (norm q) ≤ maxEntry q
+theorem maxEntry_norm_le_rec : ∀ q : CT, maxEntry (norm q) ≤ maxEntry q
   | node S y ks => by
     have h := (maxEntry_le_iff (n := maxEntry (node S y ks))).1 le_rfl
-    have hL := maxEntryL_norm_le ks
+    have hL := maxEntryL_norm_le_rec ks
     rw [norm_node']
     apply maxEntry_normF_le h.1
     intro k hk
     obtain ⟨k0, hk0, rfl⟩ := List.mem_map.1 hk
-    exact (maxEntry_norm_le_mem ks k0 hk0).trans (h.2 k0 hk0)
-theorem maxEntryL_norm_le : ∀ ks : List CT, maxEntryL (normL ks) ≤ maxEntryL ks
+    exact (maxEntry_norm_le_mem_rec ks k0 hk0).trans (h.2 k0 hk0)
+theorem maxEntryL_norm_le_rec : ∀ ks : List CT, maxEntryL (normL ks) ≤ maxEntryL ks
   | [] => le_rfl
   | k :: ks => by
     simp only [normL, maxEntryL]
-    exact max_le_max (maxEntry_norm_le k) (maxEntryL_norm_le ks)
-theorem maxEntry_norm_le_mem : ∀ (ks : List CT), ∀ k ∈ ks, maxEntry (norm k) ≤ maxEntry k
+    exact max_le_max (maxEntry_norm_le_rec k) (maxEntryL_norm_le_rec ks)
+theorem maxEntry_norm_le_mem_rec : ∀ (ks : List CT), ∀ k ∈ ks, maxEntry (norm k) ≤ maxEntry k
   | [], k, hk => by simp at hk
   | k' :: ks, k, hk => by
     rcases List.mem_cons.1 hk with e | hk
-    · rw [e]; exact maxEntry_norm_le k'
-    · exact maxEntry_norm_le_mem ks k hk
+    · rw [e]; exact maxEntry_norm_le_rec k'
+    · exact maxEntry_norm_le_mem_rec ks k hk
 end
 
+theorem maxEntry_norm_le_triple : (type_of% @maxEntry_norm_le_rec) ∧ (type_of% @maxEntryL_norm_le_rec) ∧ (type_of% @maxEntry_norm_le_mem_rec) :=
+  ⟨@maxEntry_norm_le_rec, @maxEntryL_norm_le_rec, @maxEntry_norm_le_mem_rec⟩
+
+theorem maxEntry_norm_le : type_of% @maxEntry_norm_le_rec := maxEntry_norm_le_triple.1
+
 mutual
-theorem maxEntry_relabel (f : Finset ℕ → Finset ℕ) : ∀ q : CT, maxEntry (relabel f q) = maxEntry q
-  | node S y ks => by simp only [relabel, maxEntry, maxEntryL_relabelL f ks]
-theorem maxEntryL_relabelL (f : Finset ℕ → Finset ℕ) : ∀ ks : List CT, maxEntryL (relabelL f ks) = maxEntryL ks
+theorem maxEntry_relabel_rec (f : Finset ℕ → Finset ℕ) : ∀ q : CT, maxEntry (relabel f q) = maxEntry q
+  | node S y ks => by simp only [relabel, maxEntry, maxEntryL_relabelL_rec f ks]
+theorem maxEntryL_relabelL_rec (f : Finset ℕ → Finset ℕ) : ∀ ks : List CT, maxEntryL (relabelL f ks) = maxEntryL ks
   | [] => rfl
-  | k :: ks => by simp only [relabelL, maxEntryL, maxEntry_relabel f k, maxEntryL_relabelL f ks]
+  | k :: ks => by simp only [relabelL, maxEntryL, maxEntry_relabel_rec f k, maxEntryL_relabelL_rec f ks]
 end
+
+theorem maxEntry_relabel_pair : (type_of% @maxEntry_relabel_rec) ∧ (type_of% @maxEntryL_relabelL_rec) :=
+  ⟨@maxEntry_relabel_rec, @maxEntryL_relabelL_rec⟩
+
+theorem maxEntry_relabel : type_of% @maxEntry_relabel_rec := maxEntry_relabel_pair.1
 
 end CT
 

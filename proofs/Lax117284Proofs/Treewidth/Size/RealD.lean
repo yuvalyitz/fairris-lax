@@ -132,18 +132,18 @@ theorem mergeChain_chsz_le {na nb : List CNode} {P : List (ℕ × ℕ)}
   omega
 
 mutual
-theorem mergeAR_nsz_le : ∀ (a b : AR) (c : CT) (r : AR), mergeAR a b c = some r → r.nsz ≤ a.nsz + b.nsz
+theorem mergeAR_nsz_le_rec : ∀ (a b : AR) (c : CT) (r : AR), mergeAR a b c = some r → r.nsz ≤ a.nsz + b.nsz
   | .run S na ka, .run S' nb kb, .node S'' ty tk, r, h => by
     simp only [mergeAR] at h
     split at h
     · simp at h
     · rename_i path hp
       obtain ⟨ks, hks, rfl⟩ := Option.map_eq_some_iff.1 h
-      have h1 := mergeKids_nszL_le ka kb tk ks hks
+      have h1 := mergeKids_nszL_le_rec ka kb tk ks hks
       have h2 := mergeChain_chsz_le (findPath_spec hp).1
       simp only [AR.nsz]
       omega
-theorem mergeKids_nszL_le : ∀ (ka kb : List AR) (tk : List CT) (ks : List AR),
+theorem mergeKids_nszL_le_rec : ∀ (ka kb : List AR) (tk : List CT) (ks : List AR),
     mergeKids ka kb tk = some ks → AR.nszL ks ≤ AR.nszL ka + AR.nszL kb
   | [], [], [], ks, h => by
     simp only [mergeKids, Option.some.injEq] at h; subst h; simp [AR.nszL]
@@ -151,8 +151,8 @@ theorem mergeKids_nszL_le : ∀ (ka kb : List AR) (tk : List CT) (ks : List AR),
     simp only [mergeKids] at h
     obtain ⟨r, hr, h2⟩ := Option.bind_eq_some_iff.1 h
     obtain ⟨l, hl, rfl⟩ := Option.map_eq_some_iff.1 h2
-    have h1 := mergeAR_nsz_le a b t r hr
-    have h3 := mergeKids_nszL_le as bs ts l hl
+    have h1 := mergeAR_nsz_le_rec a b t r hr
+    have h3 := mergeKids_nszL_le_rec as bs ts l hl
     simp only [AR.nszL]
     omega
   | [], [], _ :: _, _, h => by simp [mergeKids] at h
@@ -160,6 +160,11 @@ theorem mergeKids_nszL_le : ∀ (ka kb : List AR) (tk : List CT) (ks : List AR),
   | _ :: _, [], _, _, h => by simp [mergeKids] at h
   | _ :: _, _ :: _, [], _, h => by simp [mergeKids] at h
 end
+
+theorem mergeAR_nsz_le_pair : (type_of% @mergeAR_nsz_le_rec) ∧ (type_of% @mergeKids_nszL_le_rec) :=
+  ⟨@mergeAR_nsz_le_rec, @mergeKids_nszL_le_rec⟩
+
+theorem mergeAR_nsz_le : type_of% @mergeAR_nsz_le_rec := mergeAR_nsz_le_pair.1
 
 /-- **`mergeReal` produces a tree of at most `|ta| + |tb|` nodes.** -/
 theorem mergeReal_size_le {B : Finset ℕ} {ta tb t : RT} {target : CT} (h : mergeReal B ta tb target = some t) :

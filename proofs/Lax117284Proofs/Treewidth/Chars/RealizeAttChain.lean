@@ -12,7 +12,7 @@ namespace Lax117284Proofs.Treewidth.Chars
 
 open Lax117284Proofs.Treewidth.Seq Lax117284Proofs.Treewidth.Trees CT
 
-theorem addJunk_nil (x : ℕ) (br : RT) : addJunk x br [] = [] := rfl
+theorem addJunk_nil (x : ℕ) (br : RT) : addJunk x br [] = [] := by rfl
 
 theorem addJunk_cons_zero (br : RT) (n : CNode) (r : List CNode) :
     addJunk 0 br (n :: r) = ⟨n.bag, n.junk ++ [br]⟩ :: r := by

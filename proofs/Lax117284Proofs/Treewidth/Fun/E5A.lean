@@ -182,75 +182,49 @@ theorem sz_rt_ks_lt (X : Finset ℕ) (ks : List RT) : sz ks < sz (RT.node X ks) 
   rw [sz_rt_node]; have := sz_pos X; omega
 
 mutual
-theorem sz_charAR_le : ∀ r : AR, sz r.char ≤ sz r
+theorem sz_charAR_le_rec : ∀ r : AR, sz r.char ≤ sz r
   | .run S c ks => by
-    have h1 := sz_charARL_le ks
+    have h1 := sz_charARL_le_rec ks
     have h2 := sz_chain_ge c
     have h3 := typical_length_le (c.map (fun n => n.bag.card))
     rw [List.length_map] at h3
     rw [sz_ar]
     simp only [AR.char, sz_ct_node, sz_list_nat, List.length_map]
     omega
-theorem sz_charARL_le : ∀ ks : List AR, sz (AR.charL ks) ≤ sz ks
+theorem sz_charARL_le_rec : ∀ ks : List AR, sz (AR.charL ks) ≤ sz ks
   | [] => by simp [AR.charL]
   | k :: ks => by
-    have h1 := sz_charAR_le k
-    have h2 := sz_charARL_le ks
+    have h1 := sz_charAR_le_rec k
+    have h2 := sz_charARL_le_rec ks
     simp only [AR.charL, sz_cons]; omega
 end
 
-theorem sz_chainToRT_le : ∀ (ns : List CNode) (ks : List RT), sz (AR.chainToRT ns ks) ≤ sz ns + sz ks + 2
-  | [], ks => by simp [AR.chainToRT, sz_rt_node, sz_finset]
-  | [n], ks => by
-    obtain ⟨b, j⟩ := n
-    have := sz_append j ks
-    simp only [AR.chainToRT, sz_rt_node, sz_cons, sz_cnode]
-    have : sz ([] : List CNode) = 1 := rfl
-    omega
-  | n :: m :: r, ks => by
-    obtain ⟨b, j⟩ := n
-    have ih := sz_chainToRT_le (m :: r) ks
-    have h1 := sz_append j [AR.chainToRT (m :: r) ks]
-    have h2 : sz [AR.chainToRT (m :: r) ks] = sz (AR.chainToRT (m :: r) ks) + 2 := by
-      rw [sz_cons]; simp
-    have h3 : sz (CNode.mk b j :: m :: r) = sz b + sz j + 1 + sz (m :: r) + 1 := by
-      rw [sz_cons, sz_cnode]
-    simp only [AR.chainToRT, sz_rt_node]
-    omega
+theorem sz_charAR_le_pair : (type_of% @sz_charAR_le_rec) ∧ (type_of% @sz_charARL_le_rec) :=
+  ⟨@sz_charAR_le_rec, @sz_charARL_le_rec⟩
+
+theorem sz_charAR_le : type_of% @sz_charAR_le_rec := sz_charAR_le_pair.1
 
 mutual
-theorem sz_toRT_le : ∀ r : AR, sz (AR.toRT r) ≤ sz r
-  | .run S c ks => by
-    have h1 := sz_toRTL_le ks
-    have h2 := sz_chainToRT_le c (AR.toRTL ks)
-    have := sz_pos S
-    rw [sz_ar]
-    simp only [AR.toRT]
-    omega
-theorem sz_toRTL_le : ∀ ks : List AR, sz (AR.toRTL ks) ≤ sz ks
-  | [] => by simp [AR.toRTL]
-  | k :: ks => by
-    have h1 := sz_toRT_le k
-    have h2 := sz_toRTL_le ks
-    simp only [AR.toRTL, sz_cons]; omega
-end
-
-mutual
-theorem sz_prof_le (Bd : Finset ℕ) : ∀ t : RT, sz (t.prof Bd) ≤ sz t + 4 * t.size
+theorem sz_prof_le_rec (Bd : Finset ℕ) : ∀ t : RT, sz (t.prof Bd) ≤ sz t + 4 * t.size
   | .node X ks => by
-    have h1 := sz_profL_le Bd ks
+    have h1 := sz_profL_le_rec Bd ks
     have h2 := sz_inter_le X Bd
     simp only [RT.prof, sz_ct_node, sz_rt_node, RT.size]
     have : sz [X.card] = 3 := by simp [sz_cons]
     rw [this]
     omega
-theorem sz_profL_le (Bd : Finset ℕ) : ∀ ks : List RT, sz (RT.profL Bd ks) ≤ sz ks + 4 * RT.sizeL ks
+theorem sz_profL_le_rec (Bd : Finset ℕ) : ∀ ks : List RT, sz (RT.profL Bd ks) ≤ sz ks + 4 * RT.sizeL ks
   | [] => by simp [RT.profL, RT.sizeL]
   | k :: ks => by
-    have h1 := sz_prof_le Bd k
-    have h2 := sz_profL_le Bd ks
+    have h1 := sz_prof_le_rec Bd k
+    have h2 := sz_profL_le_rec Bd ks
     simp only [RT.profL, sz_cons, RT.sizeL]; omega
 end
+
+theorem sz_prof_le_pair : (type_of% @sz_prof_le_rec) ∧ (type_of% @sz_profL_le_rec) :=
+  ⟨@sz_prof_le_rec, @sz_profL_le_rec⟩
+
+theorem sz_prof_le : type_of% @sz_prof_le_rec := sz_prof_le_pair.1
 
 theorem sz_prof_le5 (Bd : Finset ℕ) (t : RT) : sz (t.prof Bd) ≤ 5 * sz t := by
   have := sz_prof_le Bd t; have := size_le_sz t; omega
@@ -307,14 +281,14 @@ theorem cards_runs (ns : List CNode) (hB : 8 * sz ns + 20 < B) :
     · have := sz_pos j; rw [hs]; omega
 
 mutual
-theorem charAR_runs (s : ℕ) (hB : 100 * (s + 1) < B) : ∀ r : AR, sz r ≤ s →
+theorem charAR_runs_rec (s : ℕ) (hB : 100 * (s + 1) < B) : ∀ r : AR, sz r ≤ s →
     Runs Δ' B fCharAR [toVal r] (toVal r.char) (400 * (s + 1) ^ 3 * cnt r)
   | .run S c ks, hs => by
     have hcs : sz c ≤ s := by have := sz_c_lt S c ks; omega
     have hks : sz ks ≤ s := by have := sz_ks_lt S c ks; omega
     have h1 := cards_runs hΔ B c (by omega)
     have h2 := E1A.typical_runs (eA (Ext.trans extE1 hΔ)) B (by omega) (c.map (fun n => n.bag.card))
-    have h3 := charARL_runs s hB ks hks
+    have h3 := charARL_runs_rec s hB ks hks
     have hlen : (c.map (fun n => n.bag.card)).length ≤ s := by
       have := sz_chain_ge c; rw [List.length_map]; omega
     have h4 : ((c.map (fun n => n.bag.card)).length + 1) ^ 3 ≤ (s + 1) ^ 3 := Nat.pow_le_pow_left (by omega) 3
@@ -328,7 +302,7 @@ theorem charAR_runs (s : ℕ) (hB : 100 * (s + 1) < B) : ∀ r : AR, sz r ≤ s 
       have e : 400 * T * (1 + cntL ks) = 400 * T + 400 * T * cntL ks := by ring
       rw [e]
       nlinarith
-theorem charARL_runs (s : ℕ) (hB : 100 * (s + 1) < B) : ∀ ks : List AR, sz ks ≤ s →
+theorem charARL_runs_rec (s : ℕ) (hB : 100 * (s + 1) < B) : ∀ ks : List AR, sz ks ≤ s →
     Runs Δ' B fCharARL [toVal ks] (toVal (AR.charL ks)) (400 * (s + 1) ^ 3 * cntL ks + 20 * ks.length + 8)
   | [], hs => by
     refine Runs.mk (hΔ _ _ Δ_charARL) ?_
@@ -339,8 +313,8 @@ theorem charARL_runs (s : ℕ) (hB : 100 * (s + 1) < B) : ∀ ks : List AR, sz k
   | k :: ks, hs => by
     have hk : sz k ≤ s := by have := sz_head_lt k ks; omega
     have hks : sz ks ≤ s := by have := sz_tail_lt k ks; omega
-    have h1 := charAR_runs s hB k hk
-    have h2 := charARL_runs s hB ks hks
+    have h1 := charAR_runs_rec s hB k hk
+    have h2 := charARL_runs_rec s hB ks hks
     have h3 := cnt_pos k
     have h6 : s + 1 ≤ (s + 1) ^ 3 := le_pw (by omega) (by omega)
     refine Runs.mk (hΔ _ _ Δ_charARL) ?_
@@ -352,6 +326,17 @@ theorem charARL_runs (s : ℕ) (hB : 100 * (s + 1) < B) : ∀ ks : List AR, sz k
       rw [e]
       nlinarith
 end
+
+end proofs
+
+theorem charAR_runs_pair : (type_of% @charAR_runs_rec) ∧ (type_of% @charARL_runs_rec) :=
+  ⟨@charAR_runs_rec, @charARL_runs_rec⟩
+
+theorem charAR_runs : type_of% @charAR_runs_rec := charAR_runs_pair.1
+
+section proofs
+variable {Δ' : ℕ → Option Tm} (hΔ : Δ ⊑ Δ') (B : ℕ)
+include hΔ
 
 theorem chainToRT_runs : ∀ (ns : List CNode) (ks : List RT), 1 < B →
     Runs Δ' B fChainToRT [toVal ns, toVal ks] (toVal (AR.chainToRT ns ks)) (40 * sz ns + 20)
@@ -386,13 +371,13 @@ theorem chainToRT_runs : ∀ (ns : List CNode) (ks : List RT), 1 < B →
       omega
 
 mutual
-theorem toRT_runs (s : ℕ) (hB : 100 * (s + 1) < B) : ∀ r : AR, sz r ≤ s →
+theorem toRT_runs_rec (s : ℕ) (hB : 100 * (s + 1) < B) : ∀ r : AR, sz r ≤ s →
     Runs Δ' B fToRT [toVal r] (toVal (AR.toRT r)) (100 * (s + 1) * cnt r)
   | .run S c ks, hs => by
     have hcs : sz c ≤ s := by have := sz_c_lt S c ks; omega
     have hks : sz ks ≤ s := by have := sz_ks_lt S c ks; omega
     have h1 := chainToRT_runs hΔ B c (AR.toRTL ks) (by omega)
-    have h2 := toRTL_runs s hB ks hks
+    have h2 := toRTL_runs_rec s hB ks hks
     have h5 : ks.length ≤ s := by have := length_le_sz ks; omega
     refine Runs.mk (hΔ _ _ Δ_toRT) ?_
     simp only [AR.toRT, toVal_ar, cnt]
@@ -402,7 +387,7 @@ theorem toRT_runs (s : ℕ) (hB : 100 * (s + 1) < B) : ∀ r : AR, sz r ≤ s �
       have e : 100 * T * (1 + cntL ks) = 100 * T + 100 * T * cntL ks := by ring
       rw [e]
       nlinarith
-theorem toRTL_runs (s : ℕ) (hB : 100 * (s + 1) < B) : ∀ ks : List AR, sz ks ≤ s →
+theorem toRTL_runs_rec (s : ℕ) (hB : 100 * (s + 1) < B) : ∀ ks : List AR, sz ks ≤ s →
     Runs Δ' B fToRTL [toVal ks] (toVal (AR.toRTL ks)) (100 * (s + 1) * cntL ks + 20 * ks.length + 8)
   | [], hs => by
     refine Runs.mk (hΔ _ _ Δ_toRTL) ?_
@@ -413,8 +398,8 @@ theorem toRTL_runs (s : ℕ) (hB : 100 * (s + 1) < B) : ∀ ks : List AR, sz ks 
   | k :: ks, hs => by
     have hk : sz k ≤ s := by have := sz_head_lt k ks; omega
     have hks : sz ks ≤ s := by have := sz_tail_lt k ks; omega
-    have h1 := toRT_runs s hB k hk
-    have h2 := toRTL_runs s hB ks hks
+    have h1 := toRT_runs_rec s hB k hk
+    have h2 := toRTL_runs_rec s hB ks hks
     have h3 := cnt_pos k
     refine Runs.mk (hΔ _ _ Δ_toRTL) ?_
     simp only [AR.toRTL, cntL, toVal_cons, List.length_cons]
@@ -426,8 +411,19 @@ theorem toRTL_runs (s : ℕ) (hB : 100 * (s + 1) < B) : ∀ ks : List AR, sz ks 
       nlinarith
 end
 
+end proofs
+
+theorem toRT_runs_pair : (type_of% @toRT_runs_rec) ∧ (type_of% @toRTL_runs_rec) :=
+  ⟨@toRT_runs_rec, @toRTL_runs_rec⟩
+
+theorem toRT_runs : type_of% @toRT_runs_rec := toRT_runs_pair.1
+
+section proofs
+variable {Δ' : ℕ → Option Tm} (hΔ : Δ ⊑ Δ') (B : ℕ)
+include hΔ
+
 mutual
-theorem prof_runs (Bd : Finset ℕ) (s : ℕ) (hB : 100 * (s + 1) < B) (hBd : sz Bd ≤ s) : ∀ t : RT, sz t ≤ s →
+theorem prof_runs_rec (Bd : Finset ℕ) (s : ℕ) (hB : 100 * (s + 1) < B) (hBd : sz Bd ≤ s) : ∀ t : RT, sz t ≤ s →
     Runs Δ' B fProf [toVal Bd, toVal t] (toVal (t.prof Bd)) (200 * (s + 1) * t.size)
   | .node X ks, hs => by
     have hX : sz X ≤ s := by have := sz_rt_X_lt X ks; omega
@@ -435,7 +431,7 @@ theorem prof_runs (Bd : Finset ℕ) (s : ℕ) (hB : 100 * (s + 1) < B) (hBd : sz
     have h1 := Lib3.inter_runs (l3 (Ext.trans extE1 hΔ)) B X Bd
     have hc := card_le_sz X
     have h2 := Lib4.card_runs (l4 (Ext.trans extE1 hΔ)) B X (by omega)
-    have h3 := profL_runs Bd s hB hBd ks hks
+    have h3 := profL_runs_rec Bd s hB hBd ks hks
     have h5 : ks.length ≤ s := by have := length_le_sz ks; omega
     have hc1 := card_le_sz Bd
     refine Runs.mk (hΔ _ _ Δ_prof) ?_
@@ -447,7 +443,7 @@ theorem prof_runs (Bd : Finset ℕ) (s : ℕ) (hB : 100 * (s + 1) < B) (hBd : sz
       have e : 200 * T * (1 + RT.sizeL ks) = 200 * T + 200 * T * RT.sizeL ks := by ring
       rw [e]
       nlinarith
-theorem profL_runs (Bd : Finset ℕ) (s : ℕ) (hB : 100 * (s + 1) < B) (hBd : sz Bd ≤ s) : ∀ ks : List RT, sz ks ≤ s →
+theorem profL_runs_rec (Bd : Finset ℕ) (s : ℕ) (hB : 100 * (s + 1) < B) (hBd : sz Bd ≤ s) : ∀ ks : List RT, sz ks ≤ s →
     Runs Δ' B fProfL [toVal Bd, toVal ks] (toVal (RT.profL Bd ks))
       (200 * (s + 1) * RT.sizeL ks + 20 * ks.length + 8)
   | [], hs => by
@@ -459,8 +455,8 @@ theorem profL_runs (Bd : Finset ℕ) (s : ℕ) (hB : 100 * (s + 1) < B) (hBd : s
   | k :: ks, hs => by
     have hk : sz k ≤ s := by have := sz_head_lt k ks; omega
     have hks : sz ks ≤ s := by have := sz_tail_lt k ks; omega
-    have h1 := prof_runs Bd s hB hBd k hk
-    have h2 := profL_runs Bd s hB hBd ks hks
+    have h1 := prof_runs_rec Bd s hB hBd k hk
+    have h2 := profL_runs_rec Bd s hB hBd ks hks
     have h3 : 1 ≤ k.size := by cases k; simp [RT.size]
     refine Runs.mk (hΔ _ _ Δ_profL) ?_
     simp only [RT.profL, RT.sizeL, toVal_cons, List.length_cons]
@@ -471,6 +467,17 @@ theorem profL_runs (Bd : Finset ℕ) (s : ℕ) (hB : 100 * (s + 1) < B) (hBd : s
       rw [e]
       nlinarith
 end
+
+end proofs
+
+theorem prof_runs_pair : (type_of% @prof_runs_rec) ∧ (type_of% @profL_runs_rec) :=
+  ⟨@prof_runs_rec, @profL_runs_rec⟩
+
+theorem prof_runs : type_of% @prof_runs_rec := prof_runs_pair.1
+
+section proofs
+variable {Δ' : ℕ → Option Tm} (hΔ : Δ ⊑ Δ') (B : ℕ)
+include hΔ
 
 theorem char_runs (E : Ext5 Δ') (Bd : Finset ℕ) (t : RT) (s : ℕ) (hst : sz t ≤ s) (hBd : sz Bd ≤ s)
     (hB : 100 * (s + 1) + E.cNorm (5 * s) < B) :

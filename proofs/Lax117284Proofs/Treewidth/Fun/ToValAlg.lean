@@ -42,22 +42,27 @@ def encCTL : List CT → Val
 end
 
 mutual
-theorem encCT_inj : ∀ a b : CT, encCT a = encCT b → a = b
+theorem encCT_inj_rec : ∀ a b : CT, encCT a = encCT b → a = b
   | .node S y ks, .node S' y' ks', h => by
     simp only [encCT, Val.cons.injEq] at h
     obtain ⟨h1, h2, h3⟩ := h
     have e1 : S = S' := ToVal.inj h1
     have e2 : y = y' := ToVal.inj h2
-    have e3 := encCTL_inj ks ks' h3
+    have e3 := encCTL_inj_rec ks ks' h3
     subst e1 e2 e3; rfl
-theorem encCTL_inj : ∀ a b : List CT, encCTL a = encCTL b → a = b
+theorem encCTL_inj_rec : ∀ a b : List CT, encCTL a = encCTL b → a = b
   | [], [], _ => rfl
   | [], _ :: _, h => by simp [encCTL] at h
   | _ :: _, [], h => by simp [encCTL] at h
   | k :: ks, k' :: ks', h => by
     simp only [encCTL, Val.cons.injEq] at h
-    rw [encCT_inj k k' h.1, encCTL_inj ks ks' h.2]
+    rw [encCT_inj_rec k k' h.1, encCTL_inj_rec ks ks' h.2]
 end
+
+theorem encCT_inj_pair : (type_of% @encCT_inj_rec) ∧ (type_of% @encCTL_inj_rec) :=
+  ⟨@encCT_inj_rec, @encCTL_inj_rec⟩
+
+theorem encCT_inj : type_of% @encCT_inj_rec := encCT_inj_pair.1
 
 instance : ToVal CT := ⟨encCT, fun a b h => encCT_inj a b h⟩
 
@@ -81,21 +86,26 @@ def encRTL : List RT → Val
 end
 
 mutual
-theorem encRT_inj : ∀ a b : RT, encRT a = encRT b → a = b
+theorem encRT_inj_rec : ∀ a b : RT, encRT a = encRT b → a = b
   | .node X ks, .node X' ks', h => by
     simp only [encRT, Val.cons.injEq] at h
     obtain ⟨h1, h2⟩ := h
     have e1 : X = X' := ToVal.inj h1
-    have e2 := encRTL_inj ks ks' h2
+    have e2 := encRTL_inj_rec ks ks' h2
     subst e1 e2; rfl
-theorem encRTL_inj : ∀ a b : List RT, encRTL a = encRTL b → a = b
+theorem encRTL_inj_rec : ∀ a b : List RT, encRTL a = encRTL b → a = b
   | [], [], _ => rfl
   | [], _ :: _, h => by simp [encRTL] at h
   | _ :: _, [], h => by simp [encRTL] at h
   | k :: ks, k' :: ks', h => by
     simp only [encRTL, Val.cons.injEq] at h
-    rw [encRT_inj k k' h.1, encRTL_inj ks ks' h.2]
+    rw [encRT_inj_rec k k' h.1, encRTL_inj_rec ks ks' h.2]
 end
+
+theorem encRT_inj_pair : (type_of% @encRT_inj_rec) ∧ (type_of% @encRTL_inj_rec) :=
+  ⟨@encRT_inj_rec, @encRTL_inj_rec⟩
+
+theorem encRT_inj : type_of% @encRT_inj_rec := encRT_inj_pair.1
 
 instance : ToVal RT := ⟨encRT, fun a b h => encRT_inj a b h⟩
 
@@ -142,13 +152,13 @@ theorem encNT_inj : ∀ a b : NT, encNT a = encNT b → a = b
 
 instance : ToVal NT := ⟨encNT, fun a b h => encNT_inj a b h⟩
 
-@[simp] theorem toVal_nt_leaf : toVal NT.leaf = Val.nat 0 := rfl
+@[simp] theorem toVal_nt_leaf : toVal NT.leaf = Val.nat 0 := by rfl
 @[simp] theorem toVal_nt_intro (v : ℕ) (c : NT) :
-    toVal (NT.intro v c) = Val.cons (.nat 1) (.cons (.nat v) (toVal c)) := rfl
+    toVal (NT.intro v c) = Val.cons (.nat 1) (.cons (.nat v) (toVal c)) := by rfl
 @[simp] theorem toVal_nt_forget (v : ℕ) (c : NT) :
-    toVal (NT.forget v c) = Val.cons (.nat 2) (.cons (.nat v) (toVal c)) := rfl
+    toVal (NT.forget v c) = Val.cons (.nat 2) (.cons (.nat v) (toVal c)) := by rfl
 @[simp] theorem toVal_nt_join (a b : NT) :
-    toVal (NT.join a b) = Val.cons (.nat 3) (.cons (toVal a) (toVal b)) := rfl
+    toVal (NT.join a b) = Val.cons (.nat 3) (.cons (toVal a) (toVal b)) := by rfl
 
 /-! ## `CNode`, `AR` -/
 
@@ -160,7 +170,7 @@ instance : ToVal CNode := ⟨fun n => .cons (toVal n.bag) (toVal n.junk), by
   subst e1 e2; rfl⟩
 
 @[simp] theorem toVal_cnode (b : Finset ℕ) (j : List RT) :
-    toVal (CNode.mk b j) = Val.cons (toVal b) (toVal j) := rfl
+    toVal (CNode.mk b j) = Val.cons (toVal b) (toVal j) := by rfl
 
 mutual
 def encAR : AR → Val
@@ -171,22 +181,27 @@ def encARL : List AR → Val
 end
 
 mutual
-theorem encAR_inj : ∀ a b : AR, encAR a = encAR b → a = b
+theorem encAR_inj_rec : ∀ a b : AR, encAR a = encAR b → a = b
   | .run S c ks, .run S' c' ks', h => by
     simp only [encAR, Val.cons.injEq] at h
     obtain ⟨h1, h2, h3⟩ := h
     have e1 : S = S' := ToVal.inj h1
     have e2 : c = c' := ToVal.inj h2
-    have e3 := encARL_inj ks ks' h3
+    have e3 := encARL_inj_rec ks ks' h3
     subst e1 e2 e3; rfl
-theorem encARL_inj : ∀ a b : List AR, encARL a = encARL b → a = b
+theorem encARL_inj_rec : ∀ a b : List AR, encARL a = encARL b → a = b
   | [], [], _ => rfl
   | [], _ :: _, h => by simp [encARL] at h
   | _ :: _, [], h => by simp [encARL] at h
   | k :: ks, k' :: ks', h => by
     simp only [encARL, Val.cons.injEq] at h
-    rw [encAR_inj k k' h.1, encARL_inj ks ks' h.2]
+    rw [encAR_inj_rec k k' h.1, encARL_inj_rec ks ks' h.2]
 end
+
+theorem encAR_inj_pair : (type_of% @encAR_inj_rec) ∧ (type_of% @encARL_inj_rec) :=
+  ⟨@encAR_inj_rec, @encARL_inj_rec⟩
+
+theorem encAR_inj : type_of% @encAR_inj_rec := encAR_inj_pair.1
 
 instance : ToVal AR := ⟨encAR, fun a b h => encAR_inj a b h⟩
 
@@ -207,8 +222,8 @@ instance : ToVal CT.Cut := ⟨fun c => match c with
   intro a b h
   cases a <;> cases b <;> simp at h ⊢ <;> exact h⟩
 
-@[simp] theorem toVal_cut_t1 (f : ℕ) : toVal (CT.Cut.t1 f) = Val.cons (.nat 1) (.nat f) := rfl
-@[simp] theorem toVal_cut_t2 (f : ℕ) : toVal (CT.Cut.t2 f) = Val.cons (.nat 2) (.nat f) := rfl
+@[simp] theorem toVal_cut_t1 (f : ℕ) : toVal (CT.Cut.t1 f) = Val.cons (.nat 1) (.nat f) := by rfl
+@[simp] theorem toVal_cut_t2 (f : ℕ) : toVal (CT.Cut.t2 f) = Val.cons (.nat 2) (.nat f) := by rfl
 
 mutual
 def encWP : CT.WPlan → Val
@@ -223,30 +238,35 @@ def encWPO : Option CT.WPlan → Val
 end
 
 mutual
-theorem encWP_inj : ∀ a b : CT.WPlan, encWP a = encWP b → a = b
+theorem encWP_inj_rec : ∀ a b : CT.WPlan, encWP a = encWP b → a = b
   | .endAt c, .endAt c', h => by
     simp only [encWP, Val.cons.injEq, true_and] at h
     rw [show c = c' from ToVal.inj h]
   | .whole ps, .whole ps', h => by
     simp only [encWP, Val.cons.injEq, true_and] at h
-    rw [encWPL_inj ps ps' h]
+    rw [encWPL_inj_rec ps ps' h]
   | .endAt _, .whole _, h => by simp [encWP] at h
   | .whole _, .endAt _, h => by simp [encWP] at h
-theorem encWPL_inj : ∀ a b : List (Option CT.WPlan), encWPL a = encWPL b → a = b
+theorem encWPL_inj_rec : ∀ a b : List (Option CT.WPlan), encWPL a = encWPL b → a = b
   | [], [], _ => rfl
   | [], _ :: _, h => by simp [encWPL] at h
   | _ :: _, [], h => by simp [encWPL] at h
   | p :: ps, p' :: ps', h => by
     simp only [encWPL, Val.cons.injEq] at h
-    rw [encWPO_inj p p' h.1, encWPL_inj ps ps' h.2]
-theorem encWPO_inj : ∀ a b : Option CT.WPlan, encWPO a = encWPO b → a = b
+    rw [encWPO_inj_rec p p' h.1, encWPL_inj_rec ps ps' h.2]
+theorem encWPO_inj_rec : ∀ a b : Option CT.WPlan, encWPO a = encWPO b → a = b
   | none, none, _ => rfl
   | none, some _, h => by simp [encWPO] at h
   | some _, none, h => by simp [encWPO] at h
   | some p, some p', h => by
     simp only [encWPO, Val.cons.injEq, true_and] at h
-    rw [encWP_inj p p' h]
+    rw [encWP_inj_rec p p' h]
 end
+
+theorem encWP_inj_triple : (type_of% @encWP_inj_rec) ∧ (type_of% @encWPL_inj_rec) ∧ (type_of% @encWPO_inj_rec) :=
+  ⟨@encWP_inj_rec, @encWPL_inj_rec, @encWPO_inj_rec⟩
+
+theorem encWP_inj : type_of% @encWP_inj_rec := encWP_inj_triple.1
 
 instance : ToVal CT.WPlan := ⟨encWP, fun a b h => encWP_inj a b h⟩
 
@@ -258,7 +278,7 @@ theorem encWPL_eq : ∀ ps : List (Option CT.WPlan), encWPL ps = toVal ps
   | [] => rfl
   | p :: ps => by simp only [encWPL, toVal_cons]; rw [encWPL_eq ps, encWPO_eq]
 
-@[simp] theorem toVal_wp_endAt (c : CT.Cut) : toVal (CT.WPlan.endAt c) = Val.cons (.nat 1) (toVal c) := rfl
+@[simp] theorem toVal_wp_endAt (c : CT.Cut) : toVal (CT.WPlan.endAt c) = Val.cons (.nat 1) (toVal c) := by rfl
 @[simp] theorem toVal_wp_whole (ps : List (Option CT.WPlan)) :
     toVal (CT.WPlan.whole ps) = Val.cons (.nat 2) (toVal ps) := by
   show encWP _ = _
@@ -280,9 +300,9 @@ instance : ToVal CT.Plan := ⟨fun p => match p with
     subst e1 e2; rfl⟩
 
 @[simp] theorem toVal_plan_att (c : Option CT.Cut) (ch : List (Finset ℕ)) (M : Finset ℕ) :
-    toVal (CT.Plan.att c ch M) = Val.cons (.nat 1) (Val.cons (toVal c) (Val.cons (toVal ch) (toVal M))) := rfl
+    toVal (CT.Plan.att c ch M) = Val.cons (.nat 1) (Val.cons (toVal c) (Val.cons (toVal ch) (toVal M))) := by rfl
 @[simp] theorem toVal_plan_top (pre : Option CT.Cut) (w : CT.WPlan) :
-    toVal (CT.Plan.top pre w) = Val.cons (.nat 2) (Val.cons (toVal pre) (toVal w)) := rfl
+    toVal (CT.Plan.top pre w) = Val.cons (.nat 2) (Val.cons (toVal pre) (toVal w)) := by rfl
 
 /-! ## `WithTop ℕ` (the key of `CT.key`) -/
 

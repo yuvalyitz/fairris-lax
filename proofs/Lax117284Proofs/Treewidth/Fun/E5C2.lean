@@ -264,7 +264,7 @@ theorem sz_processRun_aux (v : ℕ) (pre : Option CT.Cut) (w : CT.WPlan) (S : Fi
   omega
 
 mutual
-theorem sz_processRun_le (v : ℕ) : ∀ (pre : Option CT.Cut) (w : CT.WPlan) (r : AR),
+theorem sz_processRun_le_rec (v : ℕ) : ∀ (pre : Option CT.Cut) (w : CT.WPlan) (r : AR),
     sz (processRun v pre w r) ≤ 8 * sz r + 18 * wn w
   | pre, .endAt c, .run S ns ks => by
     have h := sz_processRun_aux v pre (.endAt c) S ns ks
@@ -275,48 +275,60 @@ theorem sz_processRun_le (v : ℕ) : ∀ (pre : Option CT.Cut) (w : CT.WPlan) (r
     omega
   | pre, .whole ps, .run S ns ks => by
     have h := sz_processRun_aux v pre (.whole ps) S ns ks
-    have hk := sz_applyKids_le v ps ks
+    have hk := sz_applyKids_le_rec v ps ks
     rw [processRun_eq]
     simp only [wn, sz_ar]
     rw [processRun_eq] at h
     simp only [AR.chain] at h
     omega
-theorem sz_applyKids_le (v : ℕ) : ∀ (ps : List (Option CT.WPlan)) (ks : List AR),
+theorem sz_applyKids_le_rec (v : ℕ) : ∀ (ps : List (Option CT.WPlan)) (ks : List AR),
     sz (applyKids v ps ks) ≤ 8 * sz ks + 18 * wnL ps
   | [], ks => by simp only [applyKids, wnL]; omega
   | p :: ps, [] => by simp [applyKids, sz_cons]; have := sz_pos ([] : List AR); omega
   | p :: ps, k :: ks => by
-    have h1 := sz_applyOpt_le v p k
-    have h2 := sz_applyKids_le v ps ks
+    have h1 := sz_applyOpt_le_rec v p k
+    have h2 := sz_applyKids_le_rec v ps ks
     simp only [applyKids, wnL, sz_cons]
     omega
-theorem sz_applyOpt_le (v : ℕ) : ∀ (p : Option CT.WPlan) (k : AR),
+theorem sz_applyOpt_le_rec (v : ℕ) : ∀ (p : Option CT.WPlan) (k : AR),
     sz (applyOpt v p k) ≤ 8 * sz k + 18 * wnO p
   | none, k => by simp only [applyOpt, wnO]; omega
   | some p, k => by
-    have := sz_processRun_le v none p k
+    have := sz_processRun_le_rec v none p k
     simp only [applyOpt, wnO]; exact this
 end
 
+theorem sz_processRun_le_pair : (type_of% @sz_processRun_le_rec) ∧ (type_of% @sz_applyKids_le_rec) ∧ (type_of% @sz_applyOpt_le_rec) :=
+  ⟨@sz_processRun_le_rec, @sz_applyKids_le_rec, @sz_applyOpt_le_rec⟩
+
+theorem sz_processRun_le : type_of% @sz_processRun_le_rec := sz_processRun_le_pair.1
+
+
 mutual
-theorem wn_le_sz : ∀ w : CT.WPlan, wn w ≤ sz w
+theorem wn_le_sz_rec : ∀ w : CT.WPlan, wn w ≤ sz w
   | .endAt c => by simp [wn, sz_pos]; have := sz_pos (CT.WPlan.endAt c); omega
   | .whole ps => by
-    have := wnL_le_sz ps
+    have := wnL_le_sz_rec ps
     have h : sz (CT.WPlan.whole ps) = sz ps + 2 := by simp only [sz, toVal_wp_whole, Val.size]; omega
     simp only [wn]; omega
-theorem wnL_le_sz : ∀ ps : List (Option CT.WPlan), wnL ps ≤ sz ps
+theorem wnL_le_sz_rec : ∀ ps : List (Option CT.WPlan), wnL ps ≤ sz ps
   | [] => by simp [wnL]
   | p :: ps => by
-    have := wnO_le_sz p
-    have := wnL_le_sz ps
+    have := wnO_le_sz_rec p
+    have := wnL_le_sz_rec ps
     simp only [wnL, sz_cons]; omega
-theorem wnO_le_sz : ∀ p : Option CT.WPlan, wnO p ≤ sz p
+theorem wnO_le_sz_rec : ∀ p : Option CT.WPlan, wnO p ≤ sz p
   | none => by simp [wnO]
   | some p => by
-    have := wn_le_sz p
+    have := wn_le_sz_rec p
     simp only [wnO, sz_some]; omega
 end
+
+theorem wn_le_sz_pair : (type_of% @wn_le_sz_rec) ∧ (type_of% @wnL_le_sz_rec) ∧ (type_of% @wnO_le_sz_rec) :=
+  ⟨@wn_le_sz_rec, @wnL_le_sz_rec, @wnO_le_sz_rec⟩
+
+theorem wn_le_sz : type_of% @wn_le_sz_rec := wn_le_sz_pair.1
+
 
 /-! ## the lemmas -/
 
@@ -399,7 +411,7 @@ theorem length_witnesses_le (a : List ℕ) : (witnesses a).length ≤ a.length :
   simpa [witnesses] using this
 
 mutual
-theorem processRun_runs (s : ℕ) (hB : 3000 + 400 * (8 * s + 16) < B) (v : ℕ) :
+theorem processRun_runs_rec (s : ℕ) (hB : 3000 + 400 * (8 * s + 16) < B) (v : ℕ) :
     ∀ (pre : Option CT.Cut) (w : CT.WPlan) (r : AR), sz r ≤ s →
     Runs Δ' B fProcessRun [toVal v, toVal pre, toVal w, toVal r] (toVal (processRun v pre w r))
       (cPR s * wn w)
@@ -456,7 +468,7 @@ theorem processRun_runs (s : ℕ) (hB : 3000 + 400 * (8 * s + 16) < B) (v : ℕ)
     have hB1 : 1 < B := by omega
     have hB2 : 3000 + 400 * (s + 1) < B := by omega
     have hB3 : 3000 + 400 * ((2 * s + 3) + 1) < B := by omega
-    have hK := applyKids_runs s hB v ps ks hks
+    have hK := applyKids_runs_rec s hB v ps ks hks
     rw [processRun_eq]
     simp only [wn]
     generalize hsizes : ns.map (fun n => n.bag.card) = sizes
@@ -494,7 +506,7 @@ theorem processRun_runs (s : ℕ) (hB : 3000 + 400 * (8 * s + 16) < B) (v : ℕ)
     · ev_run
     · rw [e]; omega
 
-theorem applyKids_runs (s : ℕ) (hB : 3000 + 400 * (8 * s + 16) < B) (v : ℕ) :
+theorem applyKids_runs_rec (s : ℕ) (hB : 3000 + 400 * (8 * s + 16) < B) (v : ℕ) :
     ∀ (ps : List (Option CT.WPlan)) (ks : List AR), sz ks ≤ s →
     Runs Δ' B fApplyKids [toVal v, toVal ps, toVal ks] (toVal (applyKids v ps ks))
       (cPR s * wnL ps + 60 * ks.length + 8)
@@ -513,8 +525,8 @@ theorem applyKids_runs (s : ℕ) (hB : 3000 + 400 * (8 * s + 16) < B) (v : ℕ) 
   | p :: ps, k :: ks, hks => by
     have hk : sz k ≤ s := by have := sz_head_lt k ks; omega
     have hks' : sz ks ≤ s := by have := sz_tail_lt k ks; omega
-    have h1 := applyOpt_runs s hB v p k hk
-    have h2 := applyKids_runs s hB v ps ks hks'
+    have h1 := applyOpt_runs_rec s hB v p k hk
+    have h2 := applyKids_runs_rec s hB v ps ks hks'
     have hB2 : 3000 + 400 * (s + 1) < B := by omega
     have hk1 : fApplyOpt < B := lt_of_bnd hB2 (by decide)
     have hk2 : fApplyKids < B := lt_of_bnd hB2 (by decide)
@@ -525,7 +537,7 @@ theorem applyKids_runs (s : ℕ) (hB : 3000 + 400 * (8 * s + 16) < B) (v : ℕ) 
     · have e : cPR s * (wnO p + wnL ps) = cPR s * wnO p + cPR s * wnL ps := by ring
       rw [e]; omega
 
-theorem applyOpt_runs (s : ℕ) (hB : 3000 + 400 * (8 * s + 16) < B) (v : ℕ) :
+theorem applyOpt_runs_rec (s : ℕ) (hB : 3000 + 400 * (8 * s + 16) < B) (v : ℕ) :
     ∀ (p : Option CT.WPlan) (k : AR), sz k ≤ s →
     Runs Δ' B fApplyOpt [toVal v, toVal p, toVal k] (toVal (applyOpt v p k)) (cPR s * wnO p + 20)
   | none, k, hk => by
@@ -535,7 +547,7 @@ theorem applyOpt_runs (s : ℕ) (hB : 3000 + 400 * (8 * s + 16) < B) (v : ℕ) :
     · ev_run
     · omega
   | some p, k, hk => by
-    have h1 := processRun_runs s hB v none p k hk
+    have h1 := processRun_runs_rec s hB v none p k hk
     have hB2 : 3000 + 400 * (s + 1) < B := by omega
     have hk1 : fProcessRun < B := lt_of_bnd hB2 (by decide)
     refine Runs.mk (hΔ _ _ Δ_applyOpt) ?_
@@ -547,5 +559,11 @@ theorem applyOpt_runs (s : ℕ) (hB : 3000 + 400 * (8 * s + 16) < B) (v : ℕ) :
 end
 
 end proofs
+
+theorem processRun_runs_pair : (type_of% @processRun_runs_rec) ∧ (type_of% @applyKids_runs_rec) ∧ (type_of% @applyOpt_runs_rec) :=
+  ⟨@processRun_runs_rec, @applyKids_runs_rec, @applyOpt_runs_rec⟩
+
+theorem processRun_runs : type_of% @processRun_runs_rec := processRun_runs_pair.1
+
 end E5C2
 end Lax117284Proofs.Treewidth.Fun

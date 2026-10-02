@@ -62,23 +62,23 @@ theorem pow_step2 {K n Y : ℕ} (hK : K = 2 * Y + 2) : 2 * Y + K ^ (2 * n) ≤ K
   nlinarith
 
 mutual
-theorem winPlans_length_le (v kmax : ℕ) (B : Finset ℕ) : ∀ (lo : ℕ) (t : CT), Good B t → maxEntry t ≤ kmax →
+theorem winPlans_length_le_rec (v kmax : ℕ) (B : Finset ℕ) : ∀ (lo : ℕ) (t : CT), Good B t → maxEntry t ≤ kmax →
     (winPlans v lo t).length ≤ (4 * kmax + 4) ^ (2 * count t - 1)
   | lo, node S y ks, hg, hm => by
     obtain ⟨hgk, hmk⟩ := kids_good hg hm
     have hy := y_length_le hg hm
-    have hkc := kidChoices_length_le v kmax B ks hgk hmk
+    have hkc := kidChoices_length_le_rec v kmax B ks hgk hmk
     have hcount : 2 * count (node S y ks) - 1 = 2 * countL ks + 1 := by simp only [count]; omega
     rw [hcount]
     have h := pow_step2 (K := 4 * kmax + 4) (n := countL ks) (Y := 2 * kmax + 1) (by ring)
     simp only [winPlans, List.length_append, List.length_map, List.length_range']
     omega
-theorem kidChoices_length_le (v kmax : ℕ) (B : Finset ℕ) : ∀ (ks : List CT), (∀ k ∈ ks, Good B k) →
+theorem kidChoices_length_le_rec (v kmax : ℕ) (B : Finset ℕ) : ∀ (ks : List CT), (∀ k ∈ ks, Good B k) →
     (∀ k ∈ ks, maxEntry k ≤ kmax) → (kidChoices v ks).length ≤ (4 * kmax + 4) ^ (2 * countL ks)
   | [], _, _ => by simp [kidChoices, countL]
   | k :: ks, hg, hm => by
-    have h1 := winPlans_length_le v kmax B 0 k (hg k (by simp)) (hm k (by simp))
-    have h2 := kidChoices_length_le v kmax B ks (fun k' hk' => hg k' (List.mem_cons_of_mem _ hk'))
+    have h1 := winPlans_length_le_rec v kmax B 0 k (hg k (by simp)) (hm k (by simp))
+    have h2 := kidChoices_length_le_rec v kmax B ks (fun k' hk' => hg k' (List.mem_cons_of_mem _ hk'))
       (fun k' hk' => hm k' (List.mem_cons_of_mem _ hk'))
     have h3 : 1 + (4 * kmax + 4) ^ (2 * count k - 1) ≤ (4 * kmax + 4) ^ (2 * count k) :=
       pow_step (by omega) (count_pos k)
@@ -91,6 +91,11 @@ theorem kidChoices_length_le (v kmax : ℕ) (B : Finset ℕ) : ∀ (ks : List CT
     rw [h4, countL, mul_add, pow_add]
     exact Nat.mul_le_mul (le_trans (by omega) h3) h2
 end
+
+theorem winPlans_length_le_pair : (type_of% @winPlans_length_le_rec) ∧ (type_of% @kidChoices_length_le_rec) :=
+  ⟨@winPlans_length_le_rec, @kidChoices_length_le_rec⟩
+
+theorem winPlans_length_le : type_of% @winPlans_length_le_rec := winPlans_length_le_pair.1
 
 theorem wtopPlans_length_le (v kmax : ℕ) (B : Finset ℕ) {t : CT} (hg : Good B t) (hm : maxEntry t ≤ kmax) :
     (wtopPlans v t).length ≤ (4 * kmax + 3) * (4 * kmax + 4) ^ (2 * count t - 1) := by

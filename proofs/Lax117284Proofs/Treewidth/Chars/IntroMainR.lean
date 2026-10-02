@@ -43,14 +43,19 @@ theorem winR_shape {v : ℕ} {S : Finset ℕ} {y : List ℕ} {ks : List CT} {r :
   · exact ⟨_, _, rfl⟩
 
 mutual
-theorem yne_uT : ∀ K : FT, YNe (uT K)
+theorem yne_uT_rec : ∀ K : FT, YNe (uT K)
   | FT.node S' e w ks => by
     rw [uT]
-    exact ⟨by simp, yneL_uTL ks⟩
-theorem yneL_uTL : ∀ ks : List FT, YNeL (uTL ks)
+    exact ⟨by simp, yneL_uTL_rec ks⟩
+theorem yneL_uTL_rec : ∀ ks : List FT, YNeL (uTL ks)
   | [] => trivial
-  | k :: ks => ⟨yne_uT k, yneL_uTL ks⟩
+  | k :: ks => ⟨yne_uT_rec k, yneL_uTL_rec ks⟩
 end
+
+theorem yne_uT_pair : (type_of% @yne_uT_rec) ∧ (type_of% @yneL_uTL_rec) :=
+  ⟨@yne_uT_rec, @yneL_uTL_rec⟩
+
+theorem yne_uT : type_of% @yne_uT_rec := yne_uT_pair.1
 
 theorem gA_y_ne (K : FT) : (gA K).y ≠ [] := by
   have := yne_norm _ (yne_uT K)

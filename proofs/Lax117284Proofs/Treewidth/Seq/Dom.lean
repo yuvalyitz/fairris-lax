@@ -30,9 +30,6 @@ theorem Dom.trans {a b c : List ℕ} (h1 : Dom a b) (h2 : Dom b c) : Dom a c := 
   obtain ⟨y, hy, hyw⟩ := ext_lift e2 (R := fun p q => q ≤ p) hbc.flip'
   exact ⟨x, y, ha1.trans hx, hc2.trans hy, LeSeq.trans hxw (LeSeq.flip hyw)⟩
 
-theorem DomEquiv.trans {a b c : List ℕ} (h1 : DomEquiv a b) (h2 : DomEquiv b c) : DomEquiv a c :=
-  ⟨h1.1.trans h2.1, h2.2.trans h1.2⟩
-
 /-- Preorder instance, for `calc`/`gcongr`-style use. -/
 instance : Trans Dom Dom Dom := ⟨Dom.trans⟩
 

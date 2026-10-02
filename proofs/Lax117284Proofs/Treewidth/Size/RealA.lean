@@ -54,14 +54,19 @@ theorem chainToRT_size : ∀ (c : List CNode) (ks : List RT),
     omega
 
 mutual
-theorem toRT_size : ∀ r : AR, r.toRT.size = r.nsz
+theorem toRT_size_rec : ∀ r : AR, r.toRT.size = r.nsz
   | .run S c ks => by
-    rw [AR.toRT_run, chainToRT_size, AR.nsz, ← AR.toRTL_eq, toRTL_size ks]
-theorem toRTL_size : ∀ ks : List AR, ((AR.toRTL ks).map RT.size).sum = AR.nszL ks
+    rw [AR.toRT_run, chainToRT_size, AR.nsz, ← AR.toRTL_eq, toRTL_size_rec ks]
+theorem toRTL_size_rec : ∀ ks : List AR, ((AR.toRTL ks).map RT.size).sum = AR.nszL ks
   | [] => rfl
   | k :: ks => by
-    simp only [AR.toRTL, List.map_cons, List.sum_cons, AR.nszL, toRT_size k, toRTL_size ks]
+    simp only [AR.toRTL, List.map_cons, List.sum_cons, AR.nszL, toRT_size_rec k, toRTL_size_rec ks]
 end
+
+theorem toRT_size_pair : (type_of% @toRT_size_rec) ∧ (type_of% @toRTL_size_rec) :=
+  ⟨@toRT_size_rec, @toRTL_size_rec⟩
+
+theorem toRT_size : type_of% @toRT_size_rec := toRT_size_pair.1
 
 theorem sum_filter_split {α : Type} (l : List α) (p : α → Bool) (f : α → ℕ) :
     ((l.filter p).map f).sum + ((l.filter (fun a => !p a)).map f).sum = (l.map f).sum := by

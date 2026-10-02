@@ -37,13 +37,14 @@ theorem profF_node (f : Finset ℕ → ℕ) (B X : Finset ℕ) (ks : List RT) :
     profF f B (.node X ks) = .node (X ∩ B) [f X] (ks.map (profF f B)) := by
   simp [profF, profFL_eq]
 
-theorem profL_eq (B : Finset ℕ) : ∀ ks : List RT, profL B ks = ks.map (prof B)
-  | [] => rfl
-  | k :: ks => by simp [profL, profL_eq B ks]
-
 theorem prof_node (B X : Finset ℕ) (ks : List RT) :
     prof B (.node X ks) = .node (X ∩ B) [X.card] (ks.map (prof B)) := by
-  simp [prof, profL_eq]
+  have h : ∀ ks : List RT, profL B ks = ks.map (prof B) := by
+    intro ks
+    induction ks with
+    | nil => rfl
+    | cons k ks ih => simp [profL, ih]
+  simp [prof, h]
 
 theorem prof_eq_profF (B : Finset ℕ) : ∀ t : RT, prof B t = profF Finset.card B t := by
   intro t
@@ -78,17 +79,22 @@ open Lax117284Proofs.Treewidth.Seq Lax117284Proofs.Treewidth.Trees CT
 /-! ## induction on `AR` -/
 
 mutual
-theorem AR.ind {P : AR → Prop} (h : ∀ S c ks, (∀ k ∈ ks, P k) → P (.run S c ks)) : ∀ r, P r
-  | .run S c ks => h S c ks (AR.indL h ks)
-theorem AR.indL {P : AR → Prop} (h : ∀ S c ks, (∀ k ∈ ks, P k) → P (.run S c ks)) :
+theorem AR.ind_rec {P : AR → Prop} (h : ∀ S c ks, (∀ k ∈ ks, P k) → P (.run S c ks)) : ∀ r, P r
+  | .run S c ks => h S c ks (AR.indL_rec h ks)
+theorem AR.indL_rec {P : AR → Prop} (h : ∀ S c ks, (∀ k ∈ ks, P k) → P (.run S c ks)) :
     ∀ ks : List AR, ∀ k ∈ ks, P k
   | [] => by simp
   | k' :: ks => by
     intro k hk
     rcases List.mem_cons.1 hk with e | hk
-    · exact e ▸ AR.ind h k'
-    · exact AR.indL h ks k hk
+    · exact e ▸ AR.ind_rec h k'
+    · exact AR.indL_rec h ks k hk
 end
+
+theorem AR.ind_pair : (type_of% @AR.ind_rec) ∧ (type_of% @AR.indL_rec) :=
+  ⟨@AR.ind_rec, @AR.indL_rec⟩
+
+theorem AR.ind : type_of% @AR.ind_rec := AR.ind_pair.1
 
 /-! ## `charF` -/
 

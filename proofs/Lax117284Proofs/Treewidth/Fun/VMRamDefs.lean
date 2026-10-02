@@ -114,7 +114,6 @@ structure Cst (P : Prog) (W Bi : ℕ) (σ : Env) : Prop where
 
 /-- What a fetch leaves for the instruction `i`. -/
 structure Fetched (σ : Env) (i : Instr) : Prop where
-  op : σ.vars "op" = opc i
   oa : σ.vars "oa" = opa i
 
 /-- Normalize reads of an updated environment. -/

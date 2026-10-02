@@ -11,18 +11,23 @@ namespace Lax117284Proofs.Treewidth.Trees
 namespace RT
 
 mutual
-/-- Induction principle for `RT` (nested through `List`). -/
-theorem ind {P : RT → Prop} (h : ∀ b ks, (∀ k ∈ ks, P k) → P (.node b ks)) : ∀ t, P t
-  | .node b ks => h b ks (indL h ks)
-theorem indL {P : RT → Prop} (h : ∀ b ks, (∀ k ∈ ks, P k) → P (.node b ks)) :
+theorem ind_rec {P : RT → Prop} (h : ∀ b ks, (∀ k ∈ ks, P k) → P (.node b ks)) : ∀ t, P t
+  | .node b ks => h b ks (indL_rec h ks)
+theorem indL_rec {P : RT → Prop} (h : ∀ b ks, (∀ k ∈ ks, P k) → P (.node b ks)) :
     ∀ ks : List RT, ∀ k ∈ ks, P k
   | [] => by simp
   | k' :: ks => by
     intro k hk
     rcases List.mem_cons.1 hk with e | hk
-    · exact e ▸ ind h k'
-    · exact indL h ks k hk
+    · exact e ▸ ind_rec h k'
+    · exact indL_rec h ks k hk
 end
+
+theorem ind_pair : (type_of% @ind_rec) ∧ (type_of% @indL_rec) :=
+  ⟨@ind_rec, @indL_rec⟩
+
+/-- Induction principle for `RT` (nested through `List`). -/
+theorem ind : type_of% @ind_rec := ind_pair.1
 
 mutual
 theorem mem_verts_iff : ∀ (t : RT) (x : ℕ), x ∈ t.verts ↔ ∃ X ∈ t.bags, x ∈ X

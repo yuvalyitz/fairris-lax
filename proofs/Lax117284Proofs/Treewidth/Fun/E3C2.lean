@@ -14,7 +14,7 @@ variable {Δ' : ℕ → Option Tm} (hΔ : Δ ⊑ Δ') (B : ℕ)
 include hΔ
 
 mutual
-theorem introPlans_runs (U Q P G Ω Qc Q₀ : ℕ) (Bs : Finset ℕ) (kmax M v : ℕ) (N : Finset ℕ)
+theorem introPlans_runs_rec (U Q P G Ω Qc Q₀ : ℕ) (Bs : Finset ℕ) (kmax M v : ℕ) (N : Finset ℕ)
     (hQ : 1000 * (U + 1) * (U + 1) ≤ Q) (hP : Q * (3 * M) ≤ P)
     (hQc : 1000 * ((U + 1) * Ω) ≤ Qc)
     (hQ₀ : 100 * (P * G) + 4 * (Qc * (U + 1) * G) + 500 * ((U + 1) * G) + 1000 * (U + 1) ≤ Q₀)
@@ -39,7 +39,7 @@ theorem introPlans_runs (U Q P G Ω Qc Q₀ : ℕ) (Bs : Finset ℕ) (kmax M v :
     have hkids : ∀ k ∈ ks, sz k ≤ U ∧ mx k ≤ U ∧ Good Bs k ∧ maxEntry k ≤ kmax ∧ count k ≤ M :=
       fun k hk => ⟨le_trans (sz_le_of_mem hk) (by omega), le_trans (mx_le_of_mem hk) (by omega), hgk k hk, hmk k hk,
         le_trans (count_le_countL_of_mem hk) (by omega)⟩
-    have hrec := introKids_runs U Q P G Ω Qc Q₀ Bs kmax M v N hQ hP hQc hQ₀ hv hN hG hΩ hB ks [] S y hkids
+    have hrec := introKids_runs_rec U Q P G Ω Qc Q₀ Bs kmax M v N hQ hP hQc hQ₀ hv hN hG hΩ hB ks [] S y hkids
       (by simp only [List.length_nil, Nat.zero_add]; exact le_trans (length_le_sz ks) (by omega))
     have hPt : Q * (3 * count (CT.node S y ks) - 1) ≤ P :=
       le_trans (Nat.mul_le_mul_left _ (by omega)) hP
@@ -142,7 +142,7 @@ theorem introPlans_runs (U Q P G Ω Qc Q₀ : ℕ) (Bs : Finset ℕ) (kmax M v :
         rw [e5]
         clear hG hΩ hkids hgk hmk hwt hfil hmap1 ha1 ha2 hrec hsubS hshow hid hid' hid''
         omega
-theorem introKids_runs (U Q P G Ω Qc Q₀ : ℕ) (Bs : Finset ℕ) (kmax M v : ℕ) (N : Finset ℕ)
+theorem introKids_runs_rec (U Q P G Ω Qc Q₀ : ℕ) (Bs : Finset ℕ) (kmax M v : ℕ) (N : Finset ℕ)
     (hQ : 1000 * (U + 1) * (U + 1) ≤ Q) (hP : Q * (3 * M) ≤ P)
     (hQc : 1000 * ((U + 1) * Ω) ≤ Qc)
     (hQ₀ : 100 * (P * G) + 4 * (Qc * (U + 1) * G) + 500 * ((U + 1) * G) + 1000 * (U + 1) ≤ Q₀)
@@ -171,8 +171,8 @@ theorem introKids_runs (U Q P G Ω Qc Q₀ : ℕ) (Bs : Finset ℕ) (kmax M v : 
     obtain ⟨hk1, hk2, hk3, hk4, hk5⟩ := hks k (List.mem_cons_self ..)
     have hks' : ∀ k' ∈ post, sz k' ≤ U ∧ mx k' ≤ U ∧ Good Bs k' ∧ maxEntry k' ≤ kmax ∧ count k' ≤ M :=
       fun k' hk' => hks k' (List.mem_cons_of_mem _ hk')
-    have hip := introPlans_runs U Q P G Ω Qc Q₀ Bs kmax M v N hQ hP hQc hQ₀ hv hN hG hΩ hB k hk1 hk2 hk3 hk4 hk5
-    have hrec := introKids_runs U Q P G Ω Qc Q₀ Bs kmax M v N hQ hP hQc hQ₀ hv hN hG hΩ hB post (pre ++ [k]) S y hks'
+    have hip := introPlans_runs_rec U Q P G Ω Qc Q₀ Bs kmax M v N hQ hP hQc hQ₀ hv hN hG hΩ hB k hk1 hk2 hk3 hk4 hk5
+    have hrec := introKids_runs_rec U Q P G Ω Qc Q₀ Bs kmax M v N hQ hP hQc hQ₀ hv hN hG hΩ hB post (pre ++ [k]) S y hks'
       (by simp only [List.length_append, List.length_cons, List.length_nil] at hpre ⊢; omega)
     have hlen := length_runs (y1 hΔ) B pre (by simp only [List.length_cons, List.length_nil] at hpre; omega)
     have hOG := (hG k hk3 hk4 hk5).2.2.2
@@ -213,5 +213,11 @@ theorem introKids_runs (U Q P G Ω Qc Q₀ : ℕ) (Bs : Finset ℕ) (kmax M v : 
 end
 
 end proofs
+
+theorem introPlans_runs_pair : (type_of% @introPlans_runs_rec) ∧ (type_of% @introKids_runs_rec) :=
+  ⟨@introPlans_runs_rec, @introKids_runs_rec⟩
+
+theorem introPlans_runs : type_of% @introPlans_runs_rec := introPlans_runs_pair.1
+
 end E3C
 end Lax117284Proofs.Treewidth.Fun

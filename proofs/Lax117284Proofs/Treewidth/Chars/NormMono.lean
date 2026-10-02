@@ -55,15 +55,20 @@ theorem domCL_iff {a b : List CT} : DomCL a b ↔ List.Forall₂ DomC a b := by
     | cons k' ks' => simp [DomCL, ih]
 
 mutual
-theorem domC_verts : ∀ {a b : CT}, DomC a b → verts a = verts b
+theorem domC_verts_rec : ∀ {a b : CT}, DomC a b → verts a = verts b
   | node S y ks, node S' y' ks', h => by
     obtain ⟨rfl, -, hk⟩ := h
-    simp only [verts_node]; rw [domCL_vertsL hk]
-theorem domCL_vertsL : ∀ {a b : List CT}, DomCL a b → vertsL a = vertsL b
+    simp only [verts_node]; rw [domCL_vertsL_rec hk]
+theorem domCL_vertsL_rec : ∀ {a b : List CT}, DomCL a b → vertsL a = vertsL b
   | [], [], _ => rfl
   | k :: ks, k' :: ks', h => by
-    simp only [vertsL]; rw [domC_verts h.1, domCL_vertsL h.2]
+    simp only [vertsL]; rw [domC_verts_rec h.1, domCL_vertsL_rec h.2]
 end
+
+theorem domC_verts_pair : (type_of% @domC_verts_rec) ∧ (type_of% @domCL_vertsL_rec) :=
+  ⟨@domC_verts_rec, @domCL_vertsL_rec⟩
+
+theorem domC_verts : type_of% @domC_verts_rec := domC_verts_pair.1
 
 theorem domC_S {a b : CT} (h : DomC a b) : a.S = b.S := by
   cases a; cases b; exact h.1
@@ -148,28 +153,38 @@ theorem normF_mono {S : Finset ℕ} {y y' : List ℕ} (hy : Dom y y') :
     exact ⟨rfl, hy, domCL_sortKids S h⟩
 
 mutual
-theorem norm_mono : ∀ {a b : CT}, DomC a b → DomC (norm a) (norm b)
+theorem norm_mono_rec : ∀ {a b : CT}, DomC a b → DomC (norm a) (norm b)
   | node S y ks, node S' y' ks', h => by
     obtain ⟨rfl, hy, hk⟩ := h
     rw [norm_node', norm_node']
     apply normF_mono hy
     apply domCL_filter
-    have := normL_mono hk
+    have := normL_mono_rec hk
     rwa [normL_eq_map, normL_eq_map] at this
-theorem normL_mono : ∀ {a b : List CT}, DomCL a b → DomCL (normL a) (normL b)
+theorem normL_mono_rec : ∀ {a b : List CT}, DomCL a b → DomCL (normL a) (normL b)
   | [], [], _ => trivial
-  | k :: ks, k' :: ks', h => ⟨norm_mono h.1, normL_mono h.2⟩
+  | k :: ks, k' :: ks', h => ⟨norm_mono_rec h.1, normL_mono_rec h.2⟩
 end
 
+theorem norm_mono_pair : (type_of% @norm_mono_rec) ∧ (type_of% @normL_mono_rec) :=
+  ⟨@norm_mono_rec, @normL_mono_rec⟩
+
+theorem norm_mono : type_of% @norm_mono_rec := norm_mono_pair.1
+
 mutual
-theorem relabel_mono (f : Finset ℕ → Finset ℕ) : ∀ {a b : CT}, DomC a b → DomC (relabel f a) (relabel f b)
+theorem relabel_mono_rec (f : Finset ℕ → Finset ℕ) : ∀ {a b : CT}, DomC a b → DomC (relabel f a) (relabel f b)
   | node S y ks, node S' y' ks', h => by
     obtain ⟨rfl, hy, hk⟩ := h
-    exact ⟨rfl, hy, relabelL_mono f hk⟩
-theorem relabelL_mono (f : Finset ℕ → Finset ℕ) : ∀ {a b : List CT}, DomCL a b → DomCL (relabelL f a) (relabelL f b)
+    exact ⟨rfl, hy, relabelL_mono_rec f hk⟩
+theorem relabelL_mono_rec (f : Finset ℕ → Finset ℕ) : ∀ {a b : List CT}, DomCL a b → DomCL (relabelL f a) (relabelL f b)
   | [], [], _ => trivial
-  | k :: ks, k' :: ks', h => ⟨relabel_mono f h.1, relabelL_mono f h.2⟩
+  | k :: ks, k' :: ks', h => ⟨relabel_mono_rec f h.1, relabelL_mono_rec f h.2⟩
 end
+
+theorem relabel_mono_pair : (type_of% @relabel_mono_rec) ∧ (type_of% @relabelL_mono_rec) :=
+  ⟨@relabel_mono_rec, @relabelL_mono_rec⟩
+
+theorem relabel_mono : type_of% @relabel_mono_rec := relabel_mono_pair.1
 
 /-- **`forgetC` is monotone** for `DomC`. -/
 theorem forgetC_mono (x : ℕ) {a b : CT} (h : DomC a b) : DomC (forgetC x a) (forgetC x b) :=

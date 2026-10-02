@@ -110,17 +110,6 @@ theorem ext_replicate {x p q : ℕ} (hp : 1 ≤ p) (hpq : p ≤ q) :
       exact ext_cons_iff.mpr ⟨q', [], by simp [List.replicate_succ], ext_nil_nil⟩
     · exact ext_cons_iff.mpr ⟨0, List.replicate q' x, by simp, ih (by omega) (by omega)⟩
 
-theorem Ext.length_le {a w : List ℕ} (h : Ext a w) : a.length ≤ w.length := by
-  induction w generalizing a with
-  | nil => rw [ext_nil_right] at h; subst h; simp
-  | cons y w ih =>
-    cases a with
-    | nil => simp
-    | cons x a =>
-      obtain ⟨rfl, h | h⟩ := ext_cons_cons.mp h
-      · have := ih h; simp at *; omega
-      · have := ih h; simp at *; omega
-
 theorem Ext.mem {a w : List ℕ} (h : Ext a w) {x : ℕ} : x ∈ w ↔ x ∈ a := by
   induction w generalizing a with
   | nil => rw [ext_nil_right] at h; subst h; simp
@@ -148,8 +137,6 @@ theorem Ext.reach {a w : List ℕ} (h : Ext a w) : Reach w a := by
 theorem Ext.typical {a w : List ℕ} (h : Ext a w) : typical w = typical a :=
   typical_reach h.reach
 
-theorem typical_ext {a w : List ℕ} (h : Ext a w) : typical w = typical a := h.typical
-
 /-! ### Uniform stretching -/
 
 /-- Repeat every entry `k` times. -/
@@ -162,21 +149,10 @@ theorem stretch_append (k : ℕ) (a b : List ℕ) : stretch k (a ++ b) = stretch
   simp [stretch]
 theorem stretch_replicate (k n x : ℕ) : stretch k (List.replicate n x) = List.replicate (k * n) x := by
   induction n with
-  | zero => simp
+  | zero => rw [List.replicate_zero, stretch_nil]; simp
   | succ n ih =>
     rw [List.replicate_succ, stretch_cons, ih, ← List.replicate_add]
     congr 1; ring
-theorem length_stretch (k : ℕ) (a : List ℕ) : (stretch k a).length = k * a.length := by
-  induction a with
-  | nil => simp
-  | cons x a ih => simp [ih]; ring
-
-theorem ext_stretch {k : ℕ} (hk : 1 ≤ k) (a : List ℕ) : Ext a (stretch k a) := by
-  induction a with
-  | nil => exact ext_nil_nil
-  | cons x a ih =>
-    obtain ⟨k', rfl⟩ : ∃ k', k = k' + 1 := ⟨k - 1, by omega⟩
-    exact ext_cons_iff.mpr ⟨k', stretch (k' + 1) a, by simp, ih⟩
 
 /-- Stretching a common base far enough gives an extension of any other extension of it. -/
 theorem ext_stretch_of {a a' a₂ : List ℕ} {k : ℕ} (h1 : Ext a a') (h2 : Ext a a₂)
@@ -190,20 +166,6 @@ theorem ext_stretch_of {a a' a₂ : List ℕ} {k : ℕ} (h1 : Ext a a') (h2 : Ex
     simp only [List.length_append, List.length_replicate] at hk
     rw [stretch_append, stretch_replicate]
     exact Ext.append (ext_replicate (by omega) (by nlinarith)) (ih hu' hu₂ (by omega))
-
-theorem stretch_zipWith_add {a b : List ℕ} (h : a.length = b.length) (k : ℕ) :
-    stretch k (List.zipWith (· + ·) a b) =
-      List.zipWith (· + ·) (stretch k a) (stretch k b) := by
-  induction a generalizing b with
-  | nil => cases b <;> simp_all
-  | cons x a ih =>
-    cases b with
-    | nil => simp at h
-    | cons y b =>
-      simp only [List.length_cons, Nat.add_right_cancel_iff] at h
-      simp only [List.zipWith_cons_cons, stretch_cons]
-      rw [List.zipWith_append (by simp), ih h]
-      simp
 
 /-! ### Lifting along an extension -/
 

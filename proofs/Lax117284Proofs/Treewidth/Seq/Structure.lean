@@ -52,7 +52,7 @@ theorem maxOf_mem {a : List ℕ} (h : a ≠ []) : maxOf a ∈ a := by
   | cons y t ih =>
     rw [maxOf_cons]
     by_cases ht : t = []
-    · subst ht; simp [maxOf_nil]
+    · subst ht; rw [maxOf_nil]; simp
     · rcases max_choice y (maxOf t) with e | e
       · rw [e]; simp
       · rw [e]; exact List.mem_cons_of_mem _ (ih ht)

@@ -20,7 +20,7 @@ namespace E6b
 open ToVal Lax117284Proofs.Treewidth.Seq Lax117284Proofs.Treewidth.Chars Lax117284Proofs.Treewidth.Trees CT
 
 mutual
-theorem loc_prof (B : Finset ℕ) : ∀ t : RT, Loc B (RT.prof B t)
+theorem loc_prof_rec (B : Finset ℕ) : ∀ t : RT, Loc B (RT.prof B t)
   | .node X ks => by
     rw [RT.prof_node]
     refine ⟨Finset.inter_subset_right, typical_singleton _, by simp, ?_, ?_⟩
@@ -29,11 +29,17 @@ theorem loc_prof (B : Finset ℕ) : ∀ t : RT, Loc B (RT.prof B t)
       subst he
       exact Finset.card_le_card Finset.inter_subset_left
     · rw [← RT.profL_eq_map B ks]
-      exact locL_profL B ks
-theorem locL_profL (B : Finset ℕ) : ∀ ks : List RT, LocL B (RT.profL B ks)
+      exact locL_profL_rec B ks
+theorem locL_profL_rec (B : Finset ℕ) : ∀ ks : List RT, LocL B (RT.profL B ks)
   | [] => trivial
-  | k :: ks => ⟨loc_prof B k, locL_profL B ks⟩
+  | k :: ks => ⟨loc_prof_rec B k, locL_profL_rec B ks⟩
 end
+
+theorem loc_prof_pair : (type_of% @loc_prof_rec) ∧ (type_of% @locL_profL_rec) :=
+  ⟨@loc_prof_rec, @locL_profL_rec⟩
+
+theorem loc_prof : type_of% @loc_prof_rec := loc_prof_pair.1
+
 
 /-- the characteristic of a connected real tree of width `w` covering `B` is well formed -/
 theorem char_wf {B : Finset ℕ} {t : RT} {w : ℕ} (hc : t.Conn) (hB : B ⊆ t.verts) (hw : t.Width w) :

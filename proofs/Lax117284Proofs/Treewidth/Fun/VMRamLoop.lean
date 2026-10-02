@@ -116,7 +116,7 @@ theorem turn_step {P : Prog} {W Bi : ℕ} {s s' : St} {σ : Env} (hA : Abs s σ)
   have hA1 : Abs s σ1 := by rw [e1]; exact abs_op_oa hA _ _
   have hC1 : Cst P W Bi σ1 := hC.of_run hr1 (by decide) (by decide) (by decide) (by decide)
   have hop : σ1.vars "op" = opc i := by rw [e1]; nrm
-  have hF : Fetched σ1 i := ⟨hop, by rw [e1]; nrm⟩
+  have hF : Fetched σ1 i := ⟨by rw [e1]; nrm⟩
   have hrun1 : σ1.vars "run" = 1 := by rw [hr1.frame_var _ (by decide)]; exact hrun
   obtain ⟨σ2, hr2, hA2, hC2, hrun2⟩ := refines_blkOp i P W Bi s s' σ1 hA1 hC1 hB hB' hi hs hF
   have hd := dispatch_run (Bi := Bi) (K := 40) (by have := hC.bi; omega) (σ := σ1) (σ' := σ2)

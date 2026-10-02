@@ -136,23 +136,28 @@ theorem toRT_verts_inter_B (B : Finset ℕ) (f : Finset ℕ → ℕ) : ∀ r : A
 /-! ## the joined runs have the same labels -/
 
 mutual
-theorem joinC_verts_aux (kmax : ℕ) : ∀ (a b c : CT), c ∈ joinC kmax a b → CT.verts a = CT.verts b
+theorem joinC_verts_aux_rec (kmax : ℕ) : ∀ (a b c : CT), c ∈ joinC kmax a b → CT.verts a = CT.verts b
   | node S y ks, node S' y' ks', c, h => by
     obtain ⟨rfl, hl, d, kk, rfl, hkk, hd⟩ := joinC_inv h
-    have := joinKids_verts_aux kmax ks ks' kk hkk
+    have := joinKids_verts_aux_rec kmax ks ks' kk hkk
     simp only [CT.verts, this]
-theorem joinKids_verts_aux (kmax : ℕ) : ∀ (ks ks' : List CT) (kk : List CT),
+theorem joinKids_verts_aux_rec (kmax : ℕ) : ∀ (ks ks' : List CT) (kk : List CT),
     kk ∈ joinKids kmax ks ks' → CT.vertsL ks = CT.vertsL ks'
   | [], [], _, _ => rfl
   | k :: ks, k' :: ks', kk, h => by
     simp only [joinKids, List.mem_flatMap, List.mem_map] at h
     obtain ⟨c, hc, kk', hkk', rfl⟩ := h
-    have h1 := joinC_verts_aux kmax k k' c hc
-    have h2 := joinKids_verts_aux kmax ks ks' kk' hkk'
+    have h1 := joinC_verts_aux_rec kmax k k' c hc
+    have h2 := joinKids_verts_aux_rec kmax ks ks' kk' hkk'
     simp only [CT.vertsL, h1, h2]
   | [], _ :: _, _, h => by simp [joinKids] at h
   | _ :: _, [], _, h => by simp [joinKids] at h
 end
+
+theorem joinC_verts_aux_pair : (type_of% @joinC_verts_aux_rec) ∧ (type_of% @joinKids_verts_aux_rec) :=
+  ⟨@joinC_verts_aux_rec, @joinKids_verts_aux_rec⟩
+
+theorem joinC_verts_aux : type_of% @joinC_verts_aux_rec := joinC_verts_aux_pair.1
 
 /-! ## the package of an analysis of a tree decomposition -/
 
@@ -335,8 +340,6 @@ theorem merge_interface {B Ua Ub : Finset ℕ} (hU : Ua ∩ Ub = B) (kmax : ℕ)
     have hfB := chainToRT_facts (kB.map AR.toRT) nB
     have ctx : MergeCtx B Ua Ub T nA nB (kA.map AR.toRT) (kB.map AR.toRT) (kM.map AR.toRT) :=
       { hU := hU
-        nA_ne := hA1
-        nB_ne := hB1
         Abag := fun x hx => ⟨fun v hv => hpA1.2.1 (hfA.1 x hx hv), (hA2 x hx).1⟩
         Bbag := fun x hx => ⟨fun v hv => hpB1.2.1 (hfB.1 x hx hv), (hB2 x hx).1⟩
         Ajunk := fun x hx J hJ => ⟨fun v hv => hpA1.2.1 (hfA.2.1 x hx J hJ hv),

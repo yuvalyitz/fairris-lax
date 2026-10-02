@@ -179,17 +179,22 @@ theorem normNode_nf (S : Finset ℕ) (y : List ℕ) (K : List CT) (h : ∀ k ∈
       · intro _; exact sortKids_idem S _
 
 mutual
-theorem norm_nf : ∀ q : CT, Nf (norm q)
+theorem norm_nf_rec : ∀ q : CT, Nf (norm q)
   | node S y ks => by
     rw [norm_node']
     apply normNode_nf
-    have := normL_nf ks
+    have := normL_nf_rec ks
     rw [normL_eq_map, NfL_iff] at this
     exact this
-theorem normL_nf : ∀ ks : List CT, NfL (normL ks)
+theorem normL_nf_rec : ∀ ks : List CT, NfL (normL ks)
   | [] => trivial
-  | k :: ks => ⟨norm_nf k, normL_nf ks⟩
+  | k :: ks => ⟨norm_nf_rec k, normL_nf_rec ks⟩
 end
+
+theorem norm_nf_pair : (type_of% @norm_nf_rec) ∧ (type_of% @normL_nf_rec) :=
+  ⟨@norm_nf_rec, @normL_nf_rec⟩
+
+theorem norm_nf : type_of% @norm_nf_rec := norm_nf_pair.1
 
 theorem norm_of_nf_node (S : Finset ℕ) (y : List ℕ) (ks : List CT)
     (h1 : ks = [] → y.length ≤ 1) (h2 : ks ≠ [] → Shaped S ks) : normNode S y ks = node S y ks := by
@@ -208,14 +213,19 @@ theorem norm_of_nf_node (S : Finset ℕ) (y : List ℕ) (ks : List CT)
     | a :: b :: t, _, _, hsort => rw [normF_ge2, hsort (by simp)]
 
 mutual
-theorem nf_norm : ∀ q : CT, Nf q → norm q = q
+theorem nf_norm_rec : ∀ q : CT, Nf q → norm q = q
   | node S y ks, h => by
-    rw [norm_node, normL_of_nfL ks h.1]
+    rw [norm_node, normL_of_nfL_rec ks h.1]
     exact norm_of_nf_node S y ks h.2.1 h.2.2
-theorem normL_of_nfL : ∀ ks : List CT, NfL ks → normL ks = ks
+theorem normL_of_nfL_rec : ∀ ks : List CT, NfL ks → normL ks = ks
   | [], _ => rfl
-  | k :: ks, h => by rw [normL, nf_norm k h.1, normL_of_nfL ks h.2]
+  | k :: ks, h => by rw [normL, nf_norm_rec k h.1, normL_of_nfL_rec ks h.2]
 end
+
+theorem nf_norm_pair : (type_of% @nf_norm_rec) ∧ (type_of% @normL_of_nfL_rec) :=
+  ⟨@nf_norm_rec, @normL_of_nfL_rec⟩
+
+theorem nf_norm : type_of% @nf_norm_rec := nf_norm_pair.1
 
 /-- **`norm` is idempotent.** -/
 theorem norm_idem (p : CT) : norm (norm p) = norm p := nf_norm _ (norm_nf p)
@@ -291,9 +301,9 @@ theorem mem_verts_of_mem_verts_normF {S : Finset ℕ} {y : List ℕ} {K : List C
     exact verts_le_of_not_keep hkeep hvk
 
 mutual
-theorem verts_norm : ∀ q : CT, verts (norm q) = verts q
+theorem verts_norm_rec : ∀ q : CT, verts (norm q) = verts q
   | node S y ks => by
-    have ih := vertsL_normL ks
+    have ih := vertsL_normL_rec ks
     have hK : ∀ v, (∃ k ∈ ks.map norm, v ∈ verts k) ↔ (∃ k ∈ ks, v ∈ verts k) := by
       intro v; rw [← mem_vertsL, ← mem_vertsL, ← normL_eq_map, ih]
     ext v
@@ -312,10 +322,15 @@ theorem verts_norm : ∀ q : CT, verts (norm q) = verts q
       · rcases mem_verts_of_mem_verts_normF ((hK v).2 h) with h' | h'
         · exact h'
         · exact hSv h'
-theorem vertsL_normL : ∀ ks : List CT, vertsL (normL ks) = vertsL ks
+theorem vertsL_normL_rec : ∀ ks : List CT, vertsL (normL ks) = vertsL ks
   | [] => rfl
-  | k :: ks => by rw [normL, vertsL, vertsL, verts_norm k, vertsL_normL ks]
+  | k :: ks => by rw [normL, vertsL, vertsL, verts_norm_rec k, vertsL_normL_rec ks]
 end
+
+theorem verts_norm_pair : (type_of% @verts_norm_rec) ∧ (type_of% @vertsL_normL_rec) :=
+  ⟨@verts_norm_rec, @vertsL_normL_rec⟩
+
+theorem verts_norm : type_of% @verts_norm_rec := verts_norm_pair.1
 
 end CT
 

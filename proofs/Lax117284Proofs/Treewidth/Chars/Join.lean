@@ -279,7 +279,7 @@ theorem joinSeq_mono {y y' z z' : List ℕ} {s kmax : ℕ} (hy : Dom y y') (hz :
   omega
 
 mutual
-theorem joinC_mono_aux (kmax : ℕ) : ∀ (a a' b b' : CT), DomC a a' → DomC b b' →
+theorem joinC_mono_aux_rec (kmax : ℕ) : ∀ (a a' b b' : CT), DomC a a' → DomC b b' →
     ∀ c' ∈ joinC kmax a' b', ∃ c ∈ joinC kmax a b, DomC c c'
   | node S y ks, node S' y' ks', node T z kt, node T' z' kt', ha, hb, c', hc => by
     obtain ⟨rfl, hy, hks⟩ := ha
@@ -289,7 +289,7 @@ theorem joinC_mono_aux (kmax : ℕ) : ∀ (a a' b b' : CT), DomC a a' → DomC b
       rw [if_pos hcond] at hc
       simp only [List.mem_flatMap, List.mem_map] at hc
       obtain ⟨kk', hkk', d', hd', rfl⟩ := hc
-      obtain ⟨kk, hkk, hdkk⟩ := joinKids_mono_aux kmax ks ks' kt kt' hks hkt kk' hkk'
+      obtain ⟨kk, hkk, hdkk⟩ := joinKids_mono_aux_rec kmax ks ks' kt kt' hks hkt kk' hkk'
       obtain ⟨d, hd, hdom⟩ := joinSeq_mono hy hz hd'
       refine ⟨node S d kk, ?_, rfl, hdom, hdkk⟩
       unfold joinC
@@ -299,7 +299,7 @@ theorem joinC_mono_aux (kmax : ℕ) : ∀ (a a' b b' : CT), DomC a a' → DomC b
     · unfold joinC at hc
       rw [if_neg hcond] at hc
       simp at hc
-theorem joinKids_mono_aux (kmax : ℕ) : ∀ (ks ks' kt kt' : List CT), DomCL ks ks' → DomCL kt kt' →
+theorem joinKids_mono_aux_rec (kmax : ℕ) : ∀ (ks ks' kt kt' : List CT), DomCL ks ks' → DomCL kt kt' →
     ∀ kk' ∈ joinKids kmax ks' kt', ∃ kk ∈ joinKids kmax ks kt, DomCL kk kk'
   | [], [], [], [], _, _, kk', h => by
     simp only [joinKids, List.mem_singleton] at h
@@ -308,8 +308,8 @@ theorem joinKids_mono_aux (kmax : ℕ) : ∀ (ks ks' kt kt' : List CT), DomCL ks
   | k :: ks, k' :: ks', l :: kt, l' :: kt', ha, hb, kk', h => by
     simp only [joinKids, List.mem_flatMap, List.mem_map] at h
     obtain ⟨c', hc', kk'', hkk'', rfl⟩ := h
-    obtain ⟨c, hc, hdc⟩ := joinC_mono_aux kmax k k' l l' ha.1 hb.1 c' hc'
-    obtain ⟨kk, hkk, hdk⟩ := joinKids_mono_aux kmax ks ks' kt kt' ha.2 hb.2 kk'' hkk''
+    obtain ⟨c, hc, hdc⟩ := joinC_mono_aux_rec kmax k k' l l' ha.1 hb.1 c' hc'
+    obtain ⟨kk, hkk, hdk⟩ := joinKids_mono_aux_rec kmax ks ks' kt kt' ha.2 hb.2 kk'' hkk''
     refine ⟨c :: kk, ?_, hdc, hdk⟩
     simp only [joinKids, List.mem_flatMap, List.mem_map]
     exact ⟨c, hc, kk, hkk, rfl⟩
@@ -322,6 +322,11 @@ theorem joinKids_mono_aux (kmax : ℕ) : ∀ (ks ks' kt kt' : List CT), DomCL ks
   | _ :: _, _ :: _, _ :: _, [], _, hb, _, _ => by exact absurd hb (by simp [DomCL])
   | _ :: _, _ :: _, [], [], _, _, _, h => by simp [joinKids] at h
 end
+
+theorem joinC_mono_aux_pair : (type_of% @joinC_mono_aux_rec) ∧ (type_of% @joinKids_mono_aux_rec) :=
+  ⟨@joinC_mono_aux_rec, @joinKids_mono_aux_rec⟩
+
+theorem joinC_mono_aux : type_of% @joinC_mono_aux_rec := joinC_mono_aux_pair.1
 
 /-- Lemma 3.13 lifted to characteristics. -/
 theorem joinC_mono (kmax : ℕ) {a a' b b' : CT} (ha : DomC a a') (hb : DomC b b') :

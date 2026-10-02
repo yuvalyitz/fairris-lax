@@ -87,7 +87,7 @@ def wcostO : Option WPlan → ℕ
 end
 
 mutual
-theorem processRun_nsz_le (v : ℕ) (pre : Option Cut) : ∀ (wp : WPlan) (r : AR),
+theorem processRun_nsz_le_rec (v : ℕ) (pre : Option Cut) : ∀ (wp : WPlan) (r : AR),
     (processRun v pre wp r).nsz ≤ r.nsz + (if pre.isSome then 1 else 0) + wcost wp
   | wp, .run S ns ks => by
     cases wp with
@@ -108,7 +108,7 @@ theorem processRun_nsz_le (v : ℕ) (pre : Option Cut) : ∀ (wp : WPlan) (r : A
         omega
     | whole ps =>
       simp only [processRun, AR.nsz, wcost]
-      have h3 := applyKids_nszL_le v ps ks
+      have h3 := applyKids_nszL_le_rec v ps ks
       rcases pre with _ | c'
       · simp only [Option.isSome_none, Bool.false_eq_true, if_false]
         have h1 := chsz_addV_le v 0 none ns
@@ -117,21 +117,26 @@ theorem processRun_nsz_le (v : ℕ) (pre : Option Cut) : ∀ (wp : WPlan) (r : A
         refine le_trans (Nat.add_le_add_right (chsz_addV_le _ _ _ _) _) ?_
         have h1 := chsz_cutAt_le (typical (ns.map fun n : CNode => n.bag.card)) (witnesses (ns.map fun n : CNode => n.bag.card)) c' ns
         omega
-theorem applyKids_nszL_le (v : ℕ) : ∀ (ps : List (Option WPlan)) (ks : List AR),
+theorem applyKids_nszL_le_rec (v : ℕ) : ∀ (ps : List (Option WPlan)) (ks : List AR),
     AR.nszL (applyKids v ps ks) ≤ AR.nszL ks + wcostL ps
   | [], ks => by simp [applyKids, wcostL]
   | _ :: _, [] => by simp [applyKids, AR.nszL]
   | p :: ps, k :: ks => by
-    have h1 := applyOpt_nsz_le v p k
-    have h2 := applyKids_nszL_le v ps ks
+    have h1 := applyOpt_nsz_le_rec v p k
+    have h2 := applyKids_nszL_le_rec v ps ks
     simp only [applyKids, AR.nszL, wcostL]
     omega
-theorem applyOpt_nsz_le (v : ℕ) : ∀ (p : Option WPlan) (k : AR), (applyOpt v p k).nsz ≤ k.nsz + wcostO p
+theorem applyOpt_nsz_le_rec (v : ℕ) : ∀ (p : Option WPlan) (k : AR), (applyOpt v p k).nsz ≤ k.nsz + wcostO p
   | none, k => by simp [applyOpt, wcostO]
   | some p, k => by
-    have := processRun_nsz_le v none p k
+    have := processRun_nsz_le_rec v none p k
     simpa [applyOpt, wcostO] using this
 end
+
+theorem processRun_nsz_le_pair : (type_of% @processRun_nsz_le_rec) ∧ (type_of% @applyKids_nszL_le_rec) ∧ (type_of% @applyOpt_nsz_le_rec) :=
+  ⟨@processRun_nsz_le_rec, @applyKids_nszL_le_rec, @applyOpt_nsz_le_rec⟩
+
+theorem processRun_nsz_le : type_of% @processRun_nsz_le_rec := processRun_nsz_le_pair.1
 
 /-! ## plans -/
 

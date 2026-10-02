@@ -128,7 +128,7 @@ def _root_.Lax117284Proofs.Treewidth.Trees.NT.inner : NT → ℕ
   | .forget _ c => c.inner + 1
   | .join a b => a.inner + b.inner + 1
 
-theorem sz_nt_leaf : sz NT.leaf = 1 := rfl
+theorem sz_nt_leaf : sz NT.leaf = 1 := by rfl
 theorem sz_nt_intro (v : ℕ) (c : NT) : sz (NT.intro v c) = sz c + 4 := by
   simp only [sz, toVal_nt_intro, Val.size]; omega
 theorem sz_nt_forget (v : ℕ) (c : NT) : sz (NT.forget v c) = sz c + 4 := by
@@ -160,25 +160,30 @@ theorem size_le_sz_nt (nt : NT) : 2 * nt.size ≤ sz nt + 1 := by
 /-! ## region plans (`CT.wsz` of P1) -/
 
 mutual
-theorem sz_wp_le : ∀ w : CT.WPlan, sz w + 3 ≤ 8 * CT.wsz w
+theorem sz_wp_le_rec : ∀ w : CT.WPlan, sz w + 3 ≤ 8 * CT.wsz w
   | .endAt c => by
     cases c <;> simp [sz, CT.wsz, Val.size]
   | .whole ps => by
-    have := sz_wpl_le ps
+    have := sz_wpl_le_rec ps
     have h : sz (CT.WPlan.whole ps) = sz ps + 2 := by simp only [sz, toVal_wp_whole, Val.size]; omega
     rw [h]; simp only [CT.wsz]; omega
-theorem sz_wpl_le : ∀ ps : List (Option CT.WPlan), sz ps ≤ 1 + 8 * CT.wszL ps
+theorem sz_wpl_le_rec : ∀ ps : List (Option CT.WPlan), sz ps ≤ 1 + 8 * CT.wszL ps
   | [] => by simp [CT.wszL]
   | p :: ps => by
-    have := sz_wpo_le p
-    have := sz_wpl_le ps
+    have := sz_wpo_le_rec p
+    have := sz_wpl_le_rec ps
     rw [sz_cons]; simp only [CT.wszL]; omega
-theorem sz_wpo_le : ∀ p : Option CT.WPlan, sz p + 1 ≤ 8 * CT.wszO p
+theorem sz_wpo_le_rec : ∀ p : Option CT.WPlan, sz p + 1 ≤ 8 * CT.wszO p
   | none => by simp [CT.wszO]
   | some p => by
-    have := sz_wp_le p
+    have := sz_wp_le_rec p
     rw [sz_some]; simp only [CT.wszO]; omega
 end
+
+theorem sz_wp_le_triple : (type_of% @sz_wp_le_rec) ∧ (type_of% @sz_wpl_le_rec) ∧ (type_of% @sz_wpo_le_rec) :=
+  ⟨@sz_wp_le_rec, @sz_wpl_le_rec, @sz_wpo_le_rec⟩
+
+theorem sz_wp_le : type_of% @sz_wp_le_rec := sz_wp_le_triple.1
 
 theorem sz_plan_att (c : Option CT.Cut) (ch : List (Finset ℕ)) (M : Finset ℕ) :
     sz (CT.Plan.att c ch M) = sz c + sz ch + sz M + 4 := by

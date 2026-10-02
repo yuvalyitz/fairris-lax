@@ -227,9 +227,9 @@ theorem nrn_step (x : ℕ) (S : Finset ℕ) (y : List ℕ) (ks : List CT) (hy : 
     exact ((List.Perm.map _ (sortKids_perm S _)).filter _)
 
 mutual
-theorem g_norm (x : ℕ) : ∀ q : CT, Conn q → YNe q → g x (norm q) = g x q
+theorem g_norm_rec (x : ℕ) : ∀ q : CT, Conn q → YNe q → g x (norm q) = g x q
   | node S y ks, hc, hy => by
-    have IH := g_normL x ks hc.1 hy.2
+    have IH := g_normL_rec x ks hc.1 hy.2
     have hk : KidsConn (S.erase x) (ks.map (rl x)) := by
       have := conn_relabel_erase x _ hc
       rw [relabel_node, conn_node] at this
@@ -240,13 +240,18 @@ theorem g_norm (x : ℕ) : ∀ q : CT, Conn q → YNe q → g x (norm q) = g x q
       rw [List.map_map] at this
       exact this
     exact nrn_step x S y ks hy.1 hd IH
-theorem g_normL (x : ℕ) : ∀ ks : List CT, ConnL ks → YNeL ks → ∀ k ∈ ks, g x (norm k) = g x k
+theorem g_normL_rec (x : ℕ) : ∀ ks : List CT, ConnL ks → YNeL ks → ∀ k ∈ ks, g x (norm k) = g x k
   | [], _, _, k, hk => by simp at hk
   | k' :: ks, hc, hy, k, hk => by
     rcases List.mem_cons.1 hk with e | hk
-    · rw [e]; exact g_norm x k' hc.1 hy.1
-    · exact g_normL x ks hc.2 hy.2 k hk
+    · rw [e]; exact g_norm_rec x k' hc.1 hy.1
+    · exact g_normL_rec x ks hc.2 hy.2 k hk
 end
+
+theorem g_norm_pair : (type_of% @g_norm_rec) ∧ (type_of% @g_normL_rec) :=
+  ⟨@g_norm_rec, @g_normL_rec⟩
+
+theorem g_norm : type_of% @g_norm_rec := g_norm_pair.1
 
 /-- **Confluence of the normal form** under forgetting a vertex (repaired statement: `f = erase x`, `p` connected with
 non-empty sequences; see the module docstring). -/

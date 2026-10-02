@@ -14,13 +14,13 @@ variable {Δ' : ℕ → Option Tm} (hΔ : Δ ⊑ Δ') (B : ℕ)
 include hΔ
 
 mutual
-theorem winPlans_runs (U Q : ℕ) (hQ : 1000 * (U + 1) * (U + 1) ≤ Q) (v lo : ℕ) (hv : v ≤ U) (hlo : lo ≤ U) :
+theorem winPlans_runs_rec (U Q : ℕ) (hQ : 1000 * (U + 1) * (U + 1) ≤ Q) (v lo : ℕ) (hv : v ≤ U) (hlo : lo ≤ U) :
     ∀ (t : CT), sz t ≤ U → mx t ≤ U → 10 * U + 400 < B →
       Runs Δ' B fWinPlans [toVal v, toVal lo, toVal t] (toVal (winPlans v lo t))
         (Q * (3 * CT.count t - 1) * ((winPlans v lo t).length + 1))
   | CT.node S y ks, hU, hM, hB => by
     obtain ⟨hc1, hc2, hc3, hc4, hc5, hc6, hc7, hc8⟩ := ct_node_facts hU hM
-    have hkc := kidChoices_runs U Q hQ v hv ks (by omega) (by omega) hB
+    have hkc := kidChoices_runs_rec U Q hQ v hv ks (by omega) (by omega) hB
     have hQ1 : 1000 ≤ Q := by nlinarith
     have hid := ids_lt (B := B) (by omega)
     have hlen := length_runs (x1 hΔ) B y (by omega)
@@ -97,7 +97,7 @@ theorem winPlans_runs (U Q : ℕ) (hQ : 1000 * (U + 1) * (U + 1) ≤ Q) (v lo : 
       have := m4 (y.length - 1 - lo) 0
       have := m5 (kidChoices v ks).length
       omega
-theorem kidChoices_runs (U Q : ℕ) (hQ : 1000 * (U + 1) * (U + 1) ≤ Q) (v : ℕ) (hv : v ≤ U) :
+theorem kidChoices_runs_rec (U Q : ℕ) (hQ : 1000 * (U + 1) * (U + 1) ≤ Q) (v : ℕ) (hv : v ≤ U) :
     ∀ (ks : List CT), sz ks ≤ U → mx ks ≤ U → 10 * U + 400 < B →
       Runs Δ' B fKidChoices [toVal v, toVal ks] (toVal (kidChoices v ks))
         (Q * (3 * CT.countL ks + 1) * ((kidChoices v ks).length + 1))
@@ -114,8 +114,8 @@ theorem kidChoices_runs (U Q : ℕ) (hQ : 1000 * (U + 1) * (U + 1) ≤ Q) (v : �
     have hid := ids_lt (B := B) (by omega)
     have hU' : sz k ≤ U ∧ sz ks ≤ U := by rw [sz_cons] at hU; omega
     have hM' : mx k ≤ U ∧ mx ks ≤ U := by rw [mx_cons] at hM; omega
-    have hw := winPlans_runs U Q hQ v 0 hv (Nat.zero_le _) k hU'.1 hM'.1 hB
-    have hkc := kidChoices_runs U Q hQ v hv ks hU'.2 hM'.2 hB
+    have hw := winPlans_runs_rec U Q hQ v 0 hv (Nat.zero_le _) k hU'.1 hM'.1 hB
+    have hkc := kidChoices_runs_rec U Q hQ v hv ks hU'.2 hM'.2 hB
     have hmap := map_runs (x1 hΔ) B fSomeF (Val.nat 0)
       (fun p : CT.WPlan × CT × Finset ℕ => ((some p.1, p.2.1, p.2.2) : Option CT.WPlan × CT × Finset ℕ))
       (fun _ => 12) (winPlans v 0 k)
@@ -155,5 +155,11 @@ theorem kidChoices_runs (U Q : ℕ) (hQ : 1000 * (U + 1) * (U + 1) ≤ Q) (v : �
 end
 
 end proofs
+
+theorem winPlans_runs_pair : (type_of% @winPlans_runs_rec) ∧ (type_of% @kidChoices_runs_rec) :=
+  ⟨@winPlans_runs_rec, @kidChoices_runs_rec⟩
+
+theorem winPlans_runs : type_of% @winPlans_runs_rec := winPlans_runs_pair.1
+
 end E3A
 end Lax117284Proofs.Treewidth.Fun

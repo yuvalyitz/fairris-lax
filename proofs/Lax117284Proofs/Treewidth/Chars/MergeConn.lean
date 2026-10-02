@@ -22,8 +22,6 @@ structure MergeI (KM KA KB : RT) : Prop where
 
 structure MergeCtx (B Ua Ub S : Finset ℕ) (nA nB : List CNode) (kAT kBT kMT : List RT) : Prop where
   hU : Ua ∩ Ub = B
-  nA_ne : nA ≠ []
-  nB_ne : nB ≠ []
   Abag : ∀ x ∈ nA, x.bag ⊆ Ua ∧ x.bag ∩ B = S
   Bbag : ∀ x ∈ nB, x.bag ⊆ Ub ∧ x.bag ∩ B = S
   Ajunk : ∀ x ∈ nA, ∀ J ∈ x.junk, J.verts ⊆ Ua ∧ J.verts ∩ B ⊆ S

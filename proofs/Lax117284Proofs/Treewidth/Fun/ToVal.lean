@@ -17,10 +17,6 @@ class ToVal (α : Type) where
 
 open ToVal
 
-theorem Val.nat_inj {m n : ℕ} (h : Val.nat m = Val.nat n) : m = n := by injection h
-theorem Val.cons_ne_nat {a b : Val} {n : ℕ} : Val.cons a b ≠ Val.nat n := by intro h; cases h
-theorem Val.nat_ne_cons {a b : Val} {n : ℕ} : Val.nat n ≠ Val.cons a b := by intro h; cases h
-
 instance : ToVal ℕ := ⟨Val.nat, fun _ _ h => by simpa using h⟩
 
 instance : ToVal Val := ⟨id, fun _ _ h => h⟩
@@ -75,27 +71,22 @@ instance : ToVal (Finset ℕ) := ⟨finVal, by
 section simps
 variable {α β : Type} [ToVal α] [ToVal β]
 
-@[simp] theorem toVal_nat (n : ℕ) : toVal n = Val.nat n := rfl
-@[simp] theorem toVal_val (v : Val) : toVal v = v := rfl
-@[simp] theorem toVal_bool (b : Bool) : toVal b = Val.nat (if b then 1 else 0) := rfl
-@[simp] theorem toVal_true : toVal true = Val.nat 1 := rfl
-@[simp] theorem toVal_false : toVal false = Val.nat 0 := rfl
-@[simp] theorem toVal_unit (u : Unit) : toVal u = Val.nat 0 := rfl
-@[simp] theorem toVal_nil : toVal ([] : List α) = Val.nat 0 := rfl
-@[simp] theorem toVal_cons (a : α) (l : List α) : toVal (a :: l) = Val.cons (toVal a) (toVal l) := rfl
-@[simp] theorem toVal_pair (a : α) (b : β) : toVal (a, b) = Val.cons (toVal a) (toVal b) := rfl
-@[simp] theorem toVal_none : toVal (none : Option α) = Val.nat 0 := rfl
-@[simp] theorem toVal_some (a : α) : toVal (some a) = Val.cons (Val.nat 1) (toVal a) := rfl
+@[simp] theorem toVal_nat (n : ℕ) : toVal n = Val.nat n := by rfl
+@[simp] theorem toVal_bool (b : Bool) : toVal b = Val.nat (if b then 1 else 0) := by rfl
+@[simp] theorem toVal_true : toVal true = Val.nat 1 := by rfl
+@[simp] theorem toVal_false : toVal false = Val.nat 0 := by rfl
+@[simp] theorem toVal_nil : toVal ([] : List α) = Val.nat 0 := by rfl
+@[simp] theorem toVal_cons (a : α) (l : List α) : toVal (a :: l) = Val.cons (toVal a) (toVal l) := by rfl
+@[simp] theorem toVal_pair (a : α) (b : β) : toVal (a, b) = Val.cons (toVal a) (toVal b) := by rfl
+@[simp] theorem toVal_none : toVal (none : Option α) = Val.nat 0 := by rfl
+@[simp] theorem toVal_some (a : α) : toVal (some a) = Val.cons (Val.nat 1) (toVal a) := by rfl
 theorem toVal_finset (S : Finset ℕ) : toVal S = toVal (S.sort (· ≤ ·)) := rfl
 
 @[simp] theorem toVal_empty_finset : toVal (∅ : Finset ℕ) = Val.nat 0 := by
   rw [toVal_finset]; simp
 
 theorem toVal_list (l : List α) : toVal l = listVal l := rfl
-theorem toVal_inj_iff {a b : α} : toVal a = toVal b ↔ a = b := ⟨fun h => ToVal.inj h, fun h => h ▸ rfl⟩
 
-@[simp] theorem nat_ne_toVal_cons (n : ℕ) (a : α) (l : List α) : Val.nat n ≠ toVal (a :: l) := by simp
-@[simp] theorem toVal_cons_ne_nat (n : ℕ) (a : α) (l : List α) : toVal (a :: l) ≠ Val.nat n := by simp
 end simps
 
 /-! ### sizes and maximal naturals -/
@@ -113,12 +104,11 @@ variable {α β : Type} [ToVal α] [ToVal β]
 
 theorem sz_pos (a : α) : 0 < sz a := Val.size_pos _
 
-@[simp] theorem sz_nat (n : ℕ) : sz n = 1 := rfl
-@[simp] theorem sz_bool (b : Bool) : sz b = 1 := rfl
-@[simp] theorem sz_nil : sz ([] : List α) = 1 := rfl
+@[simp] theorem sz_nat (n : ℕ) : sz n = 1 := by rfl
+@[simp] theorem sz_nil : sz ([] : List α) = 1 := by rfl
 theorem sz_cons (a : α) (l : List α) : sz (a :: l) = sz a + sz l + 1 := rfl
-theorem sz_pair (a : α) (b : β) : sz (a, b) = sz a + sz b + 1 := rfl
-@[simp] theorem sz_none : sz (none : Option α) = 1 := rfl
+theorem sz_pair (a : α) (b : β) : sz (a, b) = sz a + sz b + 1 := by rfl
+@[simp] theorem sz_none : sz (none : Option α) = 1 := by rfl
 theorem sz_some (a : α) : sz (some a) = sz a + 2 := by
   simp only [sz, toVal_some, Val.size]; omega
 
@@ -162,13 +152,9 @@ theorem sz_finset (S : Finset ℕ) : sz S = 2 * S.card + 1 := by
 theorem sz_pair_le {a : α} {b : β} : sz a ≤ sz (a, b) ∧ sz b ≤ sz (a, b) := by
   simp only [sz_pair]; omega
 
-@[simp] theorem mx_nat (n : ℕ) : mx n = n := rfl
-@[simp] theorem mx_bool (b : Bool) : mx b = if b then 1 else 0 := rfl
-@[simp] theorem mx_nil : mx ([] : List α) = 0 := rfl
+@[simp] theorem mx_nat (n : ℕ) : mx n = n := by rfl
+@[simp] theorem mx_nil : mx ([] : List α) = 0 := by rfl
 theorem mx_cons (a : α) (l : List α) : mx (a :: l) = max (mx a) (mx l) := rfl
-theorem mx_pair (a : α) (b : β) : mx (a, b) = max (mx a) (mx b) := rfl
-@[simp] theorem mx_none : mx (none : Option α) = 0 := rfl
-theorem mx_some (a : α) : mx (some a) = max 1 (mx a) := rfl
 
 theorem mx_le_of_mem {a : α} {l : List α} (h : a ∈ l) : mx a ≤ mx l := by
   induction l with
@@ -183,16 +169,6 @@ theorem mx_list_le {l : List α} {M : ℕ} : mx l ≤ M ↔ ∀ a ∈ l, mx a �
   induction l with
   | nil => simp
   | cons b l ih => simp [mx_cons, ih]
-
-theorem mx_append (l₁ l₂ : List α) : mx (l₁ ++ l₂) = max (mx l₁) (mx l₂) := by
-  induction l₁ with
-  | nil => simp
-  | cons a l ih => simp [mx_cons, ih, max_assoc]
-
-theorem mx_reverse (l : List α) : mx l.reverse = mx l := by
-  induction l with
-  | nil => simp
-  | cons a l ih => simp [mx_append, mx_cons, ih, max_comm]
 
 theorem mx_finset_le {S : Finset ℕ} {M : ℕ} : mx S ≤ M ↔ ∀ a ∈ S, a ≤ M := by
   have : mx S = mx (S.sort (· ≤ ·)) := rfl

@@ -11,7 +11,7 @@ set_option maxHeartbeats 1000000
 /-!
 # WP E6b (5): `realJoin` with the target-sequence length as a separate parameter
 
-**Why this file exists.**  `E5D.mergeAR_runs` bounds the cost of one `findPath` call by `fpBound s L`, which contains
+**Why this file exists.**  the original (unprimed, now removed) `mergeAR_runs` of `E5D` bounded the cost of one `findPath` call by `fpBound s L`, which contains
 `3^(2(L+L)+1+s)`: the length `lw` of the *target run sequence* is bounded by the global size bound `s` (`findPathCost_le`,
 hypothesis `lw ≤ s`).  For `realJoin` on the trees built by `extract`, `s` must dominate the size of the *real trees*, which
 grows with `|nt|`, so that bound is exponential in `|nt|`.  The run sequences of a characteristic of a boundary of `b` vertices
@@ -54,7 +54,7 @@ variable {Δ' : ℕ → Option Tm} (hΔ : Δ ⊑ Δ') (B : ℕ)
 include hΔ
 
 mutual
-theorem mergeAR_runs' (s L Ly : ℕ) (hL : L ≤ s) (hB : 1000 + 100 * (s + 1) < B) :
+theorem mergeAR_runs'_rec (s L Ly : ℕ) (hL : L ≤ s) (hB : 1000 + 100 * (s + 1) < B) :
     ∀ (a b : AR) (c : CT), sz a ≤ s → sz b ≤ s → sz c ≤ s → ARcard L a → ARcard L b → CT.RB s Ly c →
     Runs Δ' B fMergeAR [toVal a, toVal b, toVal c] (toVal (mergeAR a b c)) (cMA' s L Ly * cnt a)
   | .run S na ka, .run S' nb kb, .node S'' ty tk, ha, hb, hc, hca, hcb, hrb => by
@@ -84,7 +84,7 @@ theorem mergeAR_runs' (s L Ly : ℕ) (hL : L ≤ s) (hB : 1000 + 100 * (s + 1) <
       (nb.map (fun n => n.bag.card)) S.card ty L L hcna hcnb (by simp; omega)
     have hfpc := findPathCost_le' (na.map (fun n => n.bag.card)).length (nb.map (fun n => n.bag.card)).length
       ty.length s L Ly (by simp; omega) (by simp; omega) hrb.2.1
-    have hkids := mergeKids_runs' s L Ly hL hB ka kb tk hka hkb htk hca.2 hcb.2 hrb.2.2
+    have hkids := mergeKids_runs'_rec s L Ly hL hB ka kb tk hka hkb htk hca.2 hcb.2 hrb.2.2
     have hk1 : fMergeKids < B := by have : fMergeKids < 1000 := by decide
                                     omega
     have hk2 : fMergeChain < B := by have : fMergeChain < 1000 := by decide
@@ -136,7 +136,7 @@ theorem mergeAR_runs' (s L Ly : ℕ) (hL : L ≤ s) (hB : 1000 + 100 * (s + 1) <
         · rw [e]
           simp only [List.length_map] at *
           omega
-theorem mergeKids_runs' (s L Ly : ℕ) (hL : L ≤ s) (hB : 1000 + 100 * (s + 1) < B) :
+theorem mergeKids_runs'_rec (s L Ly : ℕ) (hL : L ≤ s) (hB : 1000 + 100 * (s + 1) < B) :
     ∀ (ka kb : List AR) (tk : List CT), sz ka ≤ s → sz kb ≤ s → sz tk ≤ s → ARcardL L ka → ARcardL L kb → CT.RBL s Ly tk →
     Runs Δ' B fMergeKids [toVal ka, toVal kb, toVal tk] (toVal (mergeKids ka kb tk))
       (cMA' s L Ly * cntL ka + 40 * ka.length + 20)
@@ -177,8 +177,8 @@ theorem mergeKids_runs' (s L Ly : ℕ) (hL : L ≤ s) (hB : 1000 + 100 * (s + 1)
     have hbs : sz bs ≤ s := by have := sz_tail_lt b bs; omega
     have ht : sz t ≤ s := by have := sz_head_lt t ts; omega
     have hts : sz ts ≤ s := by have := sz_tail_lt t ts; omega
-    have h1 := mergeAR_runs' s L Ly hL hB a b t ha hb ht hca.1 hcb.1 hrb.1
-    have h2 := mergeKids_runs' s L Ly hL hB as bs ts has hbs hts hca.2 hcb.2 hrb.2
+    have h1 := mergeAR_runs'_rec s L Ly hL hB a b t ha hb ht hca.1 hcb.1 hrb.1
+    have h2 := mergeKids_runs'_rec s L Ly hL hB as bs ts has hbs hts hca.2 hcb.2 hrb.2
     have hk1 : fMergeAR < B := by have : fMergeAR < 1000 := by decide
                                   omega
     have hk2 : fMergeKids < B := by have : fMergeKids < 1000 := by decide
@@ -208,6 +208,18 @@ theorem mergeKids_runs' (s L Ly : ℕ) (hL : L ≤ s) (hB : 1000 + 100 * (s + 1)
         · ev_run
         · rw [e]; omega
 end
+
+end proofs
+
+theorem mergeAR_runs'_pair : (type_of% @mergeAR_runs'_rec) ∧ (type_of% @mergeKids_runs'_rec) :=
+  ⟨@mergeAR_runs'_rec, @mergeKids_runs'_rec⟩
+
+theorem mergeAR_runs' : type_of% @mergeAR_runs'_rec := mergeAR_runs'_pair.1
+
+section proofs
+variable {Δ' : ℕ → Option Tm} (hΔ : Δ ⊑ Δ') (B : ℕ)
+include hΔ
+
 
 /-- cost of `mergeReal` -/
 def cMergeReal' (s L Ly ck6 : ℕ) : ℕ :=

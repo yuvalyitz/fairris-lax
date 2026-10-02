@@ -22,7 +22,6 @@ variable {V : Type}
 /-- Root, parent function, depth. -/
 structure Rooted (r : V) (par : V → V) (d : V → ℕ) : Prop where
   par_root : par r = r
-  d_root : d r = 0
   d_par : ∀ x, x ≠ r → d (par x) + 1 = d x
 
 /-- The graph of a parent function. -/
@@ -146,7 +145,7 @@ theorem exists_rooting [Fintype V] {T : SimpleGraph V} (hT : T.IsTree) (r : V) :
     exact Classical.choose_spec (hex x h)
   have hpr : par r = r := by simp [par]
   have hroot : Rooted r par d :=
-    ⟨hpr, by simp [d], fun x h => (hpar x h).2⟩
+    ⟨hpr, fun x h => (hpar x h).2⟩
   refine ⟨par, d, hroot, ?_⟩
   ext a b
   rw [rgraph_adj]

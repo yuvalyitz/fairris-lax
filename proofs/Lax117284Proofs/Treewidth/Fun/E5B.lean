@@ -422,7 +422,7 @@ theorem analyzeNode_runs (E : Ext5 Δ') (Bd X : Finset ℕ) (kids : List (RT × 
 def cA (s ck6 : ℕ) : ℕ := cAN (6 * s) ck6 + 20 * s + 100
 
 mutual
-theorem analyze_runs (E : Ext5 Δ') (Bd : Finset ℕ) (s : ℕ) (hBd : sz Bd ≤ s)
+theorem analyze_runs_rec (E : Ext5 Δ') (Bd : Finset ℕ) (s : ℕ) (hBd : sz Bd ≤ s)
     (hB : 1000 + 100 * (6 * s + 1) + E.cKey (6 * s) < B) : ∀ t : RT, sz t ≤ s →
     Runs Δ' B fAnalyze [toVal Bd, toVal t] (toVal (analyze Bd t)) (cA s (E.cKey (6 * s)) * t.size)
   | .node X ks, hs => by
@@ -431,7 +431,7 @@ theorem analyze_runs (E : Ext5 Δ') (Bd : Finset ℕ) (s : ℕ) (hBd : sz Bd ≤
     have hlen : ks.length ≤ s := le_trans (length_le_sz ks) hks
     have h1 := analyzeNode_runs hΔ B E Bd X (analyzeL Bd ks) (6 * s) (by omega) (by omega)
       (le_trans (sz_analyzeL_le Bd ks) (by omega)) (by omega)
-    have h2 := analyzeL_runs E Bd s hBd hB ks hks
+    have h2 := analyzeL_runs_rec E Bd s hBd hB ks hks
     have hka : fAnalyzeL < B := by show 468 < B; omega
     have hkb : fAnalyzeNode < B := by show 466 < B; omega
     refine Runs.mk (hΔ _ _ Δ_analyze) ?_
@@ -443,7 +443,7 @@ theorem analyze_runs (E : Ext5 Δ') (Bd : Finset ℕ) (s : ℕ) (hBd : sz Bd ≤
       rw [e]
       unfold cA
       omega
-theorem analyzeL_runs (E : Ext5 Δ') (Bd : Finset ℕ) (s : ℕ) (hBd : sz Bd ≤ s)
+theorem analyzeL_runs_rec (E : Ext5 Δ') (Bd : Finset ℕ) (s : ℕ) (hBd : sz Bd ≤ s)
     (hB : 1000 + 100 * (6 * s + 1) + E.cKey (6 * s) < B) : ∀ ks : List RT, sz ks ≤ s →
     Runs Δ' B fAnalyzeL [toVal Bd, toVal ks] (toVal (analyzeL Bd ks))
       (cA s (E.cKey (6 * s)) * RT.sizeL ks + 20 * ks.length + 8)
@@ -456,8 +456,8 @@ theorem analyzeL_runs (E : Ext5 Δ') (Bd : Finset ℕ) (s : ℕ) (hBd : sz Bd �
   | k :: ks, hs => by
     have hk : sz k ≤ s := by have := sz_head_lt k ks; omega
     have hks : sz ks ≤ s := by have := sz_tail_lt k ks; omega
-    have h1 := analyze_runs E Bd s hBd hB k hk
-    have h2 := analyzeL_runs E Bd s hBd hB ks hks
+    have h1 := analyze_runs_rec E Bd s hBd hB k hk
+    have h2 := analyzeL_runs_rec E Bd s hBd hB ks hks
     have hka : fAnalyze < B := by show 467 < B; omega
     have hkb : fAnalyzeL < B := by show 468 < B; omega
     refine Runs.mk (hΔ _ _ Δ_analyzeL) ?_
@@ -471,5 +471,11 @@ theorem analyzeL_runs (E : Ext5 Δ') (Bd : Finset ℕ) (s : ℕ) (hBd : sz Bd �
 end
 
 end proofs
+
+theorem analyze_runs_pair : (type_of% @analyze_runs_rec) ∧ (type_of% @analyzeL_runs_rec) :=
+  ⟨@analyze_runs_rec, @analyzeL_runs_rec⟩
+
+theorem analyze_runs : type_of% @analyze_runs_rec := analyze_runs_pair.1
+
 end E5B
 end Lax117284Proofs.Treewidth.Fun

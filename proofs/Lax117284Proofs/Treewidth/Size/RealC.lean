@@ -44,30 +44,40 @@ theorem LB.of_good {B : Finset ℕ} : ∀ {t : CT}, Good B t → LB B.card t := 
 /-! ## `DomC` preserves shape -/
 
 mutual
-theorem DomC.leaves_eq : ∀ {a b : CT}, DomC a b → leaves a = leaves b
+theorem DomC.leaves_eq_rec : ∀ {a b : CT}, DomC a b → leaves a = leaves b
   | node S y ks, node S' y' ks', h => by
     have hl := DomCL.length_eq h.2.2
-    have hs := DomCL.leavesL_eq h.2.2
+    have hs := DomCL.leavesL_eq_rec h.2.2
     simp only [leaves]
     have : ks.isEmpty = ks'.isEmpty := by
       cases ks <;> cases ks' <;> simp_all
     rw [this, hs]
-theorem DomCL.leavesL_eq : ∀ {a b : List CT}, DomCL a b → leavesL a = leavesL b
+theorem DomCL.leavesL_eq_rec : ∀ {a b : List CT}, DomCL a b → leavesL a = leavesL b
   | [], [], _ => rfl
-  | k :: ks, k' :: ks', h => by simp only [leavesL, DomC.leaves_eq h.1, DomCL.leavesL_eq h.2]
+  | k :: ks, k' :: ks', h => by simp only [leavesL, DomC.leaves_eq_rec h.1, DomCL.leavesL_eq_rec h.2]
 end
 
+theorem DomC.leaves_eq_pair : (type_of% @DomC.leaves_eq_rec) ∧ (type_of% @DomCL.leavesL_eq_rec) :=
+  ⟨@DomC.leaves_eq_rec, @DomCL.leavesL_eq_rec⟩
+
+theorem DomC.leaves_eq : type_of% @DomC.leaves_eq_rec := DomC.leaves_eq_pair.1
+
 mutual
-theorem DomC.LB_iff : ∀ {a c : CT} {b : ℕ}, DomC a c → (LB b a ↔ LB b c)
+theorem DomC.LB_iff_rec : ∀ {a c : CT} {b : ℕ}, DomC a c → (LB b a ↔ LB b c)
   | node S y ks, node S' y' ks', b, h => by
     simp only [LB]
-    rw [h.1, DomCL.LBL_iff h.2.2]
-theorem DomCL.LBL_iff : ∀ {a c : List CT} {b : ℕ}, DomCL a c → (LBL b a ↔ LBL b c)
+    rw [h.1, DomCL.LBL_iff_rec h.2.2]
+theorem DomCL.LBL_iff_rec : ∀ {a c : List CT} {b : ℕ}, DomCL a c → (LBL b a ↔ LBL b c)
   | [], [], _, _ => Iff.rfl
   | k :: ks, k' :: ks', b, h => by
     simp only [LBL]
-    rw [DomC.LB_iff h.1, DomCL.LBL_iff h.2]
+    rw [DomC.LB_iff_rec h.1, DomCL.LBL_iff_rec h.2]
 end
+
+theorem DomC.LB_iff_pair : (type_of% @DomC.LB_iff_rec) ∧ (type_of% @DomCL.LBL_iff_rec) :=
+  ⟨@DomC.LB_iff_rec, @DomCL.LBL_iff_rec⟩
+
+theorem DomC.LB_iff : type_of% @DomC.LB_iff_rec := DomC.LB_iff_pair.1
 
 /-! ## leaves -/
 
@@ -107,30 +117,35 @@ theorem Wf.leaves_le {B : Finset ℕ} {kmax : ℕ} {t : CT} (h : Wf B kmax t) : 
 /-! ## `wcost ≤ leaves` -/
 
 mutual
-theorem wcost_le_leaves (v : ℕ) : ∀ (lo : ℕ) (t : CT), ∀ x ∈ winPlans v lo t, wcost x.1 ≤ leaves t
+theorem wcost_le_leaves_rec (v : ℕ) : ∀ (lo : ℕ) (t : CT), ∀ x ∈ winPlans v lo t, wcost x.1 ≤ leaves t
   | lo, node S y ks, x, hx => by
     simp only [winPlans, List.mem_append, List.mem_map] at hx
     rcases hx with (⟨f, _, rfl⟩ | ⟨f, _, rfl⟩) | ⟨combo, hcombo, rfl⟩
     · simp only [wcost]; exact leaves_pos _
     · simp only [wcost]; exact leaves_pos _
     · simp only [wcost]
-      exact le_trans (kidChoices_wcost_le v ks combo hcombo) (leavesL_le_leaves S y ks)
-theorem kidChoices_wcost_le (v : ℕ) : ∀ (ks : List CT), ∀ combo ∈ kidChoices v ks,
+      exact le_trans (kidChoices_wcost_le_rec v ks combo hcombo) (leavesL_le_leaves S y ks)
+theorem kidChoices_wcost_le_rec (v : ℕ) : ∀ (ks : List CT), ∀ combo ∈ kidChoices v ks,
     wcostL (combo.map (·.1)) ≤ leavesL ks
   | [], combo, h => by
     simp only [kidChoices, List.mem_singleton] at h; subst h; simp [wcostL, leavesL]
   | k :: ks, combo, h => by
     simp only [kidChoices, List.mem_flatMap, List.mem_map] at h
     obtain ⟨o, ho, combo', hcombo', rfl⟩ := h
-    have h1 := kidChoices_wcost_le v ks combo' hcombo'
+    have h1 := kidChoices_wcost_le_rec v ks combo' hcombo'
     have h2 : wcostO o.1 ≤ leaves k := by
       rcases List.mem_cons.1 ho with rfl | ho
       · simp [wcostO]
       · obtain ⟨p, hp, rfl⟩ := List.mem_map.1 ho
-        simpa [wcostO] using wcost_le_leaves v 0 k p hp
+        simpa [wcostO] using wcost_le_leaves_rec v 0 k p hp
     simp only [List.map_cons, wcostL, leavesL]
     omega
 end
+
+theorem wcost_le_leaves_pair : (type_of% @wcost_le_leaves_rec) ∧ (type_of% @kidChoices_wcost_le_rec) :=
+  ⟨@wcost_le_leaves_rec, @kidChoices_wcost_le_rec⟩
+
+theorem wcost_le_leaves : type_of% @wcost_le_leaves_rec := wcost_le_leaves_pair.1
 
 theorem chainsGo_chain_length_le (cands : List (Finset ℕ)) : ∀ (fuel : ℕ) (bound : Finset ℕ)
     (chain : List (Finset ℕ)), ∀ x ∈ chainsGo cands fuel bound chain, x.1.length ≤ chain.length + fuel := by

@@ -88,7 +88,7 @@ theorem vertsL_KR {v : ℕ} {ks kids : List CT} (h : List.Forall₂ (KR v) ks ki
 /-! ## the region results -/
 
 mutual
-theorem winR_aux (v : ℕ) (B : Finset ℕ) (hvB : v ∉ B) : ∀ (t r : CT) (c : Finset ℕ), WinR v t r c →
+theorem winR_aux_rec (v : ℕ) (B : Finset ℕ) (hvB : v ∉ B) : ∀ (t r : CT) (c : Finset ℕ), WinR v t r c →
     Loc B t → Conn t → v ∉ verts t →
     Loc (insert v B) r ∧ Conn r ∧ (∀ u, u ∈ verts r ↔ u = v ∨ u ∈ verts t) ∧ r.S = insert v t.S
   | node S y ks, r, c, hw, hl, hc, hv => by
@@ -112,7 +112,7 @@ theorem winR_aux (v : ℕ) (B : Finset ℕ) (hvB : v ∉ B) : ∀ (t r : CT) (c 
       · intro u
         simp only [verts, vertsL, Finset.mem_union, Finset.mem_insert, Finset.notMem_empty, or_false]
         tauto
-    · obtain ⟨hkl, hkc, hkR, hkv⟩ := kidR_aux v B hvB ks kids cv hk hlks hc.1 hvks
+    · obtain ⟨hkl, hkc, hkR, hkv⟩ := kidR_aux_rec v B hvB ks kids cv hk hlks hc.1 hvks
       have hp1 := plus1_props hty hyne hyge
       refine ⟨⟨Finset.insert_subset_insert v hlS, hp1.1, hp1.2.1, fun e he => by have := hp1.2.2 e he; omega, hkl⟩,
         ⟨hkc, ?_, ?_⟩, ?_, rfl⟩
@@ -140,7 +140,7 @@ theorem winR_aux (v : ℕ) (B : Finset ℕ) (hvB : v ∉ B) : ∀ (t r : CT) (c 
         have a1 := h1 u
         have a2 := h2 u
         tauto
-theorem kidR_aux (v : ℕ) (B : Finset ℕ) (hvB : v ∉ B) : ∀ (ks kids : List CT) (c : Finset ℕ), KidR v ks kids c →
+theorem kidR_aux_rec (v : ℕ) (B : Finset ℕ) (hvB : v ∉ B) : ∀ (ks kids : List CT) (c : Finset ℕ), KidR v ks kids c →
     LocL B ks → ConnL ks → v ∉ vertsL ks →
     LocL (insert v B) kids ∧ ConnL kids ∧ List.Forall₂ (KR v) ks kids ∧ (∀ k' ∈ kids, v ∈ verts k' → v ∈ k'.S)
   | [], kids, c, hk, _, _, _ => by
@@ -152,14 +152,14 @@ theorem kidR_aux (v : ℕ) (B : Finset ℕ) (hvB : v ∉ B) : ∀ (ks kids : Lis
     obtain ⟨k', kids', c1, c2, rfl, -, hk1, hk2⟩ := hk
     have hvk : v ∉ verts k := fun h => hv (by rw [vertsL]; exact Finset.mem_union_left _ h)
     have hvks : v ∉ vertsL ks := fun h => hv (by rw [vertsL]; exact Finset.mem_union_right _ h)
-    obtain ⟨l2, c2', r2, s2⟩ := kidR_aux v B hvB ks kids' c2 hk2 hl.2 hc.2 hvks
+    obtain ⟨l2, c2', r2, s2⟩ := kidR_aux_rec v B hvB ks kids' c2 hk2 hl.2 hc.2 hvks
     rcases hk1 with ⟨rfl, -⟩ | hw
     · refine ⟨⟨loc_mono (Finset.subset_insert _ _) _ hl.1, l2⟩, ⟨hc.1, c2'⟩, List.Forall₂.cons (Or.inl rfl) r2, ?_⟩
       intro q hq hvq
       rcases List.mem_cons.1 hq with rfl | hq
       · exact absurd hvq hvk
       · exact s2 q hq hvq
-    · obtain ⟨l1, c1', v1, s1⟩ := winR_aux v B hvB k k' c1 hw hl.1 hc.1 hvk
+    · obtain ⟨l1, c1', v1, s1⟩ := winR_aux_rec v B hvB k k' c1 hw hl.1 hc.1 hvk
       refine ⟨⟨l1, l2⟩, ⟨c1', c2'⟩, List.Forall₂.cons (Or.inr ⟨?_, ?_, ?_⟩) r2, ?_⟩
       · ext u; rw [Finset.mem_insert]; exact v1 u
       · rw [s1]; exact Finset.subset_insert _ _
@@ -169,5 +169,10 @@ theorem kidR_aux (v : ℕ) (B : Finset ℕ) (hvB : v ∉ B) : ∀ (ks kids : Lis
         · rw [s1]; exact Finset.mem_insert_self _ _
         · exact s2 q hq hvq
 end
+
+theorem winR_aux_pair : (type_of% @winR_aux_rec) ∧ (type_of% @kidR_aux_rec) :=
+  ⟨@winR_aux_rec, @kidR_aux_rec⟩
+
+theorem winR_aux : type_of% @winR_aux_rec := winR_aux_pair.1
 
 end Lax117284Proofs.Treewidth.Chars

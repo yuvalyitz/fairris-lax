@@ -123,7 +123,7 @@ theorem vertsL_of_forall₂ {ks kk : List CT} (hF : List.Forall₂ JR ks kk) : v
 /-! ## the main induction -/
 
 mutual
-theorem joinC_aux (B : Finset ℕ) (kmax : ℕ) : ∀ (a b c : CT), Good B a → Good B b → c ∈ joinC kmax a b →
+theorem joinC_aux_rec (B : Finset ℕ) (kmax : ℕ) : ∀ (a b c : CT), Good B a → Good B b → c ∈ joinC kmax a b →
     Good B c ∧ JR a c ∧ maxEntry c ≤ kmax ∧ (Conn a → Conn c)
   | node S y ks, node S' y' ks', c, ha, hb, hc => by
     rw [joinC] at hc
@@ -139,7 +139,7 @@ theorem joinC_aux (B : Finset ℕ) (kmax : ℕ) : ∀ (a b c : CT), Good B a →
       obtain ⟨hGa1, hGa2, hGa3, hGa4, hGa5, hGa6, hGa7, hGa8, hGa9⟩ := ha
       obtain ⟨hGb1, hGb2, hGb3, hGb4, hGb5, hGb6, hGb7, hGb8, hGb9⟩ := hb
       obtain ⟨hne0, hty0, hsum0, hsing⟩ := ringTyp_prop hd0
-      obtain ⟨hGK, hF, hbK, hCK⟩ := joinKids_aux B kmax ks ks' kk hGa9 hGb9 hkk
+      obtain ⟨hGK, hF, hbK, hCK⟩ := joinKids_aux_rec B kmax ks ks' kk hGa9 hGb9 hkk
       have hge : ∀ e ∈ d0, 2 * S.card ≤ e := by
         intro e he
         obtain ⟨x, hx, z, hz, rfl⟩ := hsum0 e he
@@ -184,7 +184,7 @@ theorem joinC_aux (B : Finset ℕ) (kmax : ℕ) : ∀ (a b c : CT), Good B a →
       · intro hcn
         exact kidsConn_transport hF (hCK hcn.1) hcn
     · simp at hc
-theorem joinKids_aux (B : Finset ℕ) (kmax : ℕ) : ∀ (ks ks' kk : List CT), GoodL B ks → GoodL B ks' →
+theorem joinKids_aux_rec (B : Finset ℕ) (kmax : ℕ) : ∀ (ks ks' kk : List CT), GoodL B ks → GoodL B ks' →
     kk ∈ joinKids kmax ks ks' →
     GoodL B kk ∧ List.Forall₂ JR ks kk ∧ (∀ k ∈ kk, maxEntry k ≤ kmax) ∧ (ConnL ks → ConnL kk)
   | [], [], kk, _, _, h => by
@@ -196,14 +196,19 @@ theorem joinKids_aux (B : Finset ℕ) (kmax : ℕ) : ∀ (ks ks' kk : List CT), 
   | k :: ks, k' :: ks', kk, ha, hb, h => by
     simp only [joinKids, List.mem_flatMap, List.mem_map] at h
     obtain ⟨c, hc, l, hl, rfl⟩ := h
-    obtain ⟨hg1, hj1, hm1, hcn1⟩ := joinC_aux B kmax k k' c ha.1 hb.1 hc
-    obtain ⟨hg2, hj2, hm2, hcn2⟩ := joinKids_aux B kmax ks ks' l ha.2 hb.2 hl
+    obtain ⟨hg1, hj1, hm1, hcn1⟩ := joinC_aux_rec B kmax k k' c ha.1 hb.1 hc
+    obtain ⟨hg2, hj2, hm2, hcn2⟩ := joinKids_aux_rec B kmax ks ks' l ha.2 hb.2 hl
     refine ⟨⟨hg1, hg2⟩, List.Forall₂.cons hj1 hj2, ?_, fun hcn => ⟨hcn1 hcn.1, hcn2 hcn.2⟩⟩
     intro k'' hk''
     rcases List.mem_cons.1 hk'' with rfl | hk''
     · exact hm1
     · exact hm2 _ hk''
 end
+
+theorem joinC_aux_pair : (type_of% @joinC_aux_rec) ∧ (type_of% @joinKids_aux_rec) :=
+  ⟨@joinC_aux_rec, @joinKids_aux_rec⟩
+
+theorem joinC_aux : type_of% @joinC_aux_rec := joinC_aux_pair.1
 
 /-- **`joinC` preserves well-formedness.** -/
 theorem joinC_wf {B : Finset ℕ} {kmax : ℕ} {a b c : CT} (ha : Wf B kmax a) (hb : Wf B kmax b)

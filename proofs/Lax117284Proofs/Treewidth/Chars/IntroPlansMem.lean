@@ -118,7 +118,7 @@ theorem foldl_union_cov (S : Finset ℕ) (l : List (Option WPlan × CT × Finset
     simp [Finset.union_assoc]
 
 mutual
-theorem winPlans_mem (v : ℕ) (lo : ℕ) : ∀ (t : CT) (r : CT) (c : Finset ℕ),
+theorem winPlans_mem_rec (v : ℕ) (lo : ℕ) : ∀ (t : CT) (r : CT) (c : Finset ℕ),
     (∃ w, (w, r, c) ∈ winPlans v lo t) ↔ WinR v (node t.S (t.y.drop lo) t.kids) r c
   | node S y ks, r, c => by
     simp only [CT.S, CT.y, CT.kids, winPlans, List.mem_append, List.mem_map, WinR]
@@ -140,15 +140,15 @@ theorem winPlans_mem (v : ℕ) (lo : ℕ) : ∀ (t : CT) (r : CT) (c : Finset �
         simp only [Prod.mk.injEq] at h
         obtain ⟨-, rfl, rfl⟩ := h
         exact ⟨combo.map (·.2.1), combo.foldl (fun a c => a ∪ c.2.2) ∅,
-          (kidChoices_mem v ks _ _).1 ⟨combo, hcombo, rfl, rfl⟩, rfl, foldl_union_cov _ _⟩
+          (kidChoices_mem_rec v ks _ _).1 ⟨combo, hcombo, rfl, rfl⟩, rfl, foldl_union_cov _ _⟩
     · rintro (⟨d1, d2, hd, rfl, rfl⟩ | ⟨kids, cv, hk, rfl, rfl⟩)
       · rw [mem_splits_drop] at hd
         rcases hd with ⟨f, hlo, hf, rfl, rfl⟩ | ⟨f, hlo, hf, rfl, rfl⟩
         · exact ⟨_, Or.inl (Or.inl ⟨f, List.mem_range'_1.2 ⟨hlo, by omega⟩, rfl⟩)⟩
         · exact ⟨_, Or.inl (Or.inr ⟨f, List.mem_range'_1.2 ⟨hlo, by omega⟩, rfl⟩)⟩
-      · obtain ⟨combo, hcombo, rfl, rfl⟩ := (kidChoices_mem v ks kids cv).2 hk
+      · obtain ⟨combo, hcombo, rfl, rfl⟩ := (kidChoices_mem_rec v ks kids cv).2 hk
         exact ⟨_, Or.inr ⟨combo, hcombo, by rw [foldl_union_cov]⟩⟩
-theorem kidChoices_mem (v : ℕ) : ∀ (ks : List CT) (kids : List CT) (cv : Finset ℕ),
+theorem kidChoices_mem_rec (v : ℕ) : ∀ (ks : List CT) (kids : List CT) (cv : Finset ℕ),
     (∃ combo ∈ kidChoices v ks, combo.map (·.2.1) = kids ∧ combo.foldl (fun a c => a ∪ c.2.2) ∅ = cv) ↔
       KidR v ks kids cv
   | [], kids, cv => by
@@ -160,7 +160,7 @@ theorem kidChoices_mem (v : ℕ) : ∀ (ks : List CT) (kids : List CT) (cv : Fin
     simp only [kidChoices, List.mem_flatMap, List.mem_map, KidR]
     constructor
     · rintro ⟨combo, ⟨o, ho, combo', hcombo', rfl⟩, rfl, rfl⟩
-      have hrec := (kidChoices_mem v ks (combo'.map (·.2.1)) (combo'.foldl (fun a c => a ∪ c.2.2) ∅)).1
+      have hrec := (kidChoices_mem_rec v ks (combo'.map (·.2.1)) (combo'.foldl (fun a c => a ∪ c.2.2) ∅)).1
         ⟨combo', hcombo', rfl, rfl⟩
       refine ⟨o.2.1, combo'.map (·.2.1), o.2.2, combo'.foldl (fun a c => a ∪ c.2.2) ∅, rfl, ?_, ?_, hrec⟩
       · simp only [List.foldl_cons]
@@ -169,22 +169,27 @@ theorem kidChoices_mem (v : ℕ) : ∀ (ks : List CT) (kids : List CT) (cv : Fin
         · left; exact ⟨rfl, rfl⟩
         · right
           obtain ⟨p, hp, rfl⟩ := List.mem_map.1 ho2
-          have := (winPlans_mem v 0 k p.2.1 p.2.2).1 ⟨p.1, hp⟩
+          have := (winPlans_mem_rec v 0 k p.2.1 p.2.2).1 ⟨p.1, hp⟩
           cases k with
           | node Sk yk kk => exact this
     · rintro ⟨k', kids', c1, c2, rfl, rfl, hk, hrec⟩
-      obtain ⟨combo', hcombo', rfl, rfl⟩ := (kidChoices_mem v ks kids' c2).2 hrec
+      obtain ⟨combo', hcombo', rfl, rfl⟩ := (kidChoices_mem_rec v ks kids' c2).2 hrec
       rcases hk with ⟨hk1, rfl⟩ | hw
       · subst hk1
         refine ⟨(none, k', ∅) :: combo', ⟨(none, k', ∅), by simp, combo', hcombo', rfl⟩, rfl, ?_⟩
         simp only [List.foldl_cons]
         rw [foldl_union_cov]; simp
-      · obtain ⟨w, hw'⟩ := (winPlans_mem v 0 k k' c1).2 (by cases k with | node Sk yk kk => exact hw)
+      · obtain ⟨w, hw'⟩ := (winPlans_mem_rec v 0 k k' c1).2 (by cases k with | node Sk yk kk => exact hw)
         refine ⟨(some w, k', c1) :: combo', ⟨(some w, k', c1), ?_, combo', hcombo', rfl⟩, rfl, ?_⟩
         · exact List.mem_cons_of_mem _ (List.mem_map.2 ⟨(w, k', c1), hw', rfl⟩)
         · simp only [List.foldl_cons]
           rw [foldl_union_cov]; simp
 end
+
+theorem winPlans_mem_pair : (type_of% @winPlans_mem_rec) ∧ (type_of% @kidChoices_mem_rec) :=
+  ⟨@winPlans_mem_rec, @kidChoices_mem_rec⟩
+
+theorem winPlans_mem : type_of% @winPlans_mem_rec := winPlans_mem_pair.1
 
 /-! ## `wtopPlans` and `attachPlans` -/
 
@@ -276,7 +281,7 @@ theorem IR_to_introKids (v : ℕ) (N : Finset ℕ) (S : Finset ℕ) (y : List �
     simpa [List.append_assoc] using hp
 
 mutual
-theorem introPlans_toIR (v : ℕ) (N : Finset ℕ) : ∀ (t : CT) (r : CT),
+theorem introPlans_toIR_rec (v : ℕ) (N : Finset ℕ) : ∀ (t : CT) (r : CT),
     (∃ path plan, (path, plan, r) ∈ introPlans v N t) → IR v N t r
   | node S y ks, r, h => by
     obtain ⟨pa, pl, h⟩ := h
@@ -290,9 +295,9 @@ theorem introPlans_toIR (v : ℕ) (N : Finset ℕ) : ∀ (t : CT) (r : CT),
         obtain ⟨⟨p, r0⟩, hp, -, -, rfl⟩ := h
         exact IR.att hNS ((attachPlans_mem v N (node S y ks) r0).1 ⟨p, hp⟩)
       · simp at h
-    · obtain ⟨pre2, k, post, r', rfl, hk, rfl⟩ := introKids_toIR v N S y ks [] r ⟨pa, pl, h⟩
+    · obtain ⟨pre2, k, post, r', rfl, hk, rfl⟩ := introKids_toIR_rec v N S y ks [] r ⟨pa, pl, h⟩
       simpa using IR.kid (pre := pre2) (post := post) hk
-theorem introKids_toIR (v : ℕ) (N : Finset ℕ) (S : Finset ℕ) (y : List ℕ) :
+theorem introKids_toIR_rec (v : ℕ) (N : Finset ℕ) (S : Finset ℕ) (y : List ℕ) :
     ∀ (ks pre : List CT) (r : CT), (∃ path plan, (path, plan, r) ∈ introKids v N S y pre ks) →
       ∃ pre2 k post r', ks = pre2 ++ k :: post ∧ IR v N k r' ∧ r = node S y (pre ++ pre2 ++ r' :: post)
   | [], pre, r, h => by obtain ⟨pa, pl, h⟩ := h; simp [introKids] at h
@@ -302,10 +307,15 @@ theorem introKids_toIR (v : ℕ) (N : Finset ℕ) (S : Finset ℕ) (y : List ℕ
     rcases h with ⟨⟨path, plan, r'⟩, hp, h⟩ | h
     · simp only [Prod.mk.injEq] at h
       obtain ⟨-, -, rfl⟩ := h
-      exact ⟨[], k, post, r', rfl, introPlans_toIR v N k r' ⟨path, plan, hp⟩, by simp⟩
-    · obtain ⟨pre2, k2, post2, r2, rfl, hk, rfl⟩ := introKids_toIR v N S y post (pre ++ [k]) r ⟨pa, pl, h⟩
+      exact ⟨[], k, post, r', rfl, introPlans_toIR_rec v N k r' ⟨path, plan, hp⟩, by simp⟩
+    · obtain ⟨pre2, k2, post2, r2, rfl, hk, rfl⟩ := introKids_toIR_rec v N S y post (pre ++ [k]) r ⟨pa, pl, h⟩
       exact ⟨k :: pre2, k2, post2, r2, by simp, hk, by simp⟩
 end
+
+theorem introPlans_toIR_pair : (type_of% @introPlans_toIR_rec) ∧ (type_of% @introKids_toIR_rec) :=
+  ⟨@introPlans_toIR_rec, @introKids_toIR_rec⟩
+
+theorem introPlans_toIR : type_of% @introPlans_toIR_rec := introPlans_toIR_pair.1
 
 theorem IR_toPlans (v : ℕ) (N : Finset ℕ) {t r : CT} (h : IR v N t r) :
     ∃ path plan, (path, plan, r) ∈ introPlans v N t := by

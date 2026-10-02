@@ -20,7 +20,7 @@ theorem hasTreewidthAtMost_of_rt {n : ℕ} {G : SimpleGraph (Fin n)} {w : ℕ} {
   let par : N → N := fun p => ⟨p.1.dropLast, RT.dropLast_mem_paths t _ p.2⟩
   let dd : N → ℕ := fun p => p.1.length
   have hR : Rooted r par dd := by
-    refine ⟨rfl, rfl, ?_⟩
+    refine ⟨rfl, ?_⟩
     intro x hx
     have : x.1 ≠ [] := fun e => hx (Subtype.ext e)
     show x.1.dropLast.length + 1 = x.1.length
