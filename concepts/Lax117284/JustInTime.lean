@@ -2,7 +2,7 @@ import Lax117284.Problems
 
 /-!
 ---
-title: Just-in-time scheduling on unrelated parallel machines
+title: Just-in-Time Scheduling on Unrelated Parallel Machines
 type: definition
 ---
 An instance of $R \parallel \sum_j Z_j$ consists of $n$ jobs and $m$ unrelated parallel
@@ -13,7 +13,7 @@ $(d_j - p_{i,j},\, d_j]$ of that machine; two jobs assigned to the same machine 
 overlap. The objective $\sum_j Z_j$ counts the jobs that are just in time, and the decision
 problem asks whether all $n$ jobs can be just in time at once. It is NP-hard.
 
-# Formalization notes
+# Formalization Notes
 
 The problem is stated at the maximum value of the objective, which is the form the
 reduction into fair repetitive interval scheduling uses and the form in which it is hard: a

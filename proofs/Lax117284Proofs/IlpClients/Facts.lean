@@ -1,7 +1,7 @@
 import Lax117284Proofs.IlpClients.Complete
 
 /-!
-# The rows of a normalised solution, seen through the large columns
+# The Rows of a Normalised Solution, Seen Through the Large Columns
 
 For a normalised solution `Y` (`Sol`), the certificate digits are `dY n Y c = min (Y c) (Kn n)`.
 The quantities of the decoding (`sigma`, `cp`, `Sj`) are computed here in terms of `Y` and of the

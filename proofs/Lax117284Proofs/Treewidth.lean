@@ -5,7 +5,7 @@ import Mathlib.Data.Fintype.Card
 import Mathlib.Data.Finset.Card
 
 /-!
-# Nice tree decompositions (Definition 17)
+# Nice Tree Decompositions (Definition 17)
 
 > **Definition 6.** A *tree-decomposition* of a graph `G = (V, E)` is a tree
 > `T = (𝒳, F)` with a node set `𝒳 ⊆ {X | X ⊆ V}` and `F ⊆ 𝒳 × 𝒳` that upholds the
@@ -25,7 +25,7 @@ Definition 6's third clause — *`𝒳_v` is connected* — becomes, for a roote
 in a child's subtree is already in that child's bag, and two different children's subtrees
 share only vertices the node's bag already holds.
 
-## What the dynamic program needs, and where it comes from
+## What the Dynamic Program Needs, and Where It Comes from
 
 Theorem 19's four cases each need a *separation* property — at an introduce node the new
 client has no neighbour deeper in the subtree outside the child's bag, and at a join node

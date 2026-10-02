@@ -31,8 +31,6 @@ theorem s1P_le (n : ℕ) (d : ℕ → ℕ) (j k : ℕ) : s1P n d j k ≤ k * Kn 
         _ ≤ Kn n := by omega
     nlinarith
 
-theorem s1P_N (n : ℕ) (cnt : ℕ → ℕ) (d : ℕ → ℕ) (j : ℕ) :
-    s1P n d j (nN n) = ∑ c ∈ range (nN n), if d c < Kn n then d c * coef n (nT n + j) c else 0 := rfl
 
 /-- The multiplier of the pass. -/
 theorem mvAssign_vals {n : ℕ} {cnt : ℕ → ℕ} {bb vb B : ℕ} (hb : Hyp n cnt bb vb B) (v : ℕ → ℕ)

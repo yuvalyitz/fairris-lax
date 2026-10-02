@@ -3,7 +3,7 @@ import Lax808846.RamComputes
 
 /-!
 ---
-title: 2-SAT is decided in time linear in the word times the number of variables
+title: 2-SAT Is Decided in Time Linear in the Word Times the Number of Variables
 type: theorem
 ---
 There is one word RAM program and one constant $c$ such that, at every word length $w$, given
@@ -13,7 +13,7 @@ $x$ encodes (and $0$ if it encodes none), with output $1$ if $x$ is in 2-SAT and
 Since a formula with $m$ clauses has at most $2m$ variables and at most $|x|$, the bound is at
 most $c\,(|x|+1)\,(2m+1)$ and at most $c\,(|x|+1)^2$.
 
-# Formalization notes
+# Formalization Notes
 
 The word RAM of `lax-808846` reads words of natural numbers; a binary word is handed to it as
 its list of zeros and ones, one bit an entry, so that the length of the input is the length of

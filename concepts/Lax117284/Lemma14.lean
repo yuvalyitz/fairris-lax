@@ -4,7 +4,7 @@ import Lax117284.Problems
 
 /-!
 ---
-title: Per-client fairness parameters at treewidth four
+title: Per-Client Fairness Parameters at Treewidth Four
 type: lemma
 ---
 **Lemma 14.** The problem
@@ -47,7 +47,7 @@ four: a root bag $\{c_0, c^+, c^-\}$, a bag $\{c_0, c^+, c^-, c_i\}$ per colour 
 bag $\{c_0, c^+, c^-, c_v, c_i\}$ per vertex of that colour below that, and a bag
 $\{c_0, c^+, c^-, c_v, c_{v,u}\}$ per neighbour $u$ of $v$ below that.
 
-# Formalization notes
+# Formalization Notes
 
 The clients are numbered: $c_0$ is $0$, $c^+$ is $1$, $c^-$ is $2$, then one number per
 colour, then one per vertex, then one per pair of a vertex and a neighbour index. So

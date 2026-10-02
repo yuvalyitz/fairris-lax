@@ -3,7 +3,7 @@ import Mathlib.Data.List.Sort
 import Lax117284Proofs.Defs
 
 /-!
-# Theorem 12: day-independent due dates, `m` constant
+# Theorem 12: Day-Independent Due Dates, `m` Constant
 
 > **Theorem 12.** The `1 | rep, d_{i,j} = d_j | min_j ∑_i Z_{i,j}` problem is solvable in
 > `O(m^{k+1} n^{m+1})` time.
@@ -15,7 +15,7 @@ import Lax117284Proofs.Defs
 > whether `p_{i,j*} ≤ d_{j*} − d_{j_i}` for every `i ∈ S`, i.e., if the jobs of client `j*`
 > can be feasibly scheduled in the partial schedule.
 
-## Why the last client is all the state you need
+## Why the Last Client Is All the State You Need
 
 Day-independent due dates make the daily conflict relation *nested along the due-date
 order*: process clients in non-decreasing `d_j`, and a newly added client `j` conflicts

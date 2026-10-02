@@ -60,7 +60,6 @@ theorem Stable.and {c : Com} {C D : Env → Prop} (h1 : Stable c C) (h2 : Stable
     Stable c (fun σ => C σ ∧ D σ) :=
   fun σ σ' h hk => ⟨h1 σ σ' h.1 hk, h2 σ σ' h.2 hk⟩
 
-theorem stable_true (c : Com) : Stable c (fun _ => True) := fun _ _ _ _ => trivial
 
 theorem stable_var {c : Com} (y : String) (P : ℕ → Prop) (h : y ∉ c.wvars) :
     Stable c (fun σ => P (σ.vars y)) :=

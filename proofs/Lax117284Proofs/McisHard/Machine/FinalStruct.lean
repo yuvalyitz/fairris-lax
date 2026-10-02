@@ -4,7 +4,7 @@ import Lax117284Proofs.Machine.SatNk
 import Lax117284Proofs.Machine.WrapTFinal
 
 /-!
-# The reduction to `H` as a `WrapT` (WP9, part 1)
+# The Reduction to `H` as a `WrapT` (WP9, Part 1)
 -/
 
 set_option autoImplicit false

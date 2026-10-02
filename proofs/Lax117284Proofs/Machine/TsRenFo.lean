@@ -63,10 +63,6 @@ lemma finv_step (arr : List ℕ) (p : ℕ) (σ0 σ σ' : Env) (hI : FInv arr p �
     simp only [Env.setVar, if_neg hyj]
     rw [hv y hy, hfr y hy]
 
-/-- The first occurrence lies before `j + 1` exactly when it lies before `j` or is `j`. -/
-lemma fo_lt_succ_iff (idx : ℕ → ℕ) (p j : ℕ) :
-    fo idx p < j + 1 ↔ fo idx p < j ∨ fo idx p = j := by omega
-
 set_option maxHeartbeats 1600000 in
 theorem foBody_spec (arr : List ℕ) (p : ℕ) (σ0 : Env)
     (hE : ∀ k ≤ p, arr.getD (2 + 2 * k) 0 + 8 < B)

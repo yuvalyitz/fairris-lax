@@ -2,7 +2,7 @@ import Lax117284Proofs.IlpClients.Structure
 import Mathlib.Data.Nat.Factorial.Basic
 
 /-!
-# Alg F: the certificate and its decoding
+# Alg F: the Certificate and Its Decoding
 
 A certificate is `ω = (d, Hp, Hn, δ)`: a digit `d c ∈ [0, K]` for every column (`K = Kn n`; the
 digit `K` means "large"), a matrix `H = Hp - Hn` with entries of absolute value `≤ n!` (an integer
@@ -36,6 +36,7 @@ open Classical
 
 noncomputable section
 
+set_option genSizeOfSpec false in
 /-- A certificate of Alg F. -/
 structure Cert where
   /-- The digits, one per column. -/
@@ -131,11 +132,6 @@ def decode (n : ℕ) (cnt : ℕ → ℕ) (B : ℕ) (ω : Cert) : Option (ℕ →
 def Checks (n : ℕ) (cnt : ℕ → ℕ) (B : ℕ) (x : ℕ → ℕ) : Prop :=
   ∀ r < nM n, ∑ c ∈ range (nN n), coef n r c * x c = rhs n cnt B r
 
-/-- **Soundness** of Alg F (the check is a direct verification). -/
-theorem decode_sound {n : ℕ} {cnt : ℕ → ℕ} {B : ℕ} {ω : Cert} {x : ℕ → ℕ}
-    (_ : decode n cnt B ω = some x) (hx : Checks n cnt B x) :
-    (decodeILP (ilpWord n cnt B)).Feasible :=
-  (feasible_iff_nat n cnt B).mpr ⟨x, hx⟩
 
 end
 

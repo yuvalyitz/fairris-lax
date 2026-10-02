@@ -5,7 +5,7 @@ import Mathlib.Data.Nat.Bits
 
 /-!
 ---
-title: The decision problems as languages
+title: The Decision Problems as Languages
 type: definition
 ---
 Instances as binary words, the representation against which classical complexity measures
@@ -26,7 +26,7 @@ to such a class: a word belongs to it if it encodes an instance in the class, to
 a parameter, that admits a fair schedule. A language is NP-hard if every language in NP
 reduces to it in polynomial time.
 
-# Formalization notes
+# Formalization Notes
 
 Numbers are written in binary. Under a unary encoding the input would be exponentially
 longer, a polynomial-time reduction correspondingly easier to achieve, and every hardness

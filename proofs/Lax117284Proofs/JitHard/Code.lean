@@ -1,4 +1,4 @@
-import Lax470956.BinaryEncoding
+import Lax888481.BinaryEncoding
 import Lax117284.JustInTime
 import Lax117284Proofs.JitHard.Reduction
 import Lax117284Proofs.Machine.JitHardFormat
@@ -13,7 +13,7 @@ of the image of the instance.
 
 namespace Lax117284Proofs.JitHard.Code
 
-open Lax434930.PolynomialTime Lax470956.Scheduling
+open Lax434930.PolynomialTime Lax888481.Scheduling
 open Lax117284Proofs.Machine.TokModel Lax117284Proofs.Machine.JitHardFormat
 open Lax117284Proofs.Machine.Lists
 
@@ -163,21 +163,21 @@ lemma numCode_map (l : List ℕ) (f : ℕ → ℕ) :
 
 /-- **The code of an instance is the code of the stream of its numbers.** -/
 theorem encode_eq (I : SchedI) :
-    Lax470956.BinaryEncoding.encodeInstance I = code (toksH (nsOf I)) := by
+    Lax888481.BinaryEncoding.encodeInstance I = code (toksH (nsOf I)) := by
   rw [code_toksH _ (shape I), getD_zero, show 2 + 3 * I.jobs = (front I).length from
     (front_length I).symm]
   unfold nsOf
   rw [List.take_left, List.drop_left]
-  unfold Lax470956.BinaryEncoding.encodeInstance front tail
+  unfold Lax888481.BinaryEncoding.encodeInstance front tail
   simp only [numCode_append, numCode_cons, numCode_nil, List.append_nil, numCode_map]
   have e1 := flatMap_finRange_eq I.jobs
-    (fun j => Lax470956.BinaryEncoding.encodeNat (I.p j))
+    (fun j => Lax888481.BinaryEncoding.encodeNat (I.p j))
     (fun j => Lax117284.Problems.encodeNat (numP I j)) (fun i hi => by simp [numP, hi]; rfl)
   have e2 := flatMap_finRange_eq I.jobs
-    (fun j => Lax470956.BinaryEncoding.encodeNat (I.d j))
+    (fun j => Lax888481.BinaryEncoding.encodeNat (I.d j))
     (fun j => Lax117284.Problems.encodeNat (numD I j)) (fun i hi => by simp [numD, hi]; rfl)
   have e3 := flatMap_finRange_eq I.jobs
-    (fun j => Lax470956.BinaryEncoding.encodeNat (I.w j))
+    (fun j => Lax888481.BinaryEncoding.encodeNat (I.w j))
     (fun j => Lax117284.Problems.encodeNat (numW I j)) (fun i hi => by simp [numW, hi]; rfl)
   have e4 := flatMap_finRange_eq I.jobs
     (fun j => (List.finRange I.machines).map fun i => decide (i ∈ I.eligible j))
@@ -274,7 +274,6 @@ theorem pOf_val (I : SchedI) (i : Fin I.machines) (k : Fin (I.jobs + walls I)) :
   · have : ¬ (Fin.natAdd I.jobs w).val < I.jobs := by simp
     simp [pOf, this]
 
-lemma enc_eq (n : ℕ) : Lax470956.BinaryEncoding.encodeNat n = Lax117284.Problems.encodeNat n := rfl
 
 lemma numCode_replicate (k a : ℕ) :
     numCode (List.replicate k a) = (List.range k).flatMap (fun _ => Lax117284.Problems.encodeNat a) := by

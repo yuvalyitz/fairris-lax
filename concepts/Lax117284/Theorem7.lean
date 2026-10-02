@@ -3,7 +3,7 @@ import Lax117284.Problems
 
 /-!
 ---
-title: Three days and the fairness parameter one
+title: Three Days and the Fairness Parameter One
 type: theorem
 ---
 **Theorem 7.** The problem
@@ -38,7 +38,7 @@ makes the second day a dead end, and a client of an occurrence can then be serve
 the third day — which is possible exactly when the assignment selected on the first day
 makes its literal true.
 
-# Formalization notes
+# Formalization Notes
 
 Clients are numbered: the dummies $0, 1, 2$; then the pair $x_v^1, x_v^0$ of variable $v$;
 then one client per occurrence slot, those of the clauses of two literals first. Which of

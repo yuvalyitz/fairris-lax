@@ -2,7 +2,7 @@ import Lax117284.Problems
 
 /-!
 ---
-title: Day-independent processing times
+title: Day-Independent Processing Times
 type: theorem
 ---
 **Theorem 2.** The problem
@@ -14,7 +14,7 @@ produces have all their processing times equal, which is a special case of
 day-independence. With unit processing times two jobs of a day conflict exactly when they
 have the same due date, and the problem becomes one of bipartite matching.
 
-# Formalization notes
+# Formalization Notes
 
 The hard half is stated for the class of instances whose processing times are
 day-independent, and not for the smaller class of instances in which all processing times

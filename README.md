@@ -1,16 +1,16 @@
-# Fair repetitive interval scheduling
+# Fair Repetitive Interval Scheduling
 
 A [Lax archive](https://github.com/lax-archive/lax) submission (`lax-117284`) formalizing
-Heeger, Hermelin, Itzhaki, Molter and Shabtay, *Fair repetitive interval scheduling*,
+Heeger, Hermelin, Itzhaki, Molter and Shabtay, *Fair Repetitive Interval Scheduling*,
 Algorithmica (2025): each of `n` clients submits one job on each of `m` days, jobs are
 just-in-time, and every client must be served on at least `k` days. The submission states the
 paper's theorems, proves every construction correct, and proves the running times of the
 reductions and of the algorithms as programs for the word RAM. See `abstract.md` for the
 mathematics.
 
-**Status: complete.** Every statement is proved, with no `sorry`, and no result of the
-literature is cited: the results that the paper takes from elsewhere are proved here or in the
-sibling submissions listed under Dependencies.
+The development contains 38 concepts and 84 tagged proofs. Supporting results are proved
+locally or supplied by the archive dependencies listed below. Final archive validation
+requires all external dependencies to be registered and pinned to their registered commits.
 
 | Result taken from the literature | Proved in |
 |---|---|
@@ -19,19 +19,16 @@ sibling submissions listed under Dependencies.
 | The integer programs of Theorem 4 are solved in fixed-parameter time (the paper cites Lenstra) | `IlpClients/`, `Machine/Ilp*.lean`: the programs of the family have a fixed constraint matrix, and a guess-and-verify algorithm solves them, so Lenstra's algorithm is not needed |
 | Bounded-occurrence 3-SAT is NP-hard (Tovey 1984) | `lax-345332`, through `BoundedSatProved.lean` |
 | Multicoloured Independent Set is NP-hard on regular instances | `McisHard/`: from bounded-occurrence 3-SAT, through the occurrence graph, a regularisation gadget and a copy of the graph for every clause |
-| Hitting Set is NP-hard (Karp 1972), and hardness of interval scheduling with eligible machine sets | `lax-496464` and `lax-470956` |
+| Hitting Set is NP-hard (Karp 1972), and hardness of interval scheduling with eligible machine sets | `lax-496464` and `lax-888481`, through `JitHard/Sat34Wired.lean` |
 
-Besides Lean's three standard axioms, the 84 proofs depend only on statements of other archive
-submissions: the Cook–Levin theorem and the encoding of formulas of `lax-429075`
-(`Lax429075.SATHard.hardness`, `Lax429075.EncodingCorrect.roundtrip`), the equivalence of word RAM
-and Turing machine polynomial time of `lax-759944`
-(`Lax759944.TuringRamPolytimeEquivalence.ramPolytime_iff_turingPolytime`), and the hardness of
-interval scheduling with eligible machine sets of `lax-470956` (`Lax470956.Theorem2.npHard_allSchedulable`).
+The hardness arguments use the archive's Cook–Levin theorem and CNF encoding
+(`lax-429075`), the equivalence of word RAM and Turing-machine polynomial time
+(`lax-759944`), and the registered Tovey and ISEM developments. The bridge in
+`JitHard/Sat34Wired.lean` composes their proofs for the scheduling reduction.
+The archive's proof network records the declared assumptions and their proofs.
 
-Several statements of the first draft were false or vacuous as printed — a running-time bound
-that is `0` at the empty word, an empty word admitted at word length `0`, a decoder applied to
-a word one entry too long, so that every instance decoded to the empty one — and were repaired;
-the formalization notes of the affected concept modules record each repair.
+The concept pages explain the encoding conventions, boundary cases, and the placement
+of inactive jobs used to preserve the conflict graph in the treewidth construction.
 
 ## Prerequisites
 
@@ -39,23 +36,21 @@ Lean `v4.33.0` via [elan](https://github.com/leanprover/elan), and the
 [`lax` CLI](https://github.com/lax-archive/lax). The mathlib revision is pinned in
 `manifest.yaml`; Lake fetches it on first build.
 
-## Verifying it
+## Verifying It
 
-The one command that checks everything:
+For archive validation, run:
 
     lax build .
 
-Its last stage, *Inspecting the statements*, pairs every statement with its proof and reports
-`38 concepts · 84 proofs`. The proofs cite statements of the sibling submissions `lax-470956`
-(interval scheduling with eligible machine sets), `lax-496464` (Hitting Set), `lax-689794`
-(treewidth) and `lax-345332` (bounded-occurrence satisfiability), and require the scanner of
-`lax-391470`, none of which is registered yet, so until then the build has to admit them as
-sibling checkouts and drafts:
+The submission currently uses local checkouts of `lax-496464` (flow-shop scheduling)
+and `lax-689794` (treewidth). Until both are registered and their requirements are pinned,
+validate the local development with:
 
     lax build . --nonstrict
 
-(`lax build` rewrites `proofs/lake-manifest.json`, which is not tracked, turning the `lax-391470`
-entries into path entries; a plain `lake build` afterwards still succeeds.)
+A nonstrict build checks the local proofs but does not establish readiness for archive
+submission. Registered dependencies include ISEM (`lax-888481`), Tovey (`lax-345332`)
+and RJLMax (`lax-391470`).
 
 The full build takes a while; on a machine with limited memory, cap Lake's parallelism, for
 example `LEAN_NUM_THREADS=2 lake build` from `proofs/`, or it will start one Lean process per
@@ -79,11 +74,10 @@ substituted, which is why the audit is best run on the tagged proofs themselves.
 > Anything placed inside `proofs/Lax117284Proofs/` must also be imported by
 > `Lax117284Proofs.lean`, or the build is rejected. Keep scratch work elsewhere.
 
-## Reading it
+## Reading It
 
-Read `concepts/` and let the build vouch for `proofs/`: about 3,400 lines of statements
-against about 88,000 lines of proof. Lean's kernel checks the proofs; only a reader can judge
-whether the statements say what they claim. The statements are grouped by theorem
+Start with `concepts/` for the statements and their hypotheses. Lean's kernel checks
+the proofs; the definitions and hypotheses still require mathematical review. The statements are grouped by theorem
 (`Theorem1.lean` … `Theorem13.lean`, `Lemma14.lean`, `Lemma15.lean`, `Corollary8.lean`),
 with the shared definitions in `Scheduling.lean`, `Problems.lean`, `InstanceEncoding.lean`
 and `ParameterizedComplexity.lean`.
@@ -124,7 +118,7 @@ under `TwoSAT/Machine/`) and the bipartite matching development under `Bipartite
     manifest.yaml     id, title, authors, pinned Lean + mathlib, bibliography
     abstract.md       the prose account, rendered on the archive website
     concepts/         statements only, as axioms — 38 modules
-    proofs/           the proofs, each tagged with the statement it discharges — 462 modules
+    proofs/           the proofs, each tagged with the statement it discharges
 
 A concept module states results as `axiom`s. A proof is a `theorem` whose docstring carries
 `conclusion: <that axiom's full name>`; the build checks the pairing.
@@ -144,22 +138,22 @@ Beyond mathlib, this submission builds on other archive submissions:
   Claude): treewidth.
 - `lax-271696`, the compressed sparse row encoding of a graph for the word RAM (the bipartite
   matching modules).
-- `lax-470956`, interval scheduling with eligible machine sets: the hardness of the problem that the
-  just-in-time hardness reduces from, and multicoloured cliques. A draft at the time of writing.
+- `lax-888481`, interval scheduling with eligible machine sets: the hardness of the problem that
+  the just-in-time hardness reduces from, imported and composed (not cited as an axiom) in
+  `JitHard/Sat34Wired.lean`. Registered as the successor of `lax-470956`.
 - `lax-496464`, just-in-time scheduling in two-stage flexible flow shops: Hitting Set and its
   NP-hardness, the source of the reduction of `FromHittingSet`. A draft at the time of writing.
 - `lax-689794`, treewidth: Bodlaender's algorithm on the word RAM, proved there, from which
   `BodlaenderProved.lean` derives the statement used here. A draft at the time of writing.
 - `lax-345332`, Tovey's bounded-occurrence satisfiability, proved there and identified with
-  `BoundedSat` in `BoundedSatProved.lean`. A draft at the time of writing.
-- `lax-391470`, *Scheduling with two non-unit job lengths is NP-complete* (Yuval Itzhaki,
+  `BoundedSat` in `BoundedSatProved.lean`; also, through `JitHard/Sat34Wired.lean`, the source of
+  the `(3,4)`-SAT hardness `lax-888481`'s reduction needs. Registered.
+- `lax-391470`, *Scheduling with Two Non-Unit Job Lengths Is NP-Complete* (Yuval Itzhaki,
   Claude): its verified scanner of an encoded formula and its transfer of a RAM computation to a
-  Turing machine (the 2-SAT modules). A draft at the time of writing; the build warns
-  (`draft-dependency`) until it is registered.
+  Turing machine (the 2-SAT modules). Registered.
 
-Several packages are required with their proofs, and the build warns about each
-(`proof-dependency`): none of the results used from them is stated as a statement of its
-submission, so there is nothing to cite instead.
+Several dependencies include proof packages to reuse verified implementations and
+compose proofs. Lax reports these requirements as `proof-dependency` warnings.
 
 The archive itself is described in `lax-242665`, *An Introduction to Lax* (Édouard Bonnet,
 Jan Dreier, Clemens Kuske).

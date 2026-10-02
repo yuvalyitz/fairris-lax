@@ -3,14 +3,14 @@ import Mathlib.Data.Set.Card
 
 /-!
 ---
-title: Matchings, the matching number, and saturation
+title: Matchings, the Matching Number, and Saturation
 type: definition
 ---
 A matching of a graph is a set of edges no two of which share a vertex; the matching number is
 the largest number of edges in a matching; a matching saturates a set of vertices when it covers
 every one of them, and it is perfect when it covers every vertex of the graph.
 
-# Formalization notes
+# Formalization Notes
 
 Matchings are Mathlib's: a subgraph `M` of `G` is a matching, `M.IsMatching`, when every vertex
 of `M` has exactly one neighbour in `M`; its edges are `M.edgeSet`. Perfect matchings are

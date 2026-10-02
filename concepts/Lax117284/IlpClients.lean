@@ -5,7 +5,7 @@ import Lax117284.ParameterizedComplexity
 
 /-!
 ---
-title: The integer programs of the clients' reduction are fixed-parameter tractable
+title: The Integer Programs of the Clients' Reduction Are Fixed-Parameter Tractable
 type: definition
 ---
 An *integer program* here is a system of `M` linear equality constraints over `N`
@@ -25,7 +25,7 @@ client may go unserved) is free. The reduction of the problem of the clients to 
 `Theorem4.byClients_fptReduces_ilp`, and `ilpClients_fpt` is proved in the proofs package, by a
 guess-and-verify algorithm specific to these matrices, not cited.
 
-# Formalization notes
+# Formalization Notes
 
 The family is written out here, the coefficient formula included, because this module cannot import the
 proofs; the proofs identify it, definition by definition, with the construction of the reduction. Column

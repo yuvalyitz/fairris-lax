@@ -27,7 +27,7 @@ construction can name them structurally — as sums and subtypes of the objects 
 from — instead of through an ad-hoc enumeration. Nothing in the paper's arguments depends
 on days carrying an order.
 
-## Fairness, per client
+## Fairness, per Client
 
 Section 5.1 needs the generalization `1 | k_j, rep | min_j ∑_i Z_{i,j}` in which each
 client `j` carries its own fairness parameter `k j`, and Lemma 15 reduces that back to the

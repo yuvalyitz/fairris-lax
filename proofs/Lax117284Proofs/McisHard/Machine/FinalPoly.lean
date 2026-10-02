@@ -1,7 +1,7 @@
 import Lax117284Proofs.McisHard.Machine.FinalLayout
 
 /-!
-# The cost of the reduction to `H` is polynomial (WP9, part 3)
+# The Cost of the Reduction to `H` Is Polynomial (WP9, Part 3)
 
 `KaccM Sz l ≤ 4·10⁸ · (Sz + 1) · (l + 1)^5`.
 -/

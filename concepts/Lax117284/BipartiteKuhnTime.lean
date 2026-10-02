@@ -4,7 +4,7 @@ import Lax808846.RamComputes
 
 /-!
 ---
-title: The matching number of a bipartite graph in time O(n · |x|)
+title: The Matching Number of a Bipartite Graph in Time O(n · |x|)
 type: theorem
 ---
 There is one word RAM program and one constant $c$ such that, at every word length $w$, given a
@@ -13,7 +13,7 @@ $c\,(n+1)\,(|x|+1)$ instructions with the matching number of the graph as its si
 entry. Since the word has length $3 + V + 2E + 1$ for $V$ vertices and $E$ edges, this is Kuhn's
 bound $O(|L| \cdot (|V| + |E|))$, hence $O(|V| \cdot |E|)$ on graphs without isolated vertices.
 
-# Formalization notes
+# Formalization Notes
 
 The program runs one augmenting search per left vertex, in the order of the word. A search
 marks each right vertex at most once, scans the adjacency list of each left vertex it reaches at

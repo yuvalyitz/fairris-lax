@@ -2,7 +2,7 @@ import Lax117284.Problems
 
 /-!
 ---
-title: Two-satisfiability
+title: Two-Satisfiability
 type: definition
 ---
 A *2-CNF formula* over $n$ variables is a finite conjunction of clauses, each clause a
@@ -11,7 +11,7 @@ is *satisfiable* if some assignment of truth values to the variables makes at le
 literal of every clause true. The language 2-SAT consists of the encodings of the
 satisfiable 2-CNF formulas; it is decidable in linear time.
 
-# Formalization notes
+# Formalization Notes
 
 A clause is a pair of literals and not a set of at most two of them. The distinction is the
 one that matters here: what breaks the tractability of 2-SAT is a clause with three

@@ -1,7 +1,7 @@
 import Lax117284Proofs.McisHard.Machine.PrintMat
 
 /-!
-# The header of the image of `H` (WP7, part 2)
+# The Header of the Image of `H` (WP7, Part 2)
 
 `hdrCom` computes `pK = kOf ns`, `pM = nOf ns`, `pV = pK * pM`; `preCom` writes the two numbers.
 -/
@@ -66,8 +66,6 @@ theorem hdrCom_spec (ns : List ℕ) (hP : Pars B ns) (hV : kOf ns * nOf ns + 8 <
     vcg_fin
     all_goals first | omega | (ring_nf at hV ⊢; omega)
 
-theorem AB_pK : "pK" ∉ AB := by decide
-theorem AB_pM : "pM" ∉ AB := by decide
 
 /-- The whole image: the two numbers of the header, then the matrix. -/
 def printCom : Com :=

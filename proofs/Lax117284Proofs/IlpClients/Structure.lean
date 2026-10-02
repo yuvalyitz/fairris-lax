@@ -2,7 +2,7 @@ import Lax117284Proofs.IlpClients.Family
 import Lax117284Proofs.IlpClients.Block
 
 /-!
-# The block structure of the family
+# The Block Structure of the Family
 
 The matrix `Amat n` of the family is an instance of the abstract block system of `Block.lean`:
 the column `c` has the type `tyOf n c` (the type of a live pair, none for zero columns and slacks)
@@ -21,7 +21,6 @@ def Amat (n : ℕ) : Fin (nM n) → Fin (nN n) → ℕ := fun r c => coef n r c
 /-- The kernel bound of the family. -/
 def Kn (n : ℕ) : ℕ := (n + 1) ^ (n + 1) + 1
 
-theorem Kn_eq (n : ℕ) : Kn n = (n + 1) ^ (n + 1) + 1 := rfl
 
 /-- The pair column `c` is live: `c` is a pair whose subset is independent for its type. -/
 def liveP (n c : ℕ) : Prop := c < nV n ∧ indepB n (c / nZ n) (c % nZ n) = true
@@ -199,8 +198,5 @@ theorem kernelBound_family (n : ℕ) : KernelBound (Amat n) (Kn n) := by
       unfold Kn; push_cast at this ⊢; linarith
     exact h2
 
-/-- `kernelBound_family`, with the bound written out. -/
-theorem kernelBound_family_explicit (n : ℕ) : KernelBound (Amat n) ((n + 1) ^ (n + 1) + 1) :=
-  kernelBound_family n
 
 end Lax117284Proofs.IlpClients

@@ -2,7 +2,7 @@ import Lax117284.TwoSatImplicationGraph
 
 /-!
 ---
-title: The satisfiability criterion for 2-CNF formulas
+title: The Satisfiability Criterion for 2-CNF Formulas
 type: lemma
 ---
 A 2-CNF formula is satisfiable exactly when it has no empty clause and no variable is
@@ -10,7 +10,7 @@ contradictory in its implication graph: no variable $x$ with a path from $x$ to 
 path from $\lnot x$ to $x$. This is the criterion of Aspvall, Plass and Tarjan, on which every
 polynomial-time algorithm for 2-SAT rests.
 
-# Formalization notes
+# Formalization Notes
 
 The direction from a satisfying assignment is by induction along the paths: an edge preserves
 truth, so a true literal reaches only true literals, and a variable cannot be true together with

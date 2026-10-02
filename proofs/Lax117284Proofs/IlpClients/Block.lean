@@ -1,7 +1,7 @@
 import Lax117284Proofs.IlpClients.Siegel
 
 /-!
-# The block system: type rows and client rows
+# The Block System: Type Rows and Client Rows
 
 An abstract version of the constraint system of the reduction.  Columns `c` of a linear order `κ`
 carry an optional *type* `τ c` and a `0/1` vector `u c` of length `n`.  A vector `v` (supported on
@@ -367,11 +367,6 @@ theorem isB_iff (S : Finset κ) {c : κ} (hc : c ∈ S) :
     · have h := bs_spec τ S hc
       exact hmin _ h.1 h.2.1
 
-/-- Two base columns of the same type coincide. -/
-theorem IsB_unique (S : Finset κ) {b b' : κ} (hb : b ∈ S) (hbb : IsB τ S b) (hbb' : IsB τ S b')
-    (h : τ b = τ b') : b = b' := by
-  rw [← hbb.2, ← hbb'.2]
-  exact bs_congr τ S hb h
 
 /-- **Regrouping by base.** -/
 theorem sum_regroup (S : Finset κ) (f G : κ → ℤ) :

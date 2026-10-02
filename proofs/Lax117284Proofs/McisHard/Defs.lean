@@ -8,7 +8,7 @@ import Lax117284Proofs.Machine.WrapTFinal
 import Mathlib.Combinatorics.SimpleGraph.Clique
 
 /-!
-# NP-hardness of Multicoloured Independent Set in normal form: the definitions and statements (WP0)
+# NP-Hardness of Multicoloured Independent Set in Normal Form: the Definitions and Statements (WP0)
 
 The reduction (see `mcis-notes/DESIGN.md`, `mcis-notes/check_ports.py`): a [2,3]-bounded 3-SAT formula becomes its occurrence
 graph `G₀` on the positions; every position gets 5 *ports*, each port a 7-vertex gadget slot `K₇ − {ab, ac, de, fg}` (`a = 0`);

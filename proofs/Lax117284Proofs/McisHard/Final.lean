@@ -4,7 +4,7 @@ import Lax117284Proofs.Compose
 import Lax117284Proofs.BoundedSatProved
 
 /-!
-# NP-hardness of Multicoloured Independent Set in normal form, from [2,3]-bounded 3-satisfiability
+# NP-Hardness of Multicoloured Independent Set in Normal Form, from [2,3]-Bounded 3-Satisfiability
 
 The closing theorem: the reduction `reduceMcis` is polynomial-time computable (`reduceMcis_polyTime`) and
 correct (`Proved.reduceMcis_correct`), so the hardness of `BoundedSat` (`BoundedSatProved`) transfers.

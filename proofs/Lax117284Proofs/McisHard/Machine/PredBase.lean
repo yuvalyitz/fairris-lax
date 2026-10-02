@@ -1,7 +1,7 @@
 import Lax117284Proofs.McisHard.Machine.PredInfra
 
 /-!
-# Clause-level commands for the adjacency bit (WP6)
+# Clause-Level Commands for the Adjacency Bit (WP6)
 
 `compCom` (the literals of two positions are complementary), `cidCom` (the clause number of a position),
 `clauseCom` (the size of the clause of a position and the position `mateN`).

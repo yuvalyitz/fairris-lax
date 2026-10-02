@@ -314,6 +314,7 @@ import Lax117284Proofs.X3Word
 import Lax117284Proofs.FromHittingSet
 import Lax117284Proofs.JitHard.Reduction
 import Lax117284Proofs.JitHard.Code
+import Lax117284Proofs.JitHard.Sat34Wired
 import Lax117284Proofs.JitHard.Final
 import Lax117284Proofs.Machine.JitHardFormat
 import Lax117284Proofs.Machine.JitHardNk

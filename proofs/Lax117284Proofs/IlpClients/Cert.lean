@@ -1,7 +1,7 @@
 import Lax117284Proofs.IlpClients.Facts
 
 /-!
-# The certificate of a normalised solution
+# The Certificate of a Normalised Solution
 
 Given a normalised solution `Y` (`Sol`), the extras of the large set `L` have a difference matrix
 `Dmat` (`n × |Ext|`, entries `0/±1`) whose columns are independent (a nonzero relation would lift to

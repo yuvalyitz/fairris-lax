@@ -5,7 +5,7 @@ import Lax117284Proofs.Theorem4TwMask
 import Lax117284Proofs.Theorem4TreewidthDP
 
 /-!
-# The dynamic program over a decomposition word, as a function on numbers
+# The Dynamic Program over a Decomposition Word, as a Function on Numbers
 
 `TB D i e` says that the table of node `i` holds the restriction `e`, a number whose digits are
 the sets of days of the clients of the bag, in increasing order. It is defined by the four

@@ -1,7 +1,7 @@
 import Lax117284Proofs.Theorem4TwDP
 
 /-!
-# Counting the violations of a restriction
+# Counting the Violations of a Restriction
 
 The dynamic program decides whether a restriction is feasible and fair by counting: `violE` is the
 number of clients served fewer than `kk` times plus the number of triples of a day and two

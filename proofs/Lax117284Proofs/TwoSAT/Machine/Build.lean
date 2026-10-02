@@ -134,10 +134,6 @@ def Rows (F : Formula) (L : List (ℕ × ℕ)) (σ : Env) : Prop :=
   ∃ p t, σ.arrs "pos" = arrOf (N F + 1) p ∧ σ.arrs "tgt" = arrOf (edges F).length t ∧
     RowState F L p t
 
-theorem Rows.of_eq {F : Formula} {L : List (ℕ × ℕ)} {σ σ' : Env} (h : Rows F L σ)
-    (hp : σ'.arrs "pos" = σ.arrs "pos") (ht : σ'.arrs "tgt" = σ.arrs "tgt") : Rows F L σ' := by
-  unfold Rows at h ⊢; rw [hp, ht]; exact h
-
 /-! ### Pass (a): the degrees -/
 
 def DegInv (F : Formula) (σ : Env) : Prop :=

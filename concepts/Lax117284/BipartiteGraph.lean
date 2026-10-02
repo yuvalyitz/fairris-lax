@@ -3,7 +3,7 @@ import Mathlib.Combinatorics.SimpleGraph.Bipartite
 
 /-!
 ---
-title: Bipartite graphs with a fixed bipartition, and their encoding
+title: Bipartite Graphs with a Fixed Bipartition, and Their Encoding
 type: definition
 ---
 A bipartite graph is a simple graph whose vertices split into two sides such that every edge
@@ -16,7 +16,7 @@ Such a graph is handed to the word RAM as the compressed sparse row encoding of 
 followed by one entry, the number $n$ of left vertices. The bipartition is part of the input, as
 it is in the usual statement of the bipartite matching problem.
 
-# Formalization notes
+# Formalization Notes
 
 The graph is a Mathlib `SimpleGraph` on `Fin V`, and both its encoding and the number of
 vertices come from the archive: `EncodesGraph g V G` of `lax-271696` says that the word `g` is a

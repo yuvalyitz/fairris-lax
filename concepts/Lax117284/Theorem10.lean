@@ -2,7 +2,7 @@ import Lax117284.Scheduling
 
 /-!
 ---
-title: Unit processing times as a bipartite matching problem
+title: Unit Processing Times as a Bipartite Matching Problem
 type: theorem
 ---
 **Theorem 10.** Let $I$ be an instance all of whose processing times are $1$ and let
@@ -20,7 +20,7 @@ $m-k$ vertices $w_{\cdot,j}$ records that it is not. A matching saturating the j
 thus assigns every job either a slot of its day or one of the $m-k$ rejections client $j$ is
 allowed.
 
-# Formalization notes
+# Formalization Notes
 
 A matching saturating the $n m$ vertices of the job side is an injective map from that side
 whose values are neighbours of their arguments; stating it this way needs no cardinality

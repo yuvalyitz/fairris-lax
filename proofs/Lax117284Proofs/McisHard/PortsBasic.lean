@@ -1,7 +1,7 @@
 import Lax117284Proofs.McisHard.Defs
 
 /-!
-# WP2 (ports), part 1: the gadget facts and the adjacency description of `portGraph`
+# WP2 (Ports), Part 1: the Gadget Facts and the Adjacency Description of `portGraph`
 -/
 
 set_option autoImplicit false
@@ -23,11 +23,6 @@ theorem gad_alpha : ∀ s : Finset ℕ, s ⊆ Finset.range 7 → (∀ a ∈ s, �
   intro s hs h1 h2
   exact key s h1 h2
 
-theorem gad_facts :
-    (∀ t < 7, ((Finset.range 7).filter (gadAdj t)).card = if t = 0 then 4 else 5) ∧
-    (∀ s : Finset ℕ, s ⊆ Finset.range 7 → (∀ a ∈ s, ∀ b ∈ s, ¬ gadAdj a b) → s.card ≤ 2) ∧
-    (∃ a b, a ≠ 0 ∧ b ≠ 0 ∧ a < 7 ∧ b < 7 ∧ ¬ gadAdj a b) :=
-  ⟨gad_deg, gad_alpha, ⟨3, 4, by decide⟩⟩
 
 theorem portAdjN_symm {S : ℕ} {R : ℕ → ℕ → ℕ → ℕ → Prop} (h : IsPortRel S R) {u v : ℕ}
     (huv : portAdjN R u v) : portAdjN R v u := by

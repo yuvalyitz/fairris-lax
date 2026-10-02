@@ -4,14 +4,14 @@ import Lax117284.BipartiteGraph
 
 /-!
 ---
-title: Kuhn's algorithm computes a maximum matching
+title: Kuhn's Algorithm Computes a Maximum Matching
 type: theorem
 ---
 The matching Kuhn's algorithm returns is a matching of the graph, and no matching of the graph
 has more edges. In particular it saturates the left side exactly when some matching does, and
 its size is the matching number of the bipartite graph.
 
-# Formalization notes
+# Formalization Notes
 
 The first two statements are about the relation the algorithm works on; the third is about the
 graph, in Mathlib's terms: for a graph on `Fin V` split at `n`, the relation between `Fin n`

@@ -2,13 +2,13 @@ import Lax117284.TwoSatCNF
 
 /-!
 ---
-title: 2-SAT is in P
+title: 2-SAT Is in P
 type: theorem
 ---
 The language 2-SAT lies in $\mathrm{P}$: a deterministic Turing machine decides membership
 within a polynomial number of steps, in the sense of the archive's class of `lax-434930`.
 
-# Formalization notes
+# Formalization Notes
 
 This is the word RAM bound of this submission, transferred. The program that decides the
 language on the zeros and ones of the word runs in time polynomial in the length of the word,

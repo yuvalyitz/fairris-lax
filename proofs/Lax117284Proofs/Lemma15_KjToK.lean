@@ -4,7 +4,7 @@ import Lax117284Proofs.ConflictGraph
 import Lax117284Proofs.Treewidth
 
 /-!
-# Lemma 15: per-client fairness parameters reduce to a uniform one
+# Lemma 15: per-Client Fairness Parameters Reduce to a Uniform One
 
 > **Lemma 15.** There is a polynomial time reduction from `1 | k_j, rep | min_j ∑_i Z_{i,j}`
 > to `1 | rep | min_j ∑_i Z_{i,j}` which increases the treewidth by at most 2.
@@ -23,7 +23,7 @@ of them each day (`exists_marker_each_day`) — which turns the `k_c` "intersect
 days into `k_c` days client `c` cannot use. Its remaining budget of `m` served days therefore
 has to come `k_c` from the original days, which is exactly the original fairness requirement.
 
-## The layout
+## The Layout
 
 `d_max` bounds every due date of `I`, `P = n + 1`, and `blocked c` is any set of `k_c` days
 (it exists precisely when `k_c ≤ m`, which is the only case the reduction needs). Then

@@ -4,7 +4,7 @@ import Lax117284.Problems
 
 /-!
 ---
-title: Per-client fairness parameters reduce to a uniform one
+title: Per-Client Fairness Parameters Reduce to a Uniform One
 type: lemma
 ---
 **Lemma 15.** There is a polynomial-time reduction from
@@ -27,7 +27,7 @@ The jobs the original clients receive on the additional days are pairwise disjoi
 construction adds no edge between original clients: the overall conflict graph grows only by
 the two new vertices, and its treewidth by at most $2$.
 
-# Formalization notes
+# Formalization Notes
 
 The $k_j$ days on which client $j$ is blocked are the first $k_j$ of the additional days.
 The source takes an arbitrary set of that size; taking the first ones makes the construction

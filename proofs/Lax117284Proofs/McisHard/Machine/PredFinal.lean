@@ -1,7 +1,7 @@
 import Lax117284Proofs.McisHard.Machine.PredMain
 
 /-!
-# The adjacency bit of `H` on the machine: the final theorem (WP6)
+# The Adjacency Bit of `H` on the Machine: the Final Theorem (WP6)
 
 `bitCom_run`: given the state `SatAccept.prepSat` leaves (the stream `ns` in `TK`, `N`, `A2`), the command `bitCom`
 writes `adjF ns w w2` to `bt`; `bitCom_run_M` is the same about `adjM`.

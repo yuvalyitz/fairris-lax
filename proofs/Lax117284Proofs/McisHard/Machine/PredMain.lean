@@ -1,7 +1,7 @@
 import Lax117284Proofs.McisHard.Machine.PredLink
 
 /-!
-# The adjacency bit of `H`: the case tree and the whole command (WP6)
+# The Adjacency Bit of `H`: the Case Tree and the Whole Command (WP6)
 
 `treeCom`: the bit of `G'` at two vertex numbers `bTu`, `bTv` (`treeP`); `bitCom`: decode the two numbers of `H` and
 either compare (`N = 0`) or walk the tree.  Every block has at most one command whose specification carries a

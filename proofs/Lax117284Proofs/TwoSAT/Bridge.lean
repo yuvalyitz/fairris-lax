@@ -46,15 +46,7 @@ theorem ssOf_le (F : Formula) : ∀ i < 2 * F.length, ssOf F i ≤ 1 := by
   unfold ssOf
   split <;> omega
 
-/-- Outside the occurrences the variable is `0`. -/
-theorem xsOf_eq_zero (F : Formula) {i : ℕ} (hi : 2 * F.length ≤ i) : xsOf F i = 0 := by
-  have h : F.length ≤ i / 2 := by omega
-  simp [xsOf, litAt, List.getD_eq_getElem?_getD, h, clauseLit]
 
-/-- Outside the occurrences the sign is `0`. -/
-theorem ssOf_eq_zero (F : Formula) {i : ℕ} (hi : 2 * F.length ≤ i) : ssOf F i = 0 := by
-  have h : F.length ≤ i / 2 := by omega
-  simp [ssOf, litAt, List.getD_eq_getElem?_getD, h, clauseLit]
 
 theorem litAt_even (F : Formula) (c : ℕ) : litAt F (2 * c) = clauseLit (F.getD c []) 0 := by
   have h1 : 2 * c / 2 = c := by omega

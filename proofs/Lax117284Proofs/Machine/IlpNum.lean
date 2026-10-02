@@ -85,7 +85,6 @@ theorem ilpWord_rhs (n : ℕ) (cnt : ℕ → ℕ) (bb : ℕ) {r : ℕ} (hr : r <
   congr 1
   omega
 
-theorem coef_le_one'' (n r c : ℕ) : coef n r c ≤ 1 := coef_le_one n r c
 
 section
 variable {n : ℕ} {cnt : ℕ → ℕ} {bb v B : ℕ}

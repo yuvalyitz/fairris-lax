@@ -1,7 +1,7 @@
 import Mathlib
 
 /-!
-# Numbers as lists of digits
+# Numbers as Lists of Digits
 
 A restriction of a schedule to a bag of `s` clients is a list of `s` masks, each a number below
 `b = 2 ^ m`; the dynamic program indexes its table by the number whose base-`b` digits, least

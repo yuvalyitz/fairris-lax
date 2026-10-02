@@ -2,7 +2,7 @@ import Mathlib.Data.Finset.Max
 import Lax117284Proofs.ConflictGraph
 
 /-!
-# Interval graphs are perfect
+# Interval Graphs Are Perfect
 
 Theorem 13 needs one fact about the daily conflict graph, and the paper disposes of it in
 a sentence:

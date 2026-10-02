@@ -2,7 +2,7 @@ import Lax117284Proofs.McisHard.Machine.PredUnm
 import Lax117284Proofs.McisHard.Machine.PredMath
 
 /-!
-# The predicates `gadAdj`, `PE` and the port relation `RN` on the machine (WP6)
+# The Predicates `gadAdj`, `PE` and the Port Relation `RN` on the Machine (WP6)
 -/
 
 set_option autoImplicit false

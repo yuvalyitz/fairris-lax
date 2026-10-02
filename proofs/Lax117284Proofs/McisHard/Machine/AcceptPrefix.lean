@@ -1,7 +1,7 @@
 import Lax117284Proofs.McisHard.Machine.PredFinal
 
 /-!
-# Running a store-free command on a longer array (WP8)
+# Running a Store-Free Command on a Longer Array (WP8)
 
 The token array `TK` the tokenizer leaves is as long as the input word, and the stream of the formula is
 only a prefix of it.  A command that never stores into an array and never reads an entry past the end of

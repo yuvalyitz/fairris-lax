@@ -10,7 +10,7 @@ import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
 
 /-!
-# An integer left inverse with small entries
+# An Integer Left Inverse with Small Entries
 
 If the columns of a `0/±1` matrix `D` with `n` rows and columns indexed by `E` have no nonzero
 integer relation, then `|E| ≤ n` and there are an integer matrix `H : E × n` and `δ ∈ [1, n!]`

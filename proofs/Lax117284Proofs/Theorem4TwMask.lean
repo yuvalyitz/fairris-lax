@@ -1,7 +1,7 @@
 import Mathlib
 
 /-!
-# Sets of days as numbers
+# Sets of Days as Numbers
 
 The days on which a client is served form a set of days, written as a number whose bit `d` says
 whether day `d` is in the set. The dynamic program's digits are these numbers.

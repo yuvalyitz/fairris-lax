@@ -1,7 +1,7 @@
 import Lax117284Proofs.McisHard.Defs
 
 /-!
-# WP4: the occurrence graph and satisfiability (`sat_iff_indep`)
+# WP4: the Occurrence Graph and Satisfiability (`sat_iff_indep`)
 -/
 
 set_option autoImplicit false

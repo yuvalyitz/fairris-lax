@@ -3,7 +3,7 @@ import Mathlib.Logic.Relation
 
 /-!
 ---
-title: The implication graph of a 2-CNF formula
+title: The Implication Graph of a 2-CNF Formula
 type: definition
 ---
 The implication graph of a 2-CNF formula is the directed graph on the literals in which a
@@ -12,7 +12,7 @@ clause $(a)$ the edge $\lnot a \to a$. An edge $u \to v$ says that any assignmen
 must make $v$ true, and so does a path. A variable $x$ is *contradictory* when $x$ reaches
 $\lnot x$ and $\lnot x$ reaches $x$.
 
-# Formalization notes
+# Formalization Notes
 
 The graph is a relation on all literals, with no vertex set: a literal that no clause mentions
 has no edges, and reachability is the reflexive-transitive closure of the edge relation. The

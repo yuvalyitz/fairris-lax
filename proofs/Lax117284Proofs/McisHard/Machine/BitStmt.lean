@@ -1,7 +1,7 @@
 import Lax117284Proofs.McisHard.Machine.PredFinal
 
 /-!
-# The adjacency bit of `H` on the machine: interface for WP7 (WP6)
+# The Adjacency Bit of `H` on the Machine: Interface for WP7 (WP6)
 
 Re-export of `McisHard.Machine.PredFinal`, the finished statement and proof.  Everything is in the namespace
 `Lax117284Proofs.McisHard.Bit`:

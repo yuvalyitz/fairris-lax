@@ -15,7 +15,7 @@ The problem is NP-hard, and remains NP-hard on the instances the reduction of th
 section consumes: those in which every vertex has the same number $r \ge 1$ of neighbours,
 every class holds at least four vertices, and the number of edges is even.
 
-# Formalization notes
+# Formalization Notes
 
 A vertex is a pair, its class and its index inside the class, so that the colouring is part
 of the vertex set rather than a function to be constrained, and a solution is a choice of

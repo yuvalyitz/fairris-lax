@@ -1,7 +1,7 @@
 import Lax117284Proofs.McisHard.Defs
 
 /-!
-# WP1: the copy reduction is regular and normal (proved versions of the `Defs` statements)
+# WP1: the Copy Reduction Is Regular and Normal (Proved Versions of the `Defs` Statements)
 -/
 
 set_option autoImplicit false

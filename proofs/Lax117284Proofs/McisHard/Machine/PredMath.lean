@@ -2,7 +2,7 @@ import Lax117284Proofs.McisHard.Defs
 import Lax117284Proofs.McisHard.FormulaPorts
 
 /-!
-# The mathematics behind the adjacency bit (WP6)
+# The Mathematics Behind the Adjacency Bit (WP6)
 
 `PEP`, `portAdjM`, `adjM`: `portAdjN (RN ns)` with the two quantified pieces replaced by the predicates
 the machine computes; `adjM_iff_adjF` shows they agree with `adjF`.  The only facts about `RN` that are used are
@@ -43,8 +43,6 @@ def adjM (ns : List ℕ) (w w' : ℕ) : Prop :=
 theorem rank_le_one (ns : List ℕ) (hc : CondN ns) {o : ℕ} (ho : o < SlotsN ns) : rankN ns o ≤ 1 :=
   (hc.2 o ho).2
 
-theorem sign_le_one (ns : List ℕ) (hs : ShapeF ns) {o : ℕ} (ho : o < SlotsN ns) :
-    ns.getD (4 + 2 * o) 0 ≤ 1 := hs.2.2 o ho
 
 theorem pe_iff (ns : List ℕ) (hs : ShapeF ns) (hc : CondN ns) {o o' : ℕ} (ho : o < SlotsN ns)
     (ho' : o' < SlotsN ns) : PEP ns o o' ↔ ∃ j j', RN ns o j o' j' := by

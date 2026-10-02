@@ -2,7 +2,7 @@ import Lax117284.Problems
 
 /-!
 ---
-title: Raising the number of days and the fairness parameter
+title: Raising the Number of Days and the Fairness Parameter
 type: corollary
 ---
 **Corollary 8.** The problem
@@ -22,7 +22,7 @@ Both constructions give the new day the processing times of the first day, so an
 with day-independent processing times is sent to one with day-independent processing times,
 which is what makes the corollary a statement about that restriction.
 
-# Formalization notes
+# Formalization Notes
 
 The conflict-free day is laid out explicitly: client $j$ receives the interval ending at
 $(j+1)Q$, where $Q$ is at least every processing time of the first day. Consecutive clients

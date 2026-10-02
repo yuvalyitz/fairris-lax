@@ -2,7 +2,7 @@ import Lax117284.Scheduling
 
 /-!
 ---
-title: The dynamic program for day-independent due dates
+title: The Dynamic Program for Day-Independent Due Dates
 type: theorem
 ---
 **Theorem 12.** Let $I$ be an instance whose due dates are day-independent, so that client
@@ -20,7 +20,7 @@ earlier clients can leave behind that matters is how late each machine is occupi
 constant number $m$ of days the number of reachable states is polynomial, and the program
 decides the problem in polynomial time.
 
-# Formalization notes
+# Formalization Notes
 
 The program is a predicate: it holds of a list of clients and a state when the clients of
 the list can each be served on $k$ days from that state onwards. It is recursive in the

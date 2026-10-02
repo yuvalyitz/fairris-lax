@@ -5,7 +5,7 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Lax117284Proofs.Defs
 
 /-!
-# Theorem 4, third bullet: fixed-parameter tractability for the number of clients
+# Theorem 4, Third Bullet: Fixed-Parameter Tractability for the Number of Clients
 
 > **Theorem 4 / Theorem 21.** The `1 | rep | min_j ∑_i Z_{i,j}` problem is solvable in
 > `2^{2^{O(n log n)}} · m^{O(1)}` time.
@@ -29,7 +29,7 @@ subsets of `V` and iterate over the days"*, here as a single induction on the se
 still to be filled (`exists_schedule_of_counts`): give the next day any set whose variable is
 still positive, decrement it, and recurse.
 
-## Variables are bounded in `n` alone
+## Variables Are Bounded in `n` Alone
 
 That is what makes the formulation an FPT algorithm via Lenstra's theorem: the number of
 variables and constraints depends only on `n`. `card_variables_le` gives the crude bound

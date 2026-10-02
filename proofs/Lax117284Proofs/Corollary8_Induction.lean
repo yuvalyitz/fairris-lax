@@ -4,7 +4,7 @@ import Mathlib.Tactic.Ring
 import Lax117284Proofs.Defs
 
 /-!
-# Corollary 8: from `(m, k) = (3, 1)` to every `0 < k < m − 1`
+# Corollary 8: from `(m, k) = (3, 1)` to Every `0 < k < m − 1`
 
 > We next use the NP-hardness proof for the case of `(m, k) = (3, 1)` of Theorem 7 as a base
 > case to inductively show NP-hardness for every `(m, k) ∈ ℕ²` where `0 < k < m − 1` and
@@ -32,7 +32,7 @@ times"* is a corollary and not a second construction: taking `q j = p_{i₀,j}` 
 `DayIndepP`, and that is `addFreeDay_dayIndepP` / `addBlockingDay_dayIndepP`. With the
 general `q` the same two lemmas serve Theorem 1.
 
-## The conflict-free day
+## The Conflict-Free Day
 
 The paper does not say how to lay out a conflict-free day; here client `j` (in an arbitrary
 enumeration `idx`) gets the interval ending at `(idx j + 1) · Q`, where `Q` bounds every

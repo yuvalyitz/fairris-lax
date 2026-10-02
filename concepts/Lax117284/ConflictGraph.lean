@@ -4,7 +4,7 @@ import Mathlib.Combinatorics.SimpleGraph.Clique
 
 /-!
 ---
-title: The conflict graphs of an instance
+title: The Conflict Graphs of an Instance
 type: definition
 ---
 Let $I$ be an instance with $n$ clients and $m$ days. The *day $i$ conflict graph* of $I$
@@ -22,7 +22,7 @@ graph.
 The treewidth $\tau$ of the overall conflict graph is the structural parameter measured in
 the last section of the source, and it is the archive's treewidth.
 
-# Formalization notes
+# Formalization Notes
 
 Both graphs are irreflexive by construction, the adjacency conjoining distinctness of the
 two clients: a job always conflicts with itself, which carries no information about the

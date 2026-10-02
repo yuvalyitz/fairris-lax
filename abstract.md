@@ -6,9 +6,10 @@ client must be served on at least $k$ of the $m$ days. This submission formalize
 theorems of Heeger, Hermelin, Itzhaki, Molter and Shabtay on this problem,
 $1 \mid \mathrm{rep} \mid \min_j \sum_i Z_{i,j}$.
 
-The fairness parameter alone settles the complexity: the problem is solvable in polynomial
-time for $k \in \{0, m-1, m\}$ and NP-hard for every other value, already with identical
-processing times and $m = 3$ days. Under day-independent processing times it remains
+For $0 \le k \le m$, the problem is solvable in polynomial time when
+$k \in \{0,m-1,m\}$ and NP-hard for every fixed pair $(m,k)$ with $0<k<m-1$.
+Hardness already holds for $m=3$ and $k=1$, with identical processing times.
+Under day-independent processing times it remains
 NP-hard and becomes a bipartite matching problem when the processing times are one. Under
 day-independent due dates it remains NP-hard, and becomes tractable either for a constant
 number of days, by a dynamic program over the clients in due-date order, or for
@@ -27,12 +28,8 @@ is stated against the class NP of the archive; treewidth is the archive's, and t
 decompositions the dynamic program of the treewidth algorithm runs on are nice ones in the
 sense of Kloks.
 
-The formalization repairs one gap in the published argument. The construction behind the
-treewidth reduction gives every job that does not appear in a day's gadget the same job as
-the dummy client's, which is what makes the dummy client block all of them at once; but
-identical jobs conflict with each other as well, so any two clients that are irrelevant on
-a common day become adjacent, and the overall conflict graph of the construction is
-essentially complete rather than of treewidth four. The correctness argument uses only that
-the dummy client blocks each irrelevant job, so it is unaffected: the repair gives the
-dummy client a job covering a region in which every other job sits in a private slot of its
-own, and the conflict graph is then the one the published tree decomposition describes.
+The formalization adjusts the placement of inactive jobs to preserve the conflict graph
+required by the treewidth argument. On each gadget day, the dummy client's interval
+covers a region containing a separate, disjoint slot for every inactive client. This
+preserves the blocking argument without introducing conflicts between inactive clients.
+The concept pages specify the construction and its tree decomposition.

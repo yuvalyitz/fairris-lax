@@ -3,7 +3,7 @@ import Lax117284.Problems
 
 /-!
 ---
-title: Just-in-time scheduling on unrelated machines as day-independent due dates
+title: Just-in-Time Scheduling on Unrelated Machines as Day-Independent Due Dates
 type: theorem
 ---
 **Theorem 11.** The problem
@@ -17,7 +17,7 @@ same thing as serving every client on at least one day, so the constructed insta
 yes-instance at $k = 1$ exactly when the given one admits an all-just-in-time schedule.
 Since $R \parallel \sum_j Z_j$ is NP-hard, so is the problem with day-independent due dates.
 
-# Formalization notes
+# Formalization Notes
 
 The two models are already the same up to naming, the whole content of the reduction being
 that both ask for a partition of intervals ending at fixed times. The construction is

@@ -3,7 +3,7 @@ import Mathlib.Data.Finset.Sort
 
 /-!
 ---
-title: Kuhn's algorithm
+title: Kuhn's Algorithm
 type: definition
 ---
 Kuhn's algorithm builds a matching of a bipartite graph one left vertex at a time. To place a
@@ -15,7 +15,7 @@ the next neighbour is tried. A left vertex whose search fails stays unmatched, a
 goes on to the next left vertex. The output is the matching after every left vertex has been
 tried.
 
-# Formalization notes
+# Formalization Notes
 
 The graph is a relation `adj : L → R → Prop` between the left and the right vertices, both finite
 types; the bipartite graph split at `n` of this submission gives such a relation between

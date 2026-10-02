@@ -4,7 +4,7 @@ import Lax117284.ConflictGraph
 
 /-!
 ---
-title: Nice tree decompositions of small width are found in fixed-parameter time
+title: Nice Tree Decompositions of Small Width Are Found in Fixed-Parameter Time
 type: definition
 ---
 A *tree decomposition* of a graph is a tree whose nodes carry bags of vertices such that every
@@ -25,7 +25,7 @@ SIAM Journal on Computing 25 (1996) 1305–1317; Kloks, *"Treewidth: Computation
 Approximations"*, Lecture Notes in Computer Science 842, Springer 1994. Cited by
 Heeger–Hermelin–Itzhaki–Molter–Shabtay for Theorem 4's second bullet.
 
-# Formalization notes
+# Formalization Notes
 
 The cited theorem is stated for the graphs this development runs it on: the overall conflict
 graph of an instance. A word presents that graph as its adjacency matrix: the number `n` of

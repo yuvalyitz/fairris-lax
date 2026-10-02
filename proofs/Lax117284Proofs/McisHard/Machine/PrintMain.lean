@@ -2,7 +2,7 @@ import Lax117284Proofs.McisHard.Machine.PrintHdr
 import Lax117284Proofs.McisHard.MathFinal
 
 /-!
-# Writing the image of `H` (WP7, part 3): `printCom_run`
+# Writing the Image of `H` (WP7, Part 3): `printCom_run`
 -/
 
 set_option autoImplicit false

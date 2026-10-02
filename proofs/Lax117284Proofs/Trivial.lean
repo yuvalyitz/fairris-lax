@@ -1,7 +1,7 @@
 import Lax117284Proofs.Defs
 
 /-!
-# The three easy slices of the dichotomy
+# The Three Easy Slices of the Dichotomy
 
 Theorem 1 says `1 | rep | min_j ∑_i Z_{i,j}` is polynomial-time solvable exactly when
 `k ∈ {0, m-1, m}`. Two of those three cases, and the range `k > m` that the paper dismisses

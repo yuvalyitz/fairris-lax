@@ -630,10 +630,20 @@ theorem row_next {r c : ℕ} (hcC : c < C) (ht : tab x C r c ≠ 0) :
 theorem colBody_run (hc : HC x R C) (hB : 8 * x.length + 40 ≤ B) (hx : ∀ v ∈ x, v < B)
     (hLt : 2 + R * C ≤ Lt) {σ : Env} (hI : ColInv x R C Lt σ) (hlt : σ.vars "c" < C) :
     ∃ σ', Run B colBody σ σ' 40 ∧ ColInv x R C Lt σ' ∧ σ'.vars "c" = σ.vars "c" + 1 := by
-  obtain ⟨⟨hR, hC, hV, htab⟩, hr, hcle, hp, hq, ha⟩ := hI
+  have hR := hI.base.hR
+  have hC := hI.base.hC
+  have hV := hI.base.hV
+  have htab := hI.base.htab
+  have hr := hI.r_lt
+  have hcle := hI.c_le
+  have hp := hI.p
+  have hq := hI.q
+  have ha := hI.a
   have hRC := hc.RC
   have hRle := hc.Rle
   have hCle := hc.Cle
+  have _ := hc.R1
+  have _ := hc.C1
   generalize hr_eq : σ.vars "r" = r at hr hp hq ha
   generalize hc_eq : σ.vars "c" = c at hcle hp hq hlt
   generalize hp_eq : σ.vars "p" = p at hp ha
@@ -788,14 +798,28 @@ theorem rowBody_spec (hc : HC x R C) (hB : 8 * x.length + 40 ≤ B) (hx : ∀ v 
   have hloop := Spec.forRangeZero (B := B) (c := colBody) "c" "C" (ColInv x R C Lt) C 40 hCB
     (fun σ hσ => hσ.c_le) (fun σ hσ => hσ.base.hC) (colBody_spec hc hB hx hLt)
   rintro σ ⟨hI, hlt⟩
-  obtain ⟨⟨hR, hC, hV, htab⟩, hr, hp, hq, ha⟩ := hI
+  have hR := hI.base.hR
+  have hC := hI.base.hC
+  have hV := hI.base.hV
+  have htab := hI.base.htab
+  have hr := hI.r_le
+  have hp := hI.p
+  have hq := hI.q
+  have ha := hI.a
   -- the columns
   obtain ⟨σ₁, hr1, hI₁, hc₁⟩ := hloop.run (σ := σ) (by
     refine ⟨(⟨hR, hC, hV, htab⟩ : ConvBase x R C Lt σ).setVar "c" (by simp) _,
       by simpa using hlt, by simp, ?_, by simp [hq], by simpa using ha⟩
     simp only [vars_setVar, String.reduceEq, ↓reduceIte]
     rw [rowPre_zero]; simpa using hp)
-  obtain ⟨⟨hR₁, hC₁, hV₁, htab₁⟩, hr₁, -, hp₁, hq₁, ha₁⟩ := hI₁
+  have hR₁ := hI₁.base.hR
+  have hC₁ := hI₁.base.hC
+  have hV₁ := hI₁.base.hV
+  have htab₁ := hI₁.base.htab
+  have hr₁ := hI₁.r_lt
+  have hp₁ := hI₁.p
+  have hq₁ := hI₁.q
+  have ha₁ := hI₁.a
   rw [hc₁] at hp₁ hq₁
   have hp₁' : σ₁.vars "p" = off x R C (σ₁.vars "r" + 1) := by rw [hp₁, off_succ]; rfl
   -- the row's end offset
@@ -844,7 +868,14 @@ structure TailInv (x : List ℕ) (R C Lt : ℕ) (σ : Env) : Prop where
 theorem tailBody_spec (hc : HC x R C) (hB : 8 * x.length + 40 ≤ B) :
     Spec B (fun σ => TailInv x R C Lt σ ∧ σ.vars "i2" < C) tailBody
       (fun σ σ' => TailInv x R C Lt σ' ∧ σ'.vars "i2" = σ.vars "i2" + 1) 12 := by
-  rintro σ ⟨⟨⟨hR, hC, hV, htab⟩, hi, hp, ha⟩, hlt⟩
+  rintro σ ⟨hTail, hlt⟩
+  have hR := hTail.base.hR
+  have hC := hTail.base.hC
+  have hV := hTail.base.hV
+  have htab := hTail.base.htab
+  have hi := hTail.i_le
+  have hp := hTail.p
+  have ha := hTail.a
   have hRle := hc.Rle
   have hCle := hc.Cle
   have hE := hc.hE
@@ -928,7 +959,9 @@ theorem conv_spec (hc : HC x R C) (hB : 8 * x.length + 40 ≤ B) (hx : ∀ v ∈
         arrs_setArr]
       rw [ha, replicate_eq_arrOf, set_arrOf]
       exact arrOf_congr (fun t _ => by simp [AF_init]))
-  obtain ⟨hbase₅, -, hp₅, -, ha₅⟩ := hI₅
+  have hbase₅ := hI₅.base
+  have hp₅ := hI₅.p
+  have ha₅ := hI₅.a
   rw [hr₅] at hp₅ ha₅
   have hp₅' : σ₅.vars "p" = E x R C := hp₅
   -- the tail
@@ -939,7 +972,9 @@ theorem conv_spec (hc : HC x R C) (hB : 8 * x.length + 40 ≤ B) (hx : ∀ v ∈
     simp only [arrs_setVar, vars_setVar, String.reduceEq, ↓reduceIte]
     rw [ha₅, hp₅']
     exact arrOf_congr (fun t _ => (AT_zero x R C t).symm))
-  obtain ⟨hbase₈, -, hp₈, ha₈⟩ := hI₈
+  have hbase₈ := hI₈.base
+  have hp₈ := hI₈.p
+  have ha₈ := hI₈.a
   rw [hi₈] at ha₈
   -- a[1] := p / 2
   have hlenA₈ : (σ₈.arrs "a").length = Lc x R C := by rw [ha₈]; simp

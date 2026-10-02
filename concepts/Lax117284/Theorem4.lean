@@ -5,7 +5,7 @@ import Lax117284.Problems
 
 /-!
 ---
-title: Structural parameters of the conflict graph
+title: Structural Parameters of the Conflict Graph
 type: theorem
 ---
 **Theorem 4.** The problem $1 \mid \mathrm{rep} \mid \min_j \sum_i Z_{i,j}$
@@ -34,7 +34,7 @@ of the family, which are fixed by $n$; the source cites Lenstra's algorithm for 
 needed for this family). Fixed-parameter tractability in $n$ (`fpt_byClients`) is their
 combination.
 
-# Formalization notes
+# Formalization Notes
 
 The combination of the two halves is not a general closure theorem. An fpt-reduction is only
 required to run where its image fits in the word length, and the image here has a

@@ -1,7 +1,7 @@
 import Mathlib
 
 /-!
-# Sorted bags
+# Sorted Bags
 
 The dynamic program keeps each bag as the increasing list of its clients, so that two bags that
 are equal as sets are equal as lists and the tables of two children of a join node are indexed

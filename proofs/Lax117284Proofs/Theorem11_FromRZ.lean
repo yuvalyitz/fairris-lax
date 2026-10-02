@@ -1,7 +1,7 @@
 import Lax117284Proofs.Defs
 
 /-!
-# Theorem 11: day-independent due dates are NP-hard
+# Theorem 11: Day-Independent Due Dates Are NP-Hard
 
 > **Theorem 11.** The `1 | rep, d_{i,j} = d_j | min_j ∑_i Z_{i,j}` problem is NP-hard.
 >

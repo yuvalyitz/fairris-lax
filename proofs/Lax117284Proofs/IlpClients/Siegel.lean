@@ -5,7 +5,7 @@ import Mathlib.LinearAlgebra.LinearIndependent.Lemmas
 import Mathlib.Analysis.Matrix.Normed
 
 /-!
-# Small kernel vectors (Siegel's lemma)
+# Small Kernel Vectors (Siegel's Lemma)
 
 `small_kernel`: if an integer matrix `D` (entries of absolute value `≤ Δ`, `Δ ≥ 1`, with `M` rows)
 has a nonzero integer kernel vector `v`, it has a nonzero integer kernel vector `α`, supported in the
@@ -32,9 +32,6 @@ variable [Fintype ι] [Fintype κ] [DecidableEq κ] (D : ι → κ → ℤ)
 def QDep (C : Finset κ) : Prop :=
   ∃ w : κ → ℚ, w ≠ 0 ∧ (∀ j, j ∉ C → w j = 0) ∧ ∀ i, ∑ j, (D i j : ℚ) * w j = 0
 
-theorem QDep.mono {C C' : Finset κ} (h : C ⊆ C') (hd : QDep D C) : QDep D C' := by
-  obtain ⟨w, hw0, hwC, hw⟩ := hd
-  exact ⟨w, hw0, fun j hj => hwC j fun hj' => hj (h hj'), hw⟩
 
 /-- A minimal (for inclusion) dependent subset of a dependent set. -/
 theorem exists_minimal_qdep (S : Finset κ) (hS : QDep D S) :
@@ -304,24 +301,6 @@ section Generic
 
 variable [Fintype ι] [Fintype κ]
 
-/-- **A kernel bound for an arbitrary matrix**: with `M` rows and entries `≤ Δ`,
-`((M + 1) Δ)^M + 1`. -/
-theorem kernelBound_of_entries (A : ι → κ → ℕ) (Δ : ℕ) (hΔ : 1 ≤ Δ) (hA : ∀ i j, A i j ≤ Δ) :
-    KernelBound A (((Fintype.card ι + 1) * Δ) ^ Fintype.card ι + 1) := by
-  classical
-  intro T ⟨v, hv0, hvT, hvk⟩
-  obtain ⟨α, hα0, hαk, hαv, hαb, -⟩ :=
-    small_kernel (fun i j => (A i j : ℤ)) Δ hΔ (fun i j => by
-      rw [abs_of_nonneg (by positivity)]; exact_mod_cast hA i j) v hv0 hvk
-  refine ⟨α, hα0, ?_, hαk, fun j => ?_⟩
-  · intro j hj
-    by_contra h
-    exact hαv j h (hvT j hj)
-  · have := hαb j
-    push_cast at this
-    have h2 : |α j| < (((Fintype.card ι + 1) * Δ) ^ Fintype.card ι : ℕ) + 1 := by
-      push_cast; linarith
-    exact_mod_cast h2
 
 end Generic
 

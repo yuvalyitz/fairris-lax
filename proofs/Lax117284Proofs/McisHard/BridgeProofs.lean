@@ -1,7 +1,7 @@
 import Lax117284Proofs.McisHard.Defs
 
 /-!
-# WP5 (word-level part): `formulaOf_valsOf`, `reduceMcis_code`, `reduceMcis_rej`
+# WP5 (Word-Level Part): `formulaOf_valsOf`, `reduceMcis_code`, `reduceMcis_rej`
 -/
 
 set_option autoImplicit false

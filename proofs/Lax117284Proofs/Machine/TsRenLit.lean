@@ -46,7 +46,10 @@ theorem litCom_run (arr : List ℕ) (S p : ℕ) (σ : Env) (hb : Bnd B arr S) (h
     ∃ σ', Run B litCom σ σ' (Klit S) ∧
       σ'.out = σ.out ++ litBits (fo (idxA arr) p) (sgA arr p) ∧ σ'.arrs = σ.arrs ∧
       ∀ y, y ∉ AL → σ'.vars y = σ.vars y := by
-  obtain ⟨hEv, hEs, hlen, hSB⟩ := hb
+  have hEv := hb.hEv
+  have hEs := hb.hEs
+  have hlen := hb.hlen
+  have hSB := hb.hSB
   have e1 := hEv p hp
   have e2 := hEs p hp
   have hfle := fo_le (idxA arr) p

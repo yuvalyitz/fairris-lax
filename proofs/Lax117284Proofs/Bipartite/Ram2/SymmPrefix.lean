@@ -105,7 +105,14 @@ structure PreInv (x : List ℕ) (σ : Env) : Prop where
 theorem prefixBody_spec {x : List ℕ} (hw : WellFormed x) (hB : 8 * x.length + 40 ≤ B) :
     Spec B (fun σ => PreInv x σ ∧ σ.vars "i" < Vw x) prefixBody
       (fun σ σ' => PreInv x σ' ∧ σ'.vars "i" = σ.vars "i" + 1) 24 := by
-  rintro σ ⟨⟨hb, ⟨hlenD, hdeg⟩, hlen, h0, h1, hi, hoff⟩, hlt⟩
+  rintro σ ⟨hPre, hlt⟩
+  have hb := hPre.base
+  obtain ⟨hlenD, hdeg⟩ := hPre.deg
+  have hlen := hPre.len
+  have h0 := hPre.h0
+  have h1 := hPre.h1
+  have hi := hPre.i_le
+  have hoff := hPre.off
   have hxlen := wf_len hw
   have hoffn := wf_offS_n hw
   have hn := hb.n
@@ -192,7 +199,7 @@ theorem prefix_spec {x : List ℕ} (hw : WellFormed x) (hB : 8 * x.length + 40 �
     (fun σ hσ => hσ.i_le) (fun σ hσ => hσ.base.V) (prefixBody_spec hw hB)
   have hb₃ : Base x σ₃ := ((hb.setArr (by decide) _ _).setArr (by decide) _ _).setArr (by decide) _ _
   have hdeg₃ : DegOK x σ₃ := by simpa [DegOK, hσ₃, hσ₂, hσ₁] using hdeg
-  obtain ⟨σ₄, r4, ⟨hb₄, hdeg₄, hlen₄, h0₄, h1₄, -, hoff₄⟩, hi₄⟩ := hloop.run (σ := σ₃) (by
+  obtain ⟨σ₄, r4, hPost₄, hi₄⟩ := hloop.run (σ := σ₃) (by
     refine ⟨hb₃.setVar "i" (by simp) 0, by simpa [DegOK] using hdeg₃, by simp [hσ₃, hσ₂, hσ₁, hlen],
       ?_, ?_, by simp, fun i hi => ?_⟩
     · simp only [arrs_setVar, hσ₃, hσ₂, hσ₁, arrs_setArr, String.reduceEq, ↓reduceIte]
@@ -205,6 +212,12 @@ theorem prefix_spec {x : List ℕ} (hw : WellFormed x) (hB : 8 * x.length + 40 �
       subst this
       simp only [arrs_setVar, hσ₃, hσ₂, hσ₁, arrs_setArr, String.reduceEq, ↓reduceIte]
       rw [getD_set_self (by simp only [List.length_set]; omega), offS_zero])
+  have hb₄ := hPost₄.base
+  have hdeg₄ := hPost₄.deg
+  have hlen₄ := hPost₄.len
+  have h0₄ := hPost₄.h0
+  have h1₄ := hPost₄.h1
+  have hoff₄ := hPost₄.off
   rw [hi₄] at hoff₄
   -- the last entry
   have hV₄ := hb₄.V
@@ -257,7 +270,12 @@ structure PosInv (x : List ℕ) (σ : Env) : Prop where
 theorem posBody_spec {x : List ℕ} (hw : WellFormed x) (hB : 8 * x.length + 40 ≤ B) :
     Spec B (fun σ => PosInv x σ ∧ σ.vars "l" < nw x) posBody
       (fun σ σ' => PosInv x σ' ∧ σ'.vars "l" = σ.vars "l" + 1) 12 := by
-  rintro σ ⟨⟨hb, hf, hlenP, hl, hpos⟩, hlt⟩
+  rintro σ ⟨hPos, hlt⟩
+  have hb := hPos.base
+  have hf := hPos.fixed
+  have hlenP := hPos.lenP
+  have hl := hPos.l_le
+  have hpos := hPos.pos
   have hxlen := wf_len hw
   have hoffn := wf_offS_n hw
   have hnV := wf_nV hw
@@ -294,7 +312,11 @@ theorem pos_spec {x : List ℕ} (hw : WellFormed x) (hB : 8 * x.length + 40 ≤ 
   · rintro σ ⟨hb, hf, hlenP⟩
     exact ⟨hb.setVar "l" (by simp) 0, hf.congr rfl, by simpa using hlenP, by simp,
       fun l hl => by simp at hl⟩
-  · rintro σ σ' - ⟨⟨hb, hf, hlenP, -, hpos⟩, hl⟩
+  · rintro σ σ' - ⟨hPos, hl⟩
+    have hb := hPos.base
+    have hf := hPos.fixed
+    have hlenP := hPos.lenP
+    have hpos := hPos.pos
     rw [hl] at hpos
     exact ⟨hb, hf, hlenP, hpos⟩
 

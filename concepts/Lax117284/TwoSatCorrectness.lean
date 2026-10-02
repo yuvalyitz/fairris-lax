@@ -2,12 +2,12 @@ import Lax117284.TwoSatAlgorithm
 
 /-!
 ---
-title: Correctness of the algorithm
+title: Correctness of the Algorithm
 type: theorem
 ---
 The algorithm accepts a formula exactly when it is in 2-CNF and satisfiable.
 
-# Formalization notes
+# Formalization Notes
 
 The width check accepts exactly the 2-CNF formulas without an empty clause, and the search, by
 the criterion, rejects exactly the formulas with a contradictory variable. Two points connect

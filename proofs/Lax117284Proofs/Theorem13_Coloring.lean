@@ -2,7 +2,7 @@ import Mathlib.Data.Fintype.EquivFin
 import Lax117284Proofs.IntervalColoring
 
 /-!
-# Theorem 13: day-independent due dates *and* processing times
+# Theorem 13: Day-Independent Due Dates *and* Processing Times
 
 > **Theorem 13.** The `1 | rep, d_{i,j} = d_j, p_{i,j} = p_j | min_j ∑_i Z_{i,j}` problem is
 > solvable in `O(n log n)` time.

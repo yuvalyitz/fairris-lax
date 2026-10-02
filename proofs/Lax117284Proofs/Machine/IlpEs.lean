@@ -22,9 +22,6 @@ theorem esP_succ (n : ℕ) (cnt : ℕ → ℕ) (bb : ℕ) (ω : Cert) (t k : ℕ
       if isExtra n ω.d k ∧ tyOf n k = some t then wvF n cnt bb ω k else 0 := by
   unfold esP; rw [Finset.sum_range_succ]
 
-theorem isExtra_lt_N {n : ℕ} {d : ℕ → ℕ} {c : ℕ} (h : isExtra n d c) : c < nN n := by
-  have := ((mem_Lset_iff n d c).mp h.1).1
-  exact this.1
 
 theorem esP_step {n : ℕ} {cnt : ℕ → ℕ} {bb : ℕ} {ω : Cert} {t k : ℕ} :
     esP n cnt bb ω t (k + 1) = esP n cnt bb ω t k +

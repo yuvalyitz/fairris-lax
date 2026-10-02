@@ -10,7 +10,6 @@ open Lax808846Proofs.Imp Lax808846Proofs.Reasoning Lax117284Proofs.IlpClients Cl
 
 noncomputable section
 
-theorem mul_le_mul_lt {a b A Bb : ℕ} (ha : a ≤ A) (hb : b ≤ Bb) : a * b ≤ A * Bb := Nat.mul_le_mul ha hb
 
 /-- Facts about the current entry of `H` and the current row. -/
 theorem pqFacts {n : ℕ} {cnt : ℕ → ℕ} {bb vb B : ℕ} (hb : Hyp n cnt bb vb B) (v : ℕ → ℕ)

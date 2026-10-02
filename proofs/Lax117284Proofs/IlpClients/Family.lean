@@ -4,7 +4,7 @@ import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Algebra.BigOperators.Fin
 
 /-!
-# The family of integer programs of the reduction
+# The Family of Integer Programs of the Reduction
 
 A self-contained restatement (nothing of `fairris-lax` is imported) of the integer programs that
 the reduction of the clients problem produces: for `n` clients, `nT n = 2^(n*n)` types,
@@ -96,6 +96,8 @@ theorem ilpWord_eq_append (n : ℕ) (cnt : ℕ → ℕ) (B : ℕ) :
       have e : i - 2 - nM n * nN n = i - (2 + nM n * nN n) := by omega
       rw [e]
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 /-- The integer program of a word (a restatement of `Lax117284.IlpClients.ILP`). -/
 structure ILP where
   /-- The number of variables. -/

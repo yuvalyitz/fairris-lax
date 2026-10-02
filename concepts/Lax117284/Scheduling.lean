@@ -3,7 +3,7 @@ import Mathlib.Order.Interval.Set.Basic
 
 /-!
 ---
-title: Fair repetitive interval scheduling
+title: Fair Repetitive Interval Scheduling
 type: definition
 ---
 An instance consists of $n$ clients and $m$ days. Every client submits one job on every
@@ -25,7 +25,7 @@ Three restrictions of the instance recur. The processing times are *day-independ
 $p_{i,j} = p_j$ for all $i$, the due dates are *day-independent* if $d_{i,j} = d_j$ for all
 $i$, and the processing times are *unit* if $p_{i,j} = 1$ throughout.
 
-# Formalization notes
+# Formalization Notes
 
 Clients and days are numbered rather than abstract finite types: an instance is something
 an algorithm is handed as a word, and a word presents its clients and days in an order.

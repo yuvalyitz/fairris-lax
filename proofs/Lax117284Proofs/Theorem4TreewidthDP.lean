@@ -2,7 +2,7 @@ import Lax117284Proofs.ConflictGraph
 import Lax117284Proofs.Treewidth
 
 /-!
-# Theorem 4, second bullet: fixed-parameter tractability for `m + τ`
+# Theorem 4, Second Bullet: Fixed-Parameter Tractability for `m + τ`
 
 > **Theorem 19.** `1 | rep | min_j ∑_i Z_{i,j}` is solvable in `2^{O(τm)} · n` time.
 >

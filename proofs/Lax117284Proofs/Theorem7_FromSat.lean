@@ -5,7 +5,7 @@ import Lax117284Proofs.Defs
 import Lax117284Proofs.TwoSat
 
 /-!
-# Theorem 7: NP-hardness for `k = 1`, `m = 3`, identical processing times
+# Theorem 7: NP-Hardness for `k = 1`, `m = 3`, Identical Processing Times
 
 > **Theorem 7.** The `1 | rep, p_{i,j} = p | min_j ∑_i Z_{i,j}` problem is NP-hard for `k = 1`
 > and `m = 3`.
@@ -20,7 +20,7 @@ import Lax117284Proofs.TwoSat
 This is the base case of Theorem 1's hardness half; `Corollary8_Induction.lean` lifts it to
 every `0 < k < m − 1`, `m ≥ 3`.
 
-## The construction
+## The Construction
 
 Every processing time is `2`, so a job is determined by its due date and **two jobs of a
 day conflict exactly when their due dates differ by at most one** (`conflict_iff_close`).
@@ -45,7 +45,7 @@ The three dummies conflict with each other on all three days, so a `1`-fair sche
 exactly one on each day (`exists_dummy_each_day`) — that is what makes day 2 a dead end,
 and what forces the selection on day 1.
 
-## Tovey's degree bound, as an enumeration
+## Tovey's Degree Bound, as an Enumeration
 
 *"at most twice positive or twice negative overall"* is carried by the `rank` field: every
 occurrence gets a rank in `{0, 1}`, and `rank_inj` says an occurrence is determined by its
@@ -54,7 +54,7 @@ form the construction actually consumes — day 3 needs to know *which* of the t
 `10i − 5` / `10i − 3` an occurrence takes, and a bare cardinality bound would have to be
 turned into such a numbering anyway.
 
-## Indices are 0-based
+## Indices Are 0-Based
 
 The paper's variables and clauses are numbered from `1`; `Fin` counts from `0`, so every
 due date here is the paper's with `i` replaced by `i + 1`. Nothing else differs.

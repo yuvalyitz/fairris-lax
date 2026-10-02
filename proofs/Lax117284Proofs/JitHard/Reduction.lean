@@ -1,5 +1,5 @@
 import Lax117284.JustInTime
-import Lax470956.Scheduling
+import Lax888481.Scheduling
 
 /-!
 The reduction from interval scheduling with eligible machine sets (schedule every job) to
@@ -20,10 +20,10 @@ would be exponentially many in the size of the input.
 
 namespace Lax117284Proofs.JitHard
 
-open Lax470956.Scheduling
+open Lax888481.Scheduling
 
 /-- An instance of interval scheduling with eligible machine sets. -/
-abbrev SchedI := Lax470956.Scheduling.Instance
+abbrev SchedI := Lax888481.Scheduling.Instance
 
 /-- An instance of just-in-time scheduling. -/
 abbrev JitI := Lax117284.JustInTime.Instance
@@ -61,8 +61,6 @@ def pOf (I : SchedI) (i : Fin I.machines) (k : Fin (I.jobs + walls I)) : ℕ :=
     · simp [pOf, dOf]
 
 theorem toJIT_jobs (I : SchedI) : (toJIT I).jobs = I.jobs + walls I := rfl
-
-theorem toJIT_machines (I : SchedI) : (toJIT I).machines = I.machines := rfl
 
 theorem ioc_inter {a b c d : ℕ} :
     (Set.Ioc a b ∩ Set.Ioc c d).Nonempty ↔ a < b ∧ c < d ∧ a < d ∧ c < b := by

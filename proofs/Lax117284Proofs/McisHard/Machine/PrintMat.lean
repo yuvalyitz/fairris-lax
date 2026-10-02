@@ -2,7 +2,7 @@ import Lax117284Proofs.McisHard.Machine.PredFinal
 import Lax117284Proofs.Machine.ILoop
 
 /-!
-# Writing the adjacency matrix of `H` (WP7, part 1)
+# Writing the Adjacency Matrix of `H` (WP7, Part 1)
 
 Two nested counters `w`, `w2` below the scalar `pV` (`= kOf * nOf`); every iteration runs `bitCom`, which
 reads `w`, `w2`, and writes the bit it leaves in `bt` to the output.

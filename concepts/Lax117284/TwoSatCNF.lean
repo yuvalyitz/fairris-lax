@@ -3,14 +3,14 @@ import Mathlib.Data.Finset.Card
 
 /-!
 ---
-title: 2-CNF formulas and the language 2-SAT
+title: 2-CNF Formulas and the Language 2-SAT
 type: definition
 ---
 A CNF formula is in *2-CNF* when every clause has at most two literals. The language 2-SAT
 consists of the binary encodings of the satisfiable 2-CNF formulas: it is the language SAT of
 `lax-429075`, restricted to the encodings of formulas in 2-CNF.
 
-# Formalization notes
+# Formalization Notes
 
 Nothing about formulas, literals, satisfiability or encodings is defined here. A formula is a
 formula of `lax-429075` — a list of clauses, a clause a list of literals, a literal a variable

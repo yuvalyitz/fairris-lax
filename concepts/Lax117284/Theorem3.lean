@@ -2,7 +2,7 @@ import Lax117284.Problems
 
 /-!
 ---
-title: Day-independent due dates
+title: Day-Independent Due Dates
 type: theorem
 ---
 **Theorem 3.** The problem
@@ -16,7 +16,7 @@ decides the problem, carrying for each day the time at which its machine is next
 Under (ii) every day has the same conflict graph, and a $k$-fair schedule exists exactly
 when $k$ times the chromatic number of that graph is at most $m$.
 
-# Formalization notes
+# Formalization Notes
 
 Restriction (i) is a constant of the slice rather than part of the input, so the claim is
 one language per number of days. This is what "$m$ is a constant" means: the algorithm may

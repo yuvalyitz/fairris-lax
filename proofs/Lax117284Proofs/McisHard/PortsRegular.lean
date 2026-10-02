@@ -1,7 +1,7 @@
 import Lax117284Proofs.McisHard.PortsBasic
 
 /-!
-# WP2 (ports), part 2: `portGraph` is 5-regular
+# WP2 (Ports), Part 2: `portGraph` Is 5-Regular
 -/
 
 set_option autoImplicit false

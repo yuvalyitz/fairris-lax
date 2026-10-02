@@ -2,11 +2,12 @@ import Lax117284.Problems
 
 /-!
 ---
-title: The complexity of fair repetitive interval scheduling in the fairness parameter
+title: The Complexity of Fair Repetitive Interval Scheduling in the Fairness Parameter
 type: theorem
 ---
 **Theorem 1.** The problem $1 \mid \mathrm{rep} \mid \min_j \sum_i Z_{i,j}$ is solvable in
-polynomial time when $k \in \{0,\, m-1,\, m\}$, and NP-hard for every other value of $k$.
+polynomial time when $k \in \{0,\, m-1,\, m\}$. For every fixed pair $(m,k)$
+with $0<k<m-1$, the problem is NP-hard.
 
 The three tractable values are settled separately: $k = 0$ and $k = m$ by inspection of the
 instance, and $k = m-1$ by a reduction to 2-satisfiability. Hardness holds already for
@@ -14,7 +15,7 @@ every fixed pair $(m, k)$ with $m \ge 3$ and $0 < k < m-1$; it is obtained for $
 a satisfiability problem of bounded occurrence and lifted to all other pairs by two
 constructions adding one day at a time.
 
-# Formalization notes
+# Formalization Notes
 
 The tractable half is one claim about the language of all three cases at once. A word
 belongs to that language only if its parameter is one of the three values, so an algorithm

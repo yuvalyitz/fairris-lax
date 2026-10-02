@@ -229,8 +229,6 @@ theorem S_le_E (hw : WidthOk F) (u : ℕ) : S F u ≤ (edges F).length := by
   · rw [← S_N F hw]; exact S_mono F h.le
   · rw [S_of_ge F hw h, S_N F hw]
 
-theorem degF_le (u : ℕ) : degF F u ≤ (lits F).length :=
-  (cntSrc_le_length _ _).trans (length_edges_le F)
 
 theorem S_succ_le_E (hw : WidthOk F) (u : ℕ) : S F u + degF F u ≤ (edges F).length := by
   rw [← S_succ]; exact S_le_E F hw _

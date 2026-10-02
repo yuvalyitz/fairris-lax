@@ -2,7 +2,7 @@ import Mathlib.Data.Fintype.EquivFin
 import Lax117284Proofs.ConflictGraph
 
 /-!
-# Theorem 10: unit processing times, by bipartite matching
+# Theorem 10: Unit Processing Times, by Bipartite Matching
 
 > **Theorem 10.** The `1 | rep, p_{i,j} = 1 | min_j ∑_i Z_{i,j}` problem is solvable in
 > `O(n^{1.5} · m^{2.5})` time.
@@ -19,7 +19,7 @@ Unit processing times collapse the geometry: every job occupies the single slot
 date* (`conflict_iff_d_eq_of_unitP`). A feasible day is then a set of clients with pairwise
 distinct due dates, and the whole problem becomes an assignment problem.
 
-## What "a matching of size `nm`" is, here
+## What "a Matching of Size `nm`" Is, Here
 
 The job side of the paper's bipartite graph has exactly `n · m` vertices — one per pair
 `(i, j)` — so a matching saturating it is precisely an *injective* map sending each job

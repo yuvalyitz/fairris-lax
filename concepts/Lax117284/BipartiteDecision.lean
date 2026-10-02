@@ -3,7 +3,7 @@ import Lax759944.RamPolytime
 
 /-!
 ---
-title: Saturating and perfect matchings, decided in the same time
+title: Saturating and Perfect Matchings, Decided in the Same Time
 type: corollary
 ---
 Whether a bipartite graph split at $n$ has a matching saturating its left side, and whether it
@@ -12,7 +12,7 @@ question is also decided *on every word*, well formed or not, in the same time a
 of polynomial time on the word RAM of [lax-759944](https://laxarchive.org/lax-759944/), which is
 the form another submission can compose with its own reductions.
 
-# Formalization notes
+# Formalization Notes
 
 Both are comparisons of the matching number with a number the word carries: a matching
 saturating the left side exists exactly when the matching number is $n$, since a matching of a

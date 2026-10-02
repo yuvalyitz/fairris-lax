@@ -2,7 +2,7 @@ import Lax117284.ConflictGraph
 
 /-!
 ---
-title: Day-independent due dates and processing times
+title: Day-Independent Due Dates and Processing Times
 type: theorem
 ---
 **Theorem 13.** Let $I$ be an instance whose due dates and processing times are both
@@ -18,7 +18,7 @@ sets, and serving the classes in rotation serves every client on
 $\lfloor m / \chi(G)\rfloor \ge k$ days. Both bounds meet because $G$ is an interval graph,
 and its chromatic number therefore equals its clique number.
 
-# Formalization notes
+# Formalization Notes
 
 The two extreme values of the source's chain of inequalities are stated separately: that
 the problem is equivalent to the condition on the clique number, and that the chromatic

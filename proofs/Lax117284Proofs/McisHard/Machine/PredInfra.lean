@@ -2,7 +2,7 @@ import Lax117284Proofs.McisHard.Defs
 import Lax117284Proofs.Machine.SatAccept
 
 /-!
-# Machine predicates for the adjacency bit: shared definitions (WP6)
+# Machine Predicates for the Adjacency Bit: Shared Definitions (WP6)
 
 The context every predicate command runs in: the token array `TK` holds the stream `ns`, the scalars
 `N` and `A2` hold the number of positions and twice the number of two-clauses (as left by
@@ -33,8 +33,6 @@ lemma ind_false {P : Prop} (h : ¬ P) : ind P = 0 := by unfold ind; simp [h]
 lemma ind_le (P : Prop) : ind P ≤ 1 := by unfold ind; split <;> omega
 lemma ind_congr {P Q : Prop} (h : P ↔ Q) : ind P = ind Q := by
   rw [propext h]
-lemma ind_eq_one {P : Prop} : ind P = 1 ↔ P := by
-  unfold ind; split <;> simp_all
 lemma ind_eq_zero {P : Prop} : ind P = 0 ↔ ¬ P := by
   unfold ind; split <;> simp_all
 

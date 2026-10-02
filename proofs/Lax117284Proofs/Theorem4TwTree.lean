@@ -3,7 +3,7 @@ import Lax117284Proofs.Bridge
 import Lax117284.Bodlaender
 
 /-!
-# From the word of a nice tree decomposition to a `NiceTree`
+# From the Word of a Nice Tree Decomposition to a `NiceTree`
 
 The cited decomposition program returns a word (`Bodlaender.NiceDecomposition`), which describes an
 unrooted tree by parent pointers and states the connectedness of the bags through the archive's

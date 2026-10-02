@@ -2,7 +2,7 @@ import Lax808846.RamComputes
 
 /-!
 ---
-title: Parameterized problems on a word RAM
+title: Parameterized Problems on a Word RAM
 type: definition
 ---
 A *parameterized problem* is a set of admissible input words, a yes-instance predicate on
@@ -11,7 +11,7 @@ program decides it, on every admissible word $x$ of parameter $k$, within
 $c\,g(k)\,(|x|+1)^c$ instructions for a constant $c$ and a function $g$ of the parameter
 alone: the running time is a function of the parameter times a polynomial in the length.
 
-# Formalization notes
+# Formalization Notes
 
 The parameter is a function of the input word rather than something carried alongside it.
 This is what lets one program serve every parameter: a program that must be told the

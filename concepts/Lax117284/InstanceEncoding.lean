@@ -2,7 +2,7 @@ import Lax117284.ConflictGraph
 
 /-!
 ---
-title: Word encoding of an instance
+title: Word Encoding of an Instance
 type: definition
 ---
 An instance is handed to a word random access machine as a word of numbers: the number $n$
@@ -14,7 +14,7 @@ entry, and a decision instance of the per-client problem appends one parameter p
 A word determines the instance it encodes, so notions defined for instances — the number of
 days, the treewidth of the overall conflict graph — are notions of the word as well.
 
-# Formalization notes
+# Formalization Notes
 
 This is the point at which magnitudes stop being free. The processing times and due dates
 are entries of the word, so a claim about a program reading it has to say that they are

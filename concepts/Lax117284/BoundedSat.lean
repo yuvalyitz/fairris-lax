@@ -2,7 +2,7 @@ import Lax117284.Problems
 
 /-!
 ---
-title: Satisfiability of bounded occurrence
+title: Satisfiability of Bounded Occurrence
 type: definition
 ---
 A *[2,3]-bounded 3-SAT formula* is a conjunction of clauses of two and of three literals in
@@ -10,7 +10,7 @@ which every literal occurs at most twice — so every variable occurs at most tw
 positively and at most twice negatively, and hence in at most four clauses. Deciding
 whether such a formula is satisfiable is NP-hard.
 
-# Formalization notes
+# Formalization Notes
 
 The two widths are separate families of clauses rather than one family with a width
 condition, because the construction that consumes such a formula treats the two widths

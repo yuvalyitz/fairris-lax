@@ -594,6 +594,6 @@ theorem bfs_spec {B : ℕ} (N E s : ℕ) (off tgt : ℕ → ℕ) (hs : s < N) (h
     rw [hg]
     exact arrOf_congr fun i hi => hg0 i hi
   · exact fun _ _ _ _ _ hq => hq
-  · simp only [Kbfs_eq]; omega
+  · rw [Kbfs_eq]; omega
 
 end Lax117284Proofs.TwoSAT.Machine.Bfs

@@ -3,7 +3,7 @@ import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Tactic.IntervalCases
 
 /-!
-# WP2 (ports), part 3: independent sets of `portGraph` versus `posGraph`
+# WP2 (Ports), Part 3: Independent Sets of `portGraph` Versus `posGraph`
 -/
 
 set_option autoImplicit false

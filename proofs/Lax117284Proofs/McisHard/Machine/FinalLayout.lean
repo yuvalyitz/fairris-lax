@@ -1,7 +1,7 @@
 import Lax117284Proofs.McisHard.Machine.FinalStruct
 
 /-!
-# The layout of the reduction to `H` (WP9, part 2)
+# The Layout of the Reduction to `H` (WP9, Part 2)
 
 The 90 scalars of the program and the two arrays; `Com.Ok`.
 -/

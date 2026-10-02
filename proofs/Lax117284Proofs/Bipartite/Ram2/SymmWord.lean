@@ -313,51 +313,6 @@ theorem kuhnSize_sx_iff (hw : WellFormed x) :
   exact (Lax117284Proofs.Bipartite.GraphBridge.exists_saturating_iff (wordGraph x) (leftCount x)
     hw.left_le (wf_splitAt hw)).symm
 
-/-- **Every word encoding a bipartite graph is well formed.** -/
-theorem wellFormed_of_encodes {V : ℕ} {G : SimpleGraph (Fin V)} {n : ℕ}
-    (h : EncodesBipartite x V G n) : WellFormed x := by
-  have hg := good_of_encodes h
-  have hlc := leftCount_eq h
-  have hV : vertexCount x = V := vertexCount_eq h
-  obtain ⟨g, hx, hge, hnV, hs⟩ := h
-  have hE : x.getD 1 0 = edgeCount g := edge_eq' hx hge
-  have hoffV : offw x V = 2 * edgeCount g := by rw [offw_eq' hx hge le_rfl]; exact hge.offset_last
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · rw [hlc, hV]; exact hnV
-  · show x.length = 4 + vertexCount x + 2 * x.getD 1 0
-    rw [hV, hE]; exact len_eq' hx hge
-  · show offw x 0 = 0
-    rw [offw_eq' hx hge (by omega)]; exact hge.offset_zero
-  · show offw x (vertexCount x) = 2 * x.getD 1 0
-    rw [hV, hE]; exact hoffV
-  · intro i hi
-    rw [hV] at hi
-    show offw x i ≤ offw x (i + 1)
-    rw [offw_eq' hx hge (by omega), offw_eq' hx hge (by omega)]
-    exact hge.offset_mono i hi
-  · intro s hs
-    change s < 2 * x.getD 1 0 at hs
-    rw [hE] at hs
-    show tgtw x s < vertexCount x
-    rw [hV, tgtw_eq' hx hge hs]
-    exact hge.target_lt s hs
-  · intro u hu j h1 h2
-    rw [hV] at hu
-    rw [hlc]
-    change offw x u ≤ j at h1
-    change j < offw x (u + 1) at h2
-    rw [offw_eq' hx hge (by omega)] at h1
-    rw [offw_eq' hx hge (by omega)] at h2
-    have hs2E : j < 2 * edgeCount g := slot_lt' hge hu h2
-    show u < n ↔ n ≤ tgtw x j
-    rw [tgtw_eq' hx hge hs2E]
-    have ht : target g j < V := hge.target_lt j hs2E
-    have hadj : G.Adj ⟨u, hu⟩ ⟨target g j, ht⟩ := (hge.adj_iff _ _).2 ⟨j, h1, h2, rfl⟩
-    rcases hs.mem_of_adj hadj with ⟨hl, hr⟩ | ⟨hl, hr⟩
-    · exact ⟨fun _ => hr, fun _ => hl⟩
-    · have h1' : n ≤ u := hl
-      have h2' : target g j < n := hr
-      exact ⟨fun h => absurd h (by omega), fun h => absurd h (by omega)⟩
 
 end Bridge
 

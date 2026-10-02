@@ -3,7 +3,7 @@ import Lax117284.TwoSatisfiability
 
 /-!
 ---
-title: The fairness parameter one below the number of days
+title: The Fairness Parameter One Below the Number of Days
 type: theorem
 ---
 **Theorem 9.** The problem $1 \mid \mathrm{rep} \mid \min_j \sum_i Z_{i,j}$ is solvable in
@@ -23,7 +23,7 @@ The parameter $k = m-1$ is exactly the value at which two literals suffice: "$j$
 on at least $m-1$ days" says "of any two days, $j$ is served on one of them", a binary
 constraint.
 
-# Formalization notes
+# Formalization Notes
 
 Clauses are numbered rather than enumerated: a slot is allocated for every day and ordered
 pair of clients, and for every client and ordered pair of days, and a slot whose pair is

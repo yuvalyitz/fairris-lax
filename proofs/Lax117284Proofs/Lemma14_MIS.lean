@@ -7,7 +7,7 @@ import Lax117284Proofs.ConflictGraph
 import Lax117284Proofs.Treewidth
 
 /-!
-# Lemma 14: NP-hardness at treewidth 4
+# Lemma 14: NP-Hardness at Treewidth 4
 
 > **Lemma 14.** The `1 | k_j, rep | min_j ∑_i Z_{i,j}` problem is NP-hard even when the
 > overall conflict graph has treewidth at most 4.
@@ -18,7 +18,7 @@ import Lax117284Proofs.Treewidth
 > colour `i ∈ {1, …, ℓ}`, we create `n` vertex days and a single validation day. For every
 > edge `e ∈ E` we create a single edge day.
 
-## The gadget
+## The Gadget
 
 Every job not named below has due date `1` and processing time `1` — including the dummy
 client `c₀`'s, on every day. `c₀`'s fairness parameter is the total number of days, so it runs
@@ -41,12 +41,12 @@ them, and hence *not both* edge clients of that edge. That is the incidence chec
 vertices' edge clients are pushed onto the edge days, and two chosen vertices sharing an edge
 would need both of that edge's clients on the same day.
 
-## Indices are 0-based
+## Indices Are 0-Based
 
 The paper numbers vertices `v_1^i, …, v_n^i` and neighbours `1, …, r`; `Fin` counts from `0`,
 so every due date here is the paper's with `p` replaced by `p + 1` and `q` by `q + 1`.
 
-## ⚠ An erratum, repaired: the treewidth clause is false as the paper specifies the construction
+## ⚠ An Erratum, Repaired: the Treewidth Clause Is False as the Paper Specifies the Construction
 
 Lemma 14 claims two things — that the reduction is correct, and that the overall conflict
 graph of the constructed instance has treewidth at most `4` (Fig. 7). The first holds for the
@@ -76,7 +76,7 @@ gadget clients. The conflict graph is then exactly the one Fig. 7 decomposes, an
 bound (`treewidth_overallGraph_le`). No repair can keep the unit-slot form: any job meeting
 `(0,1]` starts at `0`, so any two of them meet each other.
 
-## What is here, and what is in `Lemma14_Treewidth.lean`
+## What Is Here, and What Is in `Lemma14_Treewidth.lean`
 
 * `MIS`, the normalized input (`r`-regular, `ℓ`-partite, `n` per class) with its incidence
   algebra — `rev` is an involution without fixed points, and every incidence belongs to
@@ -92,7 +92,7 @@ bound (`treewidth_overallGraph_le`). No repair can keep the unit-slot form: any 
 conflict graph and proves the treewidth clause; `FairRIS.lean`'s `theorem16_hard` assembles
 both halves with Lemma 15 and the `multicoloredIndepSet_NPHard` axiom.
 
-## One hypothesis the paper leaves implicit
+## One Hypothesis the Paper Leaves Implicit
 
 The `⇒` direction has to schedule `c⁺` and `c⁻` on exactly `|E|/2` days each. The `ℓ · r` edge
 days incident to a chosen vertex force one of the two, and the rest are free; balancing is

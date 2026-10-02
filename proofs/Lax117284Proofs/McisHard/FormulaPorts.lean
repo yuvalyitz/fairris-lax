@@ -1,7 +1,7 @@
 import Lax117284Proofs.McisHard.Defs
 
 /-!
-# WP3: the port relation of a formula (`isPortRel_RN`, `rank_initial`, `unmatched_iff`, `posGraph_RN`)
+# WP3: the Port Relation of a Formula (`isPortRel_RN`, `rank_initial`, `unmatched_iff`, `posGraph_RN`)
 
 Statements identical to the goal statements of `McisHard/Defs.lean`, proved in the namespace `Proved`
 (the identity with the original goals was checked while the goals were still stubs).

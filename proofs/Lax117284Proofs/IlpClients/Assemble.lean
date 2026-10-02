@@ -1,7 +1,7 @@
 import Lax117284Proofs.IlpClients.Cert
 
 /-!
-# Completeness of Alg F: assembling the pieces
+# Completeness of Alg F: Assembling the Pieces
 
 For a normalised solution `Y` and the integer left inverse `(H, δ)` of the difference matrix of its
 extras, the certificate `certOf n Y H δ` passes every guard of `decode` and decodes to `Y` itself.

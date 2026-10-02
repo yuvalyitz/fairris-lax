@@ -71,7 +71,6 @@ theorem headD_drop' (l : List ℕ) (m : ℕ) : (l.drop m).headD 0 = l.getD m 0 :
   | nil => simp
   | cons x l ih => cases m <;> simp [ih]
 
-theorem getD_one_of_cons {a b : ℕ} {rest : List ℕ} : (a :: b :: rest).getD 1 0 = b := rfl
 
 /-- **The word is read into `z`.** -/
 theorem readCom_spec {B : ℕ} (x : List ℕ) (hx : x.length = 2 + x.getD 1 0 * x.getD 0 0 + x.getD 1 0)

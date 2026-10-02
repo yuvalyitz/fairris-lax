@@ -3,7 +3,7 @@ import Mathlib.Combinatorics.SimpleGraph.Coloring.Vertex
 import Lax117284Proofs.Defs
 
 /-!
-# Conflict graphs (Definition 5)
+# Conflict Graphs (Definition 5)
 
 > **Definition 5.** Given an instance `I` of `1 | rep | min_j ∑_i Z_{i,j}` with `n` clients
 > and `m` days, the *day `i` conflict graph* associated with `I` is the graph

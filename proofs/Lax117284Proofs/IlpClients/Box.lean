@@ -1,7 +1,7 @@
 import Lax117284Proofs.IlpClients.Bounds
 
 /-!
-# The search space of Alg F as a finite type
+# The Search Space of Alg F as a Finite Type
 
 `BCert n` is the finite set of certificates: a digit in `[0, K]` for each of the `nN n` columns, two
 `n × n` matrices with entries in `[0, n!]`, and `δ ∈ [1, n!]`.  Its cardinality is
@@ -22,12 +22,6 @@ def BCert (n : ℕ) : Type :=
 
 instance (n : ℕ) : Fintype (BCert n) := by unfold BCert; infer_instance
 
-/-- **The size of the search space.** -/
-theorem card_bcert (n : ℕ) :
-    Fintype.card (BCert n) = (Kn n + 1) ^ nN n * (n.factorial + 1) ^ (2 * n ^ 2) * n.factorial := by
-  unfold BCert
-  simp only [Fintype.card_prod, Fintype.card_fun, Fintype.card_fin]
-  ring
 
 /-- The certificate of a finite-type certificate. -/
 def BCert.toCert {n : ℕ} (b : BCert n) : Cert where
@@ -36,16 +30,6 @@ def BCert.toCert {n : ℕ} (b : BCert n) : Cert where
   Hn i j := if h : i < n ∧ j < n then ((b.2.2.1 ⟨i, h.1⟩ ⟨j, h.2⟩ : Fin (n.factorial + 1)) : ℕ) else 0
   δ := ((b.2.2.2 : Fin n.factorial) : ℕ) + 1
 
-theorem BCert.inBox {n : ℕ} (b : BCert n) : InBox n b.toCert := by
-  refine ⟨fun c hc => ?_, fun i hi j hj => ?_, ?_, ?_⟩
-  · simp only [BCert.toCert, dif_pos hc]
-    exact Nat.lt_succ_iff.mp (b.1 ⟨c, hc⟩).isLt
-  · simp only [BCert.toCert, dif_pos (And.intro hi hj)]
-    exact ⟨Nat.lt_succ_iff.mp (b.2.1 ⟨i, hi⟩ ⟨j, hj⟩).isLt,
-      Nat.lt_succ_iff.mp (b.2.2.1 ⟨i, hi⟩ ⟨j, hj⟩).isLt⟩
-  · show 1 ≤ (b.2.2.2 : ℕ) + 1; omega
-  · show (b.2.2.2 : ℕ) + 1 ≤ n.factorial
-    exact b.2.2.2.isLt
 
 /-- A certificate of the box, as a finite-type certificate. -/
 def BCert.ofCert {n : ℕ} (ω : Cert) (hω : InBox n ω) : BCert n :=
@@ -142,12 +126,6 @@ theorem cert_complete_box {n : ℕ} {cnt : ℕ → ℕ} {B : ℕ}
   obtain ⟨Y, hY⟩ := sol_of_feasible ((feasible_iff_nat n cnt B).mp h)
   exact cert_complete_box_of_sol hY
 
-/-- **The decision theorem on the finite search space**: the program of `ilpWord n cnt B` is
-feasible if and only if one of the `(K+1)^N (n!+1)^(2 n²) n!` certificates decodes to a solution. -/
-theorem feasible_iff_algF_box (n : ℕ) (cnt : ℕ → ℕ) (B : ℕ) :
-    (decodeILP (ilpWord n cnt B)).Feasible ↔
-      ∃ b : BCert n, ∃ x, decode n cnt B b.toCert = some x ∧ Checks n cnt B x :=
-  ⟨cert_complete_box, fun ⟨_, _, hd, hx⟩ => decode_sound hd hx⟩
 
 end
 

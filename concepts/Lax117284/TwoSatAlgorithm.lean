@@ -6,7 +6,7 @@ import Mathlib.Logic.Function.Iterate
 
 /-!
 ---
-title: The algorithm: reachability in the implication graph, one variable at a time
+title: The Algorithm: Reachability in the Implication Graph, One Variable at a Time
 type: definition
 ---
 The algorithm decides a formula in three steps. It rejects if some clause is empty or has more
@@ -16,7 +16,7 @@ computes the set of literals reachable from $x$ by a breadth-first search and, i
 among them, the set reachable from $\lnot x$; it rejects if $x$ is among those. If no variable is
 rejected the formula is accepted.
 
-# Formalization notes
+# Formalization Notes
 
 The breadth-first search is written as what it computes: starting from the singleton of the
 source, add the successors of every literal in the current set, and repeat as many times as

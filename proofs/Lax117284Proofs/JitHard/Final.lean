@@ -2,11 +2,13 @@ import Lax117284Proofs.Machine.JitHardFinal
 import Lax117284Proofs.Machine.JitHardTM
 import Lax117284Proofs.JitHard.Code
 import Lax117284Proofs.SourceInjectivity
-import Lax470956.Theorem2
+import Lax117284Proofs.JitHard.Sat34Wired
 
 /-!
 Just-in-time scheduling on unrelated machines is NP-hard, by a reduction from interval scheduling
-with eligible machine sets, whose NP-hardness is the second theorem of `lax-470956`.
+with eligible machine sets, whose NP-hardness is the second theorem of `lax-888481`, imported here
+as the proof `Sat34Wired.npHard_allSchedulable_wired` rather than cited as an axiom, so that this
+submission discharges it too.
 -/
 
 namespace Lax117284Proofs.JitHard
@@ -16,7 +18,7 @@ open Lax117284Proofs.Machine.Bits
 
 /-- **The program computes the image of an instance on the code of the instance.** -/
 theorem redBits_encode (I : SchedI) :
-    Lax117284Proofs.Machine.JitHardFinal.W.redBits (natBits (Lax470956.BinaryEncoding.encodeInstance I)) =
+    Lax117284Proofs.Machine.JitHardFinal.W.redBits (natBits (Lax888481.BinaryEncoding.encodeInstance I)) =
       natBits (Lax117284.JustInTime.encodeInstance (toJIT I)) := by
   unfold Lax117284Proofs.Machine.WrapT.WrapT.redBits
   rw [bitsOf_natBits]
@@ -27,7 +29,7 @@ theorem redBits_encode (I : SchedI) :
 
 /-- **The reduction is polynomial-time computable on the codes of the instances.** -/
 theorem polyTime_toJIT :
-    Nonempty (TM2ComputableInPolyTime Lax470956.BinaryEncoding.encodeInstance id
+    Nonempty (TM2ComputableInPolyTime Lax888481.BinaryEncoding.encodeInstance id
       (fun I : SchedI => Lax117284.JustInTime.encodeInstance (toJIT I))) :=
   Lax117284Proofs.Machine.JitHardTM.polyTime_of_ram_dom
     Lax117284Proofs.Machine.JitHardFinal.ramPolytime redBits_encode
@@ -49,7 +51,7 @@ and then there are as many machines as the matrix of the input has columns.
 -/
 theorem allJIT_npHard : Lax117284.Problems.NPHard Lax117284.JustInTime.AllJIT := by
   intro A hA
-  obtain ⟨f, ⟨hf⟩, hfc⟩ := Lax470956.Theorem2.npHard_allSchedulable A hA
+  obtain ⟨f, ⟨hf⟩, hfc⟩ := npHard_allSchedulable_wired A hA
   obtain ⟨t⟩ := polyTime_toJIT
   obtain ⟨c⟩ := Lax434930Proofs.PolynomialComposition.comp hf t
   refine ⟨_, ⟨c⟩, fun x => ?_⟩

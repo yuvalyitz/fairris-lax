@@ -44,7 +44,6 @@ structure ScanPost (y : List ℕ) (ext : String → ℕ) (σ : Env) : Prop where
   k : σ.vars "k" = (flat (st y)).length
   mx : σ.vars "mx" = mxOf (flat (st y))
   L : σ.vars "L" = y.length
-  a : σ.arrs "a" = y
   vr : (σ.arrs "vr").take (flat (st y)).length = (flat (st y)).map Literal.index
   sg : (σ.arrs "sg").take (flat (st y)).length =
     (flat (st y)).map fun l => if l.positive then 1 else 0
@@ -89,12 +88,12 @@ theorem scanPart_spec (hB : y.length + 8 < B) (hyB : ∀ v ∈ y, v < B)
     · rw [h1.arr "sg" (by decide)]; simp [hext.2.1]
     · rw [h1.arr "cl" (by decide)]; simp [hext.2.2]
     · exact h1.out)
-  obtain ⟨hR, ha3, hL3, -, lvr, lsg, lcl, out3⟩ := I3
+  obtain ⟨hR, -, hL3, -, lvr, lsg, lcl, out3⟩ := I3
   have hst : stAt y (σ3.vars "p") = st y := by
     rw [p3]; unfold stAt st; rw [List.take_length]
   rw [hst] at hR
   refine ⟨σ3, (r2.seq r3).mono (by simp), ?_⟩
-  refine ⟨hR.ph, hR.C, hR.k, hR.mx, hL3, ha3, hR.vr, hR.sg, hR.cl, lvr, lsg, lcl, out3, ?_, ?_⟩
+  refine ⟨hR.ph, hR.C, hR.k, hR.mx, hL3, hR.vr, hR.sg, hR.cl, lvr, lsg, lcl, out3, ?_, ?_⟩
   · intro x hx
     simp only [List.mem_cons, List.not_mem_nil, or_false, not_or] at hx
     rw [fv3 x (fun hm => by have := mem_wvars_scan hm; simp at this; tauto)]
@@ -140,7 +139,6 @@ structure Facts (F : Formula) (y : List ℕ) (ext : String → ℕ) (σ : Env) :
   C : σ.vars "C" = F.length
   k : σ.vars "k" = (lits F).length
   mx : σ.vars "mx" = mxOf (lits F)
-  L : σ.vars "L" = y.length
   vr : ∀ i < (lits F).length, (σ.arrs "vr").getD i 0 = iv F i
   sg : ∀ i < (lits F).length, (σ.arrs "sg").getD i 0 = sv F i
   cl : ∀ i < (lits F).length, (σ.arrs "cl").getD i 0 = cv F i
@@ -148,7 +146,6 @@ structure Facts (F : Formula) (y : List ℕ) (ext : String → ℕ) (σ : Env) :
   lsg : (σ.arrs "sg").length = y.length
   lcl : (σ.arrs "cl").length = y.length
   out : σ.out = []
-  zero : ∀ x, x ∉ ["L", "rt", "rv", "len", "mx", "ph", "n", "C", "k", "p", "c"] → σ.vars x = 0
   arr : ∀ b, b ∉ ["a", "vr", "sg", "cl"] → σ.arrs b = List.replicate (ext b) 0
   hk : (lits F).length ≤ y.length
   hC : F.length ≤ y.length
@@ -162,8 +159,8 @@ theorem ScanPost.facts {σ : Env} (hσ : ScanPost y ext σ) (h : Accepted y) :
   have hk := hσ.k; rw [flat_eq h] at hk
   have hmx := hσ.mx; rw [flat_eq h] at hmx
   obtain ⟨s1, s2, s3⟩ := sizes_le h
-  refine ⟨hσ.C, hk, hmx, hσ.L, fun i hi => ?_, fun i hi => ?_, fun i hi => ?_, hσ.lvr, hσ.lsg,
-    hσ.lcl, hσ.out, hσ.zero, hσ.arr, s1, s2, s3⟩
+  refine ⟨hσ.C, hk, hmx, fun i hi => ?_, fun i hi => ?_, fun i hi => ?_, hσ.lvr, hσ.lsg,
+    hσ.lcl, hσ.out, hσ.arr, s1, s2, s3⟩
   · rw [getD_of_take _ _ _ hi, e1, getD_map _ _ dflt _ hi]; rfl
   · rw [getD_of_take _ _ _ hi, e2, getD_map _ _ dflt _ hi]; rfl
   · rw [getD_of_take _ _ _ hi, e3]; rfl

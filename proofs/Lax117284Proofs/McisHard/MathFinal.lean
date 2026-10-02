@@ -2,7 +2,7 @@ import Lax117284Proofs.McisHard.HinstProofs
 import Lax117284Proofs.McisHard.BridgeProofs
 
 /-!
-# The math layer, assembled: `reduceMcis_correct` from the proved lemmas (no stubs)
+# The Math Layer, Assembled: `reduceMcis_correct` from the Proved Lemmas (No Stubs)
 -/
 
 set_option autoImplicit false

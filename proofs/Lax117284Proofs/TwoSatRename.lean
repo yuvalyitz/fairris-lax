@@ -30,8 +30,6 @@ lemma idx_fo (idx : ℕ → ℕ) (p : ℕ) : idx (fo idx p) = idx p :=
 lemma fo_le (idx : ℕ → ℕ) (p : ℕ) : fo idx p ≤ p :=
   Nat.find_min' (⟨p, rfl⟩ : ∃ j, idx j = idx p) rfl
 
-lemma fo_min (idx : ℕ → ℕ) (p : ℕ) {j : ℕ} (hj : j < fo idx p) : idx j ≠ idx p :=
-  Nat.find_min (⟨p, rfl⟩ : ∃ j, idx j = idx p) hj
 
 lemma fo_le_of_eq (idx : ℕ → ℕ) (p : ℕ) {j : ℕ} (hj : idx j = idx p) : fo idx p ≤ j :=
   Nat.find_min' (⟨p, rfl⟩ : ∃ j, idx j = idx p) hj
@@ -41,18 +39,7 @@ lemma fo_eq_of_idx_eq {idx : ℕ → ℕ} {p q : ℕ} (h : idx p = idx q) : fo i
   · exact fo_le_of_eq idx p (by rw [idx_fo idx q, h])
   · exact fo_le_of_eq idx q (by rw [idx_fo idx p, h])
 
-/-- **Two positions get the same name exactly when they carry the same index.** -/
-lemma fo_eq_iff (idx : ℕ → ℕ) (p q : ℕ) : fo idx p = fo idx q ↔ idx p = idx q := by
-  refine ⟨fun h => ?_, fo_eq_of_idx_eq⟩
-  rw [← idx_fo idx p, h, idx_fo idx q]
 
-/-- The first occurrence lies before `j` exactly when some earlier position carries the index. -/
-lemma fo_lt_iff (idx : ℕ → ℕ) (p j : ℕ) : fo idx p < j ↔ ∃ i < j, idx i = idx p := by
-  constructor
-  · intro h
-    exact ⟨fo idx p, h, idx_fo idx p⟩
-  · rintro ⟨i, hi, hie⟩
-    exact lt_of_le_of_lt (fo_le_of_eq idx p hie) hi
 
 /-- The first occurrence depends on the indices up to `p` only. -/
 lemma fo_congr {idx idx' : ℕ → ℕ} {p : ℕ} (h : ∀ j ≤ p, idx j = idx' j) :
@@ -157,10 +144,6 @@ noncomputable def toCNF (φ : SF) : Formula := cnfOf φ.clauses (idxF φ) (sgF �
 
 theorem isTwoCNF_toCNF (φ : SF) : IsTwoCNF (toCNF φ) := isTwoCNF_cnfOf _ _ _
 
-/-- A position of `φ` as a clause and a literal. -/
-lemma pos_cases (φ : SF) (c : ℕ) (hc : c < φ.clauses) (α : ℕ) (hα : α < 2) :
-    ∃ (c' : Fin φ.clauses) (α' : Fin 2), 2 * c + α = 2 * c' + α' :=
-  ⟨⟨c, hc⟩, ⟨α, hα⟩, rfl⟩
 
 /-- **Renaming preserves satisfiability.** -/
 theorem satisfiable_iff (φ : SF) : φ.Satisfiable ↔ Satisfiable (toCNF φ) := by

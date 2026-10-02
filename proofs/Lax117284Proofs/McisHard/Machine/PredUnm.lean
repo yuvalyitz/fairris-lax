@@ -1,7 +1,7 @@
 import Lax117284Proofs.McisHard.Machine.PredBase
 
 /-!
-# The predicate `unmatchedN` on the machine (WP6)
+# The Predicate `unmatchedN` on the Machine (WP6)
 
 `coCntCom`: the number of positions carrying the complementary literal of a position (a wrapper of
 `SatRank.rankLoop_spec` with the sign `1 - sign`), and `unmatchedCom`.

@@ -2,7 +2,7 @@ import Lax117284.Scheduling
 
 /-!
 ---
-title: The extreme values of the fairness parameter
+title: The Extreme Values of the Fairness Parameter
 type: lemma
 ---
 Three values of the fairness parameter are settled by inspection. For $k = 0$ nothing is
@@ -11,7 +11,7 @@ be served on every day, which is possible exactly when no two jobs of a day conf
 $k > m$ no client can be served often enough, so an instance with at least one client is a
 no-instance.
 
-# Formalization notes
+# Formalization Notes
 
 The case $k > m$ needs an instance with a client: an instance with none has nothing to
 require and admits the empty schedule for every parameter.

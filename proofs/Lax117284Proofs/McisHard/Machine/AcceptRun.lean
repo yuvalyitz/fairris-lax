@@ -4,7 +4,7 @@ import Lax117284Proofs.Machine.SatAccept
 import Lax117284Proofs.Machine.SatCong
 
 /-!
-# The accepting phase of the reduction to `H` (WP8)
+# The Accepting Phase of the Reduction to `H` (WP8)
 
 `accMcis`: read the counts, check the positions, and write the image `H` if the check passes (and nothing
 otherwise).  The output is `natBits (encodeInstance (Hfin ns))` when `CondN ns` and empty otherwise.
