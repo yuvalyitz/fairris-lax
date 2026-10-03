@@ -1,4 +1,4 @@
-import Mathlib.Algebra.Order.Ring.Nat
+import Lax117284Proofs.MathlibLite
 
 /-!
 A flag that survives a loop exactly if every round was fine.

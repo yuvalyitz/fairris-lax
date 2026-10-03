@@ -1,6 +1,4 @@
-import Mathlib.Algebra.BigOperators.Ring.Finset
-import Mathlib.Algebra.CharP.Defs
-import Mathlib.Data.Fintype.BigOperators
+import Lax117284Proofs.MathlibLite
 
 /-!
 Sorting by rank: the position of a client in the order of due dates is the number of clients that

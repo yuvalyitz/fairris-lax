@@ -1,7 +1,4 @@
-import Mathlib.Algebra.Order.Ring.Nat
-import Mathlib.Data.Nat.SuccPred
-import Mathlib.Tactic.Ring.Basic
-import Mathlib.Tactic.Ring
+import Lax117284Proofs.MathlibLite
 
 /-!
 # Numbers as Lists of Digits

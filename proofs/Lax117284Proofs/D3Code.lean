@@ -1,13 +1,4 @@
-import Mathlib.Algebra.BigOperators.Fin
-import Mathlib.Algebra.Order.Ring.Star
-import Mathlib.Data.Int.ConditionallyCompleteOrder
-import Mathlib.Data.Int.Star
-import Mathlib.Data.Nat.SuccPred
-import Mathlib.Tactic.Linarith.Lemmas
-import Mathlib.Tactic.Ring.Basic
-import Mathlib.Tactic.Zify
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Ring
+import Lax117284Proofs.MathlibLite
 
 /-!
 The code of a state: the digits of a number in the base one more than the number of clients.

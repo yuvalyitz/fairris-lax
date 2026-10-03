@@ -375,6 +375,7 @@ import Lax117284Proofs.Machine.X3Accept
 import Lax117284Proofs.Machine.X3Final
 import Lax117284Proofs.Machine.X3Loop
 import Lax117284Proofs.Machine.X3Sem
+import Lax117284Proofs.MathlibLite
 import Lax117284Proofs.McisHard.BridgeProofs
 import Lax117284Proofs.McisHard.CopyProofs
 import Lax117284Proofs.McisHard.Defs

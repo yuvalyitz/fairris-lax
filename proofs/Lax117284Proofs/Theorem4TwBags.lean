@@ -1,7 +1,4 @@
-import Mathlib.Algebra.Order.Ring.Nat
-import Mathlib.Data.Finset.Dedup
-import Mathlib.Data.Nat.SuccPred
-import Mathlib.Tactic.Tauto
+import Lax117284Proofs.MathlibLite
 
 /-!
 # Sorted Bags
