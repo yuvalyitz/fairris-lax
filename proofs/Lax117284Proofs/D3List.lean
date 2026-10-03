@@ -1,4 +1,6 @@
-import Mathlib
+import Mathlib.Data.List.GetD
+import Mathlib.Logic.Basic
+import Mathlib.Tactic.Set
 
 /-!
 The loops over the table, as functions on lists: the in-place sweep that serves a client on a day,

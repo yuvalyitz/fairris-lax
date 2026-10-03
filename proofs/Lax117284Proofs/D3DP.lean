@@ -1,4 +1,6 @@
-import Mathlib
+import Mathlib.Algebra.Order.Ring.Nat
+import Mathlib.Data.Finset.Card
+import Mathlib.Data.Nat.SuccPred
 
 /-!
 The dynamic program for day-independent due dates, on numbers: the state is, for every day, the

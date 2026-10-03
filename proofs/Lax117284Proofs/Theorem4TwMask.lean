@@ -1,4 +1,11 @@
-import Mathlib
+import Mathlib.Algebra.BigOperators.Group.Finset.Defs
+import Mathlib.Algebra.Order.Ring.Star
+import Mathlib.Data.Nat.Bitwise
+import Mathlib.Data.Nat.SuccPred
+import Mathlib.Tactic.NormNum.Ineq
+import Mathlib.Tactic.Ring.Basic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # Sets of Days as Numbers
