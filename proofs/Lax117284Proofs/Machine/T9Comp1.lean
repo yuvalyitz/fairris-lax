@@ -1,5 +1,6 @@
 import Lax117284Proofs.Machine.T9Ops
 import Lax117284Proofs.Machine.T9Sem
+import Lax117284Proofs.OmegaFresh
 
 /-!
 The program that writes the clauses of Theorem 9: one loop over the conflict clauses and one over
@@ -8,6 +9,7 @@ the validation clauses, each clause computed from its index.
 
 namespace Lax117284Proofs.Machine.T9Comp1
 
+open Lax117284Proofs
 open Lax808846Proofs.Imp Lax808846Proofs.Compile Lax808846Proofs.Reasoning
 open Lax117284Proofs.Machine.Bits Lax117284Proofs.Machine.Lists Lax117284Proofs.Machine.Out
 open Lax117284Proofs.Machine.Emit Lax117284Proofs.Machine.T9Ops Lax117284Proofs.Machine.T9Sem
@@ -102,7 +104,7 @@ theorem comp1_run (arr : List ℕ) (n m c : ℕ) (σ : Env)
   -- ci := i / nn
   have s1 : Run B (.assign "ci" (.bin .div (V "i") (V "nn"))) σ (σ.setVar "ci" a) 4 := by
     have := asg_bin (B := B) .div "i" "nn" "ci" σ c (n * n) hi hnn (by
-      show c / (n * n) < B; omega) (by omega) (by omega)
+      show c / (n * n) < B; omega_fresh) (by omega_fresh) (by omega_fresh)
     simp only [Bop.apply_div, Bop.apply_mul, Bop.apply_sub, Bop.apply_add] at this; rw [← ha] at this; exact this
   set σ1 := σ.setVar "ci" a with hσ1
   have s1i : σ1.vars "i" = c := by simp [hσ1, Env.setVar, hi]
@@ -112,7 +114,7 @@ theorem comp1_run (arr : List ℕ) (n m c : ℕ) (σ : Env)
   -- tt := ci * nn
   have s2 : Run B (.assign "tt" (mul (V "ci") (V "nn"))) σ1 (σ1.setVar "tt" (n * n * a)) 4 := by
     have := asg_bin (B := B) .mul "ci" "nn" "tt" σ1 a (n * n) s1ci s1nn (by
-      show a * (n * n) < B; omega) (by omega) (by omega)
+      show a * (n * n) < B; omega_fresh) (by omega_fresh) (by omega_fresh)
     simp only [Bop.apply_div, Bop.apply_mul, Bop.apply_sub, Bop.apply_add] at this; rw [e1] at this; exact this
   set σ2 := σ1.setVar "tt" (n * n * a) with hσ2
   have s2i : σ2.vars "i" = c := by simp [hσ2, Env.setVar, s1i]
@@ -123,8 +125,8 @@ theorem comp1_run (arr : List ℕ) (n m c : ℕ) (σ : Env)
   -- cr := i - tt
   have s3 : Run B (.assign "cr" (sub (V "i") (V "tt"))) σ2 (σ2.setVar "cr" r) 4 := by
     have := asg_bin (B := B) .sub "i" "tt" "cr" σ2 c (n * n * a) s2i s2tt (by
-      show c - n * n * a < B; omega) (by omega) (by omega)
-    have e : c - n * n * a = r := by omega
+      show c - n * n * a < B; omega_fresh) (by omega_fresh) (by omega_fresh)
+    have e : c - n * n * a = r := by omega_fresh
     simp only [Bop.apply_div, Bop.apply_mul, Bop.apply_sub, Bop.apply_add] at this; rw [e] at this; exact this
   set σ3 := σ2.setVar "cr" r with hσ3
   have s3cr : σ3.vars "cr" = r := by simp [hσ3, Env.setVar]
@@ -135,7 +137,7 @@ theorem comp1_run (arr : List ℕ) (n m c : ℕ) (σ : Env)
   -- j1 := cr / n
   have s4 : Run B (.assign "j1" (.bin .div (V "cr") (V "n"))) σ3 (σ3.setVar "j1" j1) 4 := by
     have := asg_bin (B := B) .div "cr" "n" "j1" σ3 r n s3cr s3n (by
-      show r / n < B; omega) (by omega) (by omega)
+      show r / n < B; omega_fresh) (by omega_fresh) (by omega_fresh)
     simp only [Bop.apply_div, Bop.apply_mul, Bop.apply_sub, Bop.apply_add] at this; rw [← hj1] at this; exact this
   set σ4 := σ3.setVar "j1" j1 with hσ4
   have s4j1 : σ4.vars "j1" = j1 := by simp [hσ4, Env.setVar]
@@ -145,7 +147,7 @@ theorem comp1_run (arr : List ℕ) (n m c : ℕ) (σ : Env)
   -- tt := j1 * n
   have s5 : Run B (.assign "tt" (mul (V "j1") (V "n"))) σ4 (σ4.setVar "tt" (n * j1)) 4 := by
     have := asg_bin (B := B) .mul "j1" "n" "tt" σ4 j1 n s4j1 s4n (by
-      show j1 * n < B; omega) (by omega) (by omega)
+      show j1 * n < B; omega_fresh) (by omega_fresh) (by omega_fresh)
     simp only [Bop.apply_div, Bop.apply_mul, Bop.apply_sub, Bop.apply_add] at this; rw [e2] at this; exact this
   set σ5 := σ4.setVar "tt" (n * j1) with hσ5
   have s5tt : σ5.vars "tt" = n * j1 := by simp [hσ5, Env.setVar]
@@ -156,8 +158,8 @@ theorem comp1_run (arr : List ℕ) (n m c : ℕ) (σ : Env)
   -- j2 := cr - tt
   have s6 : Run B (.assign "j2" (sub (V "cr") (V "tt"))) σ5 (σ5.setVar "j2" j2) 4 := by
     have := asg_bin (B := B) .sub "cr" "tt" "j2" σ5 r (n * j1) s5cr s5tt (by
-      show r - n * j1 < B; omega) (by omega) (by omega)
-    have e : r - n * j1 = j2 := by omega
+      show r - n * j1 < B; omega_fresh) (by omega_fresh) (by omega_fresh)
+    have e : r - n * j1 = j2 := by omega_fresh
     simp only [Bop.apply_div, Bop.apply_mul, Bop.apply_sub, Bop.apply_add] at this; rw [e] at this; exact this
   set σ6 := σ5.setVar "j2" j2 with hσ6
   have s6j2 : σ6.vars "j2" = j2 := by simp [hσ6, Env.setVar]
@@ -167,7 +169,7 @@ theorem comp1_run (arr : List ℕ) (n m c : ℕ) (σ : Env)
   -- tt := ci * n
   have s7 : Run B (.assign "tt" (mul (V "ci") (V "n"))) σ6 (σ6.setVar "tt" (a * n)) 4 := by
     have := asg_bin (B := B) .mul "ci" "n" "tt" σ6 a n s6ci s6n (by
-      show a * n < B; omega) (by omega) (by omega)
+      show a * n < B; omega_fresh) (by omega_fresh) (by omega_fresh)
     simp only [Bop.apply_div, Bop.apply_mul, Bop.apply_sub, Bop.apply_add] at this
     exact this
   set σ7 := σ6.setVar "tt" (a * n) with hσ7
@@ -177,7 +179,7 @@ theorem comp1_run (arr : List ℕ) (n m c : ℕ) (σ : Env)
   -- x1 := tt + j1
   have s8 : Run B (.assign "x1" (add (V "tt") (V "j1"))) σ7 (σ7.setVar "x1" (a * n + j1)) 4 :=
     asg_bin (B := B) .add "tt" "j1" "x1" σ7 (a * n) j1 s7tt s7j1 (by
-      show a * n + j1 < B; omega) (by omega) (by omega)
+      show a * n + j1 < B; omega_fresh) (by omega_fresh) (by omega_fresh)
   set σ8 := σ7.setVar "x1" (a * n + j1) with hσ8
   have s8x1 : σ8.vars "x1" = a * n + j1 := by simp [hσ8, Env.setVar]
   have s8tt : σ8.vars "tt" = a * n := by simp [hσ8, Env.setVar, s7tt]
@@ -185,34 +187,34 @@ theorem comp1_run (arr : List ℕ) (n m c : ℕ) (σ : Env)
   -- x2 := tt + j2
   have s9 : Run B (.assign "x2" (add (V "tt") (V "j2"))) σ8 (σ8.setVar "x2" (a * n + j2)) 4 :=
     asg_bin (B := B) .add "tt" "j2" "x2" σ8 (a * n) j2 s8tt s8j2 (by
-      show a * n + j2 < B; omega) (by omega) (by omega)
+      show a * n + j2 < B; omega_fresh) (by omega_fresh) (by omega_fresh)
   set σ9 := σ8.setVar "x2" (a * n + j2) with hσ9
   have s9x2 : σ9.vars "x2" = a * n + j2 := by simp [hσ9, Env.setVar]
   have s9x1 : σ9.vars "x1" = a * n + j1 := by simp [hσ9, Env.setVar, s8x1]
   have hA9 : σ9.arrs "TK" = arr := by simp [hσ9, hσ8, hσ7, hσ6, hσ5, hσ4, hσ3, hσ2, hσ1,
     Env.setVar, hA]
   -- the four reads
-  have s10 := asg_tk (B := B) "x1" "pa" 0 σ9 arr (a * n + j1) hA9 s9x1 (by omega) (by omega)
-    (by have := hE (2 + 2 * (a * n + j1) + 0) (by omega); omega)
+  have s10 := asg_tk (B := B) "x1" "pa" 0 σ9 arr (a * n + j1) hA9 s9x1 (by omega_fresh) (by omega_fresh)
+    (by have := hE (2 + 2 * (a * n + j1) + 0) (by omega_fresh); omega_fresh)
   set σ10 := σ9.setVar "pa" (arr.getD (2 + 2 * (a * n + j1) + 0) 0) with hσ10
   have hA10 : σ10.arrs "TK" = arr := by simp [hσ10, Env.setVar, hA9]
   have s10x1 : σ10.vars "x1" = a * n + j1 := by simp [hσ10, Env.setVar, s9x1]
   have s10x2 : σ10.vars "x2" = a * n + j2 := by simp [hσ10, Env.setVar, s9x2]
-  have s11 := asg_tk (B := B) "x1" "da" 1 σ10 arr (a * n + j1) hA10 s10x1 (by omega) (by omega)
-    (by have := hE (2 + 2 * (a * n + j1) + 1) (by omega); omega)
+  have s11 := asg_tk (B := B) "x1" "da" 1 σ10 arr (a * n + j1) hA10 s10x1 (by omega_fresh) (by omega_fresh)
+    (by have := hE (2 + 2 * (a * n + j1) + 1) (by omega_fresh); omega_fresh)
   set σ11 := σ10.setVar "da" (arr.getD (2 + 2 * (a * n + j1) + 1) 0) with hσ11
   have hA11 : σ11.arrs "TK" = arr := by simp [hσ11, Env.setVar, hA10]
   have s11x2 : σ11.vars "x2" = a * n + j2 := by simp [hσ11, Env.setVar, s10x2]
-  have s12 := asg_tk (B := B) "x2" "pb" 0 σ11 arr (a * n + j2) hA11 s11x2 (by omega) (by omega)
-    (by have := hE (2 + 2 * (a * n + j2) + 0) (by omega); omega)
+  have s12 := asg_tk (B := B) "x2" "pb" 0 σ11 arr (a * n + j2) hA11 s11x2 (by omega_fresh) (by omega_fresh)
+    (by have := hE (2 + 2 * (a * n + j2) + 0) (by omega_fresh); omega_fresh)
   set σ12 := σ11.setVar "pb" (arr.getD (2 + 2 * (a * n + j2) + 0) 0) with hσ12
   have hA12 : σ12.arrs "TK" = arr := by simp [hσ12, Env.setVar, hA11]
   have s12x2 : σ12.vars "x2" = a * n + j2 := by simp [hσ12, Env.setVar, s11x2]
-  have s13 := asg_tk (B := B) "x2" "db" 1 σ12 arr (a * n + j2) hA12 s12x2 (by omega) (by omega)
-    (by have := hE (2 + 2 * (a * n + j2) + 1) (by omega); omega)
+  have s13 := asg_tk (B := B) "x2" "db" 1 σ12 arr (a * n + j2) hA12 s12x2 (by omega_fresh) (by omega_fresh)
+    (by have := hE (2 + 2 * (a * n + j2) + 1) (by omega_fresh); omega_fresh)
   set σ13 := σ12.setVar "db" (arr.getD (2 + 2 * (a * n + j2) + 1) 0) with hσ13
   refine ⟨σ13, (s1.seq (s2.seq (s3.seq (s4.seq (s5.seq (s6.seq (s7.seq (s8.seq (s9.seq
-    (s10.seq (s11.seq (s12.seq s13)))))))))))).mono (by omega), ?_⟩
+    (s10.seq (s11.seq (s12.seq s13)))))))))))).mono (by omega_fresh), ?_⟩
   have hfr : ∀ y, y ∉ A1 → σ13.vars y = σ.vars y := by
     intro y hy
     simp only [A1, List.mem_cons, List.not_mem_nil, or_false, not_or] at hy

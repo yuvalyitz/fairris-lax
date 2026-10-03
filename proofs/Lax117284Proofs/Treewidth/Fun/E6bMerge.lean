@@ -1,5 +1,6 @@
 import Lax117284Proofs.Treewidth.Fun.E6bDefs
 import Lax117284Proofs.Treewidth.Size.Cells
+import Lax117284Proofs.OmegaFresh
 
 set_option linter.unusedSectionVars false
 set_option linter.unusedTactic false
@@ -35,16 +36,16 @@ theorem findPathCost_le' (la lb lw s L Ly : ℕ) (ha : la ≤ s) (hb : lb ≤ s)
       4 ^ (L + L + 1) * (100 * 3 ^ (2 * (L + L) + 1 + lw) + 100 * (2 * (L + L) + 1) + 100) +
       12 * (la + lb) + 200 ≤ fpBound' s L Ly := by
   unfold fpBound'
-  have h1 : 3 ^ (2 * (L + L) + 1 + lw) ≤ 3 ^ (2 * (L + L) + 1 + Ly) := Nat.pow_le_pow_right (by norm_num) (by omega)
+  have h1 : 3 ^ (2 * (L + L) + 1 + lw) ≤ 3 ^ (2 * (L + L) + 1 + Ly) := Nat.pow_le_pow_right (by norm_num) (by omega_fresh)
   have h2 : 6000 * (la + 1) * (lb + 1) ≤ 6000 * (s + 1) * (s + 1) :=
-    Nat.mul_le_mul (Nat.mul_le_mul_left 6000 (by omega)) (by omega)
+    Nat.mul_le_mul (Nat.mul_le_mul_left 6000 (by omega_fresh)) (by omega_fresh)
   have h3 : 6000 * (la + 1) * (lb + 1) * (4 ^ (L + L + 1) + 1) ^ 2 * (2 * (L + L) + 1 + 2) ^ 2 ≤
       6000 * (s + 1) * (s + 1) * (4 ^ (L + L + 1) + 1) ^ 2 * (2 * (L + L) + 1 + 2) ^ 2 :=
     Nat.mul_le_mul_right _ (Nat.mul_le_mul_right _ h2)
   have h4 : 4 ^ (L + L + 1) * (100 * 3 ^ (2 * (L + L) + 1 + lw) + 100 * (2 * (L + L) + 1) + 100) ≤
       4 ^ (L + L + 1) * (100 * 3 ^ (2 * (L + L) + 1 + Ly) + 100 * (2 * (L + L) + 1) + 100) :=
-    Nat.mul_le_mul_left _ (by omega)
-  omega
+    Nat.mul_le_mul_left _ (by omega_fresh)
+  omega_fresh
 
 /-- local cost of `mergeAR` -/
 def cMA' (s L Ly : ℕ) : ℕ := fpBound' s L Ly + 600 * (s + 3) ^ 2 + 200 * (s + 1) + 300
@@ -60,47 +61,47 @@ theorem mergeAR_runs'_rec (s L Ly : ℕ) (hL : L ≤ s) (hB : 1000 + 100 * (s + 
   | .run S na ka, .run S' nb kb, .node S'' ty tk, ha, hb, hc, hca, hcb, hrb => by
     have hE1 := Ext.trans extE1 hΔ
     have hΔA : E5A.Δ ⊑ Δ' := Ext.trans extA hΔ
-    have hB1 : 1 < B := by omega
-    have hna : sz na ≤ s := by have := sz_c_lt S na ka; omega
-    have hnb : sz nb ≤ s := by have := sz_c_lt S' nb kb; omega
-    have hka : sz ka ≤ s := by have := sz_ks_lt S na ka; omega
-    have hkb : sz kb ≤ s := by have := sz_ks_lt S' nb kb; omega
-    have hSs : sz S ≤ s := by have := sz_S_lt S na ka; omega
-    have hty : sz ty ≤ s := by have := E5R.sz_ct_y_lt S'' ty tk; omega
-    have htk : sz tk ≤ s := by have := E5R.sz_ct_ks_lt S'' ty tk; omega
+    have hB1 : 1 < B := by omega_fresh
+    have hna : sz na ≤ s := by have := sz_c_lt S na ka; omega_fresh
+    have hnb : sz nb ≤ s := by have := sz_c_lt S' nb kb; omega_fresh
+    have hka : sz ka ≤ s := by have := sz_ks_lt S na ka; omega_fresh
+    have hkb : sz kb ≤ s := by have := sz_ks_lt S' nb kb; omega_fresh
+    have hSs : sz S ≤ s := by have := sz_S_lt S na ka; omega_fresh
+    have hty : sz ty ≤ s := by have := E5R.sz_ct_y_lt S'' ty tk; omega_fresh
+    have htk : sz tk ≤ s := by have := E5R.sz_ct_ks_lt S'' ty tk; omega_fresh
     have hlna := length_le_sz na
     have hlnb := length_le_sz nb
     have hlty := length_le_sz ty
     have hlka := length_le_sz ka
     have hcS := card_le_sz S
-    have hcards1 := cards_runs hΔA B na (by omega)
-    have hcards2 := cards_runs hΔA B nb (by omega)
-    have hlen := Lib4.card_runs (l4 hE1) B S (by omega)
+    have hcards1 := cards_runs hΔA B na (by omega_fresh)
+    have hcards2 := cards_runs hΔA B nb (by omega_fresh)
+    have hlen := Lib4.card_runs (l4 hE1) B S (by omega_fresh)
     have hcna : ∀ x ∈ na.map (fun n => n.bag.card), x ≤ L := by
       intro x hx; obtain ⟨n, hn, rfl⟩ := List.mem_map.1 hx; exact hca.1 n hn
     have hcnb : ∀ x ∈ nb.map (fun n => n.bag.card), x ≤ L := by
       intro x hx; obtain ⟨n, hn, rfl⟩ := List.mem_map.1 hx; exact hcb.1 n hn
-    have hfp := E1D.findPath_runs (eD hE1) B (by omega) (na.map (fun n => n.bag.card))
-      (nb.map (fun n => n.bag.card)) S.card ty L L hcna hcnb (by simp; omega)
+    have hfp := E1D.findPath_runs (eD hE1) B (by omega_fresh) (na.map (fun n => n.bag.card))
+      (nb.map (fun n => n.bag.card)) S.card ty L L hcna hcnb (by simp; omega_fresh)
     have hfpc := findPathCost_le' (na.map (fun n => n.bag.card)).length (nb.map (fun n => n.bag.card)).length
-      ty.length s L Ly (by simp; omega) (by simp; omega) hrb.2.1
+      ty.length s L Ly (by simp; omega_fresh) (by simp; omega_fresh) hrb.2.1
     have hkids := mergeKids_runs'_rec s L Ly hL hB ka kb tk hka hkb htk hca.2 hcb.2 hrb.2.2
     have hk1 : fMergeKids < B := by have : fMergeKids < 1000 := by decide
-                                    omega
+                                    omega_fresh
     have hk2 : fMergeChain < B := by have : fMergeChain < 1000 := by decide
-                                     omega
+                                     omega_fresh
     have hk3 : fCards < B := by have : fCards < 1000 := by decide
-                                omega
+                                omega_fresh
     have hk4 : fLength < B := by have : fLength < 1000 := by decide
-                                 omega
+                                 omega_fresh
     have hk5 : E1D.fFindPath < B := by have : E1D.fFindPath < 1000 := by decide
-                                       omega
+                                       omega_fresh
     have hcnt := length_le_cntL ka
     have hcntp := cnt_pos (AR.run S na ka)
     have hcm : cMA' s L Ly = fpBound' s L Ly + 600 * (s + 3) ^ 2 + 200 * (s + 1) + 300 := rfl
     have e : cMA' s L Ly * (1 + cntL ka) = cMA' s L Ly + cMA' s L Ly * cntL ka := by ring
-    have hs3 : (s + 3) ≤ (s + 3) ^ 2 := le_pw (by omega) (by omega)
-    have hlen' : ka.length ≤ s := by omega
+    have hs3 : (s + 3) ≤ (s + 3) ^ 2 := le_pw (by omega_fresh) (by omega_fresh)
+    have hlen' : ka.length ≤ s := by omega_fresh
     simp only [cnt]
     rcases hfp' : findPath (na.map (fun n => n.bag.card)) (nb.map (fun n => n.bag.card)) S.card ty with _ | path
     · rw [hfp'] at hfp
@@ -110,14 +111,14 @@ theorem mergeAR_runs'_rec (s L Ly : ℕ) (hL : L ≤ s) (hB : 1000 + 100 * (s + 
       · ev_run
       · rw [e]
         simp only [List.length_map] at *
-        omega
+        omega_fresh
     · rw [hfp'] at hfp
       have hpl := findPath_len hfp'
       simp only [List.length_map] at hpl
       have hmc0 := mergeChain_runs hΔ B s hB na nb hna hnb path none
       have hmc : 250 * (s + 3) * path.length ≤ 500 * (s + 3) ^ 2 := by
         calc 250 * (s + 3) * path.length ≤ 250 * (s + 3) * (2 * (s + 3)) :=
-              Nat.mul_le_mul_left _ (by omega)
+              Nat.mul_le_mul_left _ (by omega_fresh)
           _ = 500 * (s + 3) ^ 2 := by ring
       rcases hks : mergeKids ka kb tk with _ | ks
       · rw [hks] at hkids
@@ -127,7 +128,7 @@ theorem mergeAR_runs'_rec (s L Ly : ℕ) (hL : L ≤ s) (hB : 1000 + 100 * (s + 
         · ev_run
         · rw [e]
           simp only [List.length_map] at *
-          omega
+          omega_fresh
       · rw [hks] at hkids
         refine Runs.mk (hΔ _ _ Δ_mergeAR) ?_
         simp only [mergeAR, hfp', hks, toVal_ar, toVal_ct, Option.map_some, toVal_some, toVal_none]
@@ -135,7 +136,7 @@ theorem mergeAR_runs'_rec (s L Ly : ℕ) (hL : L ≤ s) (hB : 1000 + 100 * (s + 
         · ev_run
         · rw [e]
           simp only [List.length_map] at *
-          omega
+          omega_fresh
 theorem mergeKids_runs'_rec (s L Ly : ℕ) (hL : L ≤ s) (hB : 1000 + 100 * (s + 1) < B) :
     ∀ (ka kb : List AR) (tk : List CT), sz ka ≤ s → sz kb ≤ s → sz tk ≤ s → ARcardL L ka → ARcardL L kb → CT.RBL s Ly tk →
     Runs Δ' B fMergeKids [toVal ka, toVal kb, toVal tk] (toVal (mergeKids ka kb tk))
@@ -145,44 +146,44 @@ theorem mergeKids_runs'_rec (s L Ly : ℕ) (hL : L ≤ s) (hB : 1000 + 100 * (s 
     simp only [mergeKids, cntL, toVal_some, toVal_nil]
     ev_start
     · ev_run
-    · omega
+    · omega_fresh
   | [], [], _ :: _, _, _, _, _, _, _ => by
     refine Runs.mk (hΔ _ _ Δ_mergeKids) ?_
     simp only [mergeKids, cntL, toVal_none]
     ev_start
     · ev_run
-    · omega
+    · omega_fresh
   | [], _ :: _, _, _, _, _, _, _, _ => by
     refine Runs.mk (hΔ _ _ Δ_mergeKids) ?_
     simp only [mergeKids, cntL, toVal_none]
     ev_start
     · ev_run
-    · omega
+    · omega_fresh
   | _ :: _, [], _, _, _, _, _, _, _ => by
     refine Runs.mk (hΔ _ _ Δ_mergeKids) ?_
     simp only [mergeKids, toVal_none]
     ev_start
     · ev_run
-    · omega
+    · omega_fresh
   | _ :: _, _ :: _, [], _, _, _, _, _, _ => by
     refine Runs.mk (hΔ _ _ Δ_mergeKids) ?_
     simp only [mergeKids, toVal_none]
     ev_start
     · ev_run
-    · omega
+    · omega_fresh
   | a :: as, b :: bs, t :: ts, hka, hkb, htk, hca, hcb, hrb => by
-    have ha : sz a ≤ s := by have := sz_head_lt a as; omega
-    have has : sz as ≤ s := by have := sz_tail_lt a as; omega
-    have hb : sz b ≤ s := by have := sz_head_lt b bs; omega
-    have hbs : sz bs ≤ s := by have := sz_tail_lt b bs; omega
-    have ht : sz t ≤ s := by have := sz_head_lt t ts; omega
-    have hts : sz ts ≤ s := by have := sz_tail_lt t ts; omega
+    have ha : sz a ≤ s := by have := sz_head_lt a as; omega_fresh
+    have has : sz as ≤ s := by have := sz_tail_lt a as; omega_fresh
+    have hb : sz b ≤ s := by have := sz_head_lt b bs; omega_fresh
+    have hbs : sz bs ≤ s := by have := sz_tail_lt b bs; omega_fresh
+    have ht : sz t ≤ s := by have := sz_head_lt t ts; omega_fresh
+    have hts : sz ts ≤ s := by have := sz_tail_lt t ts; omega_fresh
     have h1 := mergeAR_runs'_rec s L Ly hL hB a b t ha hb ht hca.1 hcb.1 hrb.1
     have h2 := mergeKids_runs'_rec s L Ly hL hB as bs ts has hbs hts hca.2 hcb.2 hrb.2
     have hk1 : fMergeAR < B := by have : fMergeAR < 1000 := by decide
-                                  omega
+                                  omega_fresh
     have hk2 : fMergeKids < B := by have : fMergeKids < 1000 := by decide
-                                    omega
+                                    omega_fresh
     have hcm : cMA' s L Ly = fpBound' s L Ly + 600 * (s + 3) ^ 2 + 200 * (s + 1) + 300 := rfl
     have e : cMA' s L Ly * (cnt a + cntL as) = cMA' s L Ly * cnt a + cMA' s L Ly * cntL as := by ring
     have hcp := cnt_pos a
@@ -192,7 +193,7 @@ theorem mergeKids_runs'_rec (s L Ly : ℕ) (hL : L ≤ s) (hB : 1000 + 100 * (s 
       simp only [mergeKids, hr, toVal_cons, toVal_none, cntL, List.length_cons]
       ev_start
       · ev_run
-      · rw [e]; omega
+      · rw [e]; omega_fresh
     · rw [hr] at h1
       rcases hrs : mergeKids as bs ts with _ | rs
       · rw [hrs] at h2
@@ -200,13 +201,13 @@ theorem mergeKids_runs'_rec (s L Ly : ℕ) (hL : L ≤ s) (hB : 1000 + 100 * (s 
           List.length_cons]
         ev_start
         · ev_run
-        · rw [e]; omega
+        · rw [e]; omega_fresh
       · rw [hrs] at h2
         simp only [mergeKids, hr, hrs, Option.map_some, toVal_cons, toVal_some, toVal_none, cntL,
           List.length_cons]
         ev_start
         · ev_run
-        · rw [e]; omega
+        · rw [e]; omega_fresh
 end
 
 end proofs
@@ -238,9 +239,9 @@ theorem mergeReal_runs' (E : Ext5 Δ') (Bd : Finset ℕ) (ta tb : RT) (target : 
   have hΔB : E5B.Δ ⊑ Δ' := Ext.trans extB hΔ
   have h1 := E5B.analyze_runs hΔB B E Bd s hBd hB1 ta hta
   have h2 := E5B.analyze_runs hΔB B E Bd s hBd hB1 tb htb
-  have sa := le_trans (E5B.sz_analyze_le Bd ta) (by omega : 5 * sz ta ≤ 5 * s)
-  have sb := le_trans (E5B.sz_analyze_le Bd tb) (by omega : 5 * sz tb ≤ 5 * s)
-  have hm := mergeAR_runs' hΔ B (5 * s) L Ly hL hB2 (analyze Bd ta) (analyze Bd tb) target sa sb (by omega)
+  have sa := le_trans (E5B.sz_analyze_le Bd ta) (by omega_fresh : 5 * sz ta ≤ 5 * s)
+  have sb := le_trans (E5B.sz_analyze_le Bd tb) (by omega_fresh : 5 * sz tb ≤ 5 * s)
+  have hm := mergeAR_runs' hΔ B (5 * s) L Ly hL hB2 (analyze Bd ta) (analyze Bd tb) target sa sb (by omega_fresh)
     (ARcard_analyze L Bd ta hca) (ARcard_analyze L Bd tb hcb) hRB
   have ca := le_trans (cnt_le_sz (analyze Bd ta)) sa
   have t1 : E5B.cA s (E.cKey (6 * s)) * ta.size ≤ E5B.cA s (E.cKey (6 * s)) * s :=
@@ -249,11 +250,11 @@ theorem mergeReal_runs' (E : Ext5 Δ') (Bd : Finset ℕ) (ta tb : RT) (target : 
     Nat.mul_le_mul_left _ (le_trans (size_le_sz tb) htb)
   have t3 : cMA' (5 * s) L Ly * cnt (analyze Bd ta) ≤ cMA' (5 * s) L Ly * (5 * s) := Nat.mul_le_mul_left _ ca
   have hk1 : fMergeAR < B := by have : fMergeAR < 1000 := by decide
-                                omega
+                                omega_fresh
   have hk2 : E5B.fAnalyze < B := by have : E5B.fAnalyze < 1000 := by decide
-                                    omega
+                                    omega_fresh
   have hk3 : E5A.fToRT < B := by have : E5A.fToRT < 1000 := by decide
-                                 omega
+                                 omega_fresh
   have hgoal : mergeReal Bd ta tb target = (mergeAR (analyze Bd ta) (analyze Bd tb) target).map AR.toRT := rfl
   rw [hgoal]
   rcases hr : mergeAR (analyze Bd ta) (analyze Bd tb) target with _ | r
@@ -262,13 +263,13 @@ theorem mergeReal_runs' (E : Ext5 Δ') (Bd : Finset ℕ) (ta tb : RT) (target : 
     simp only [Option.map_none]
     ev_start
     · ev_run
-    · unfold cMergeReal'; omega
+    · unfold cMergeReal'; omega_fresh
   · rw [hr] at hm
     have hsr := sz_mergeAR_le _ _ target r hr
     have hsr' : sz r ≤ 900 * (s * s) := by
-      have : (sz (analyze Bd ta) + sz (analyze Bd tb)) ^ 2 ≤ (10 * s) ^ 2 := Nat.pow_le_pow_left (by omega) 2
+      have : (sz (analyze Bd ta) + sz (analyze Bd tb)) ^ 2 ≤ (10 * s) ^ 2 := Nat.pow_le_pow_left (by omega_fresh) 2
       have e : (10 * s) ^ 2 = 100 * (s * s) := by ring
-      omega
+      omega_fresh
     have hcr := le_trans (cnt_le_sz r) hsr'
     have hrt := E5A.toRT_runs (Ext.trans extA hΔ) B (900 * (s * s)) (by nlinarith) r hsr'
     have t4 : 100 * (900 * (s * s) + 1) * cnt r ≤ 100 * (900 * (s * s) + 1) * (900 * (s * s)) :=
@@ -277,7 +278,7 @@ theorem mergeReal_runs' (E : Ext5 Δ') (Bd : Finset ℕ) (ta tb : RT) (target : 
     simp only [Option.map_some, toVal_some]
     ev_start
     · ev_run
-    · unfold cMergeReal'; omega
+    · unfold cMergeReal'; omega_fresh
 
 /-- cost of `realJoin` -/
 def cRealJoin' (s L Ly Lj cnorm5 cdom ck6 cj : ℕ) : ℕ :=
@@ -296,13 +297,13 @@ theorem realJoin_runs' (E : Ext5 Δ') (X : ExtJ Δ') (kmax : ℕ) (Bd : Finset �
       (toVal (realJoin kmax Bd ta tb target))
       (cRealJoin' s L Ly Lj (E.cNorm (5 * s)) (E.cDom s) (E.cKey (6 * s)) (X.cJ kmax (ta.char Bd) (tb.char Bd))) := by
   have hE1 := Ext.trans extE1 hΔ
-  have hq2 : s + 1 ≤ (s + 1) ^ 2 := le_pw (by omega) (by omega)
+  have hq2 : s + 1 ≤ (s + 1) ^ 2 := le_pw (by omega_fresh) (by omega_fresh)
   have hch1 := E5A.char_runs (Ext.trans extA hΔ) B E Bd ta s hta hBd (by nlinarith)
   have hch2 := E5A.char_runs (Ext.trans extA hΔ) B E Bd tb s htb hBd (by nlinarith)
-  have hjc := X.joinC B kmax (ta.char Bd) (tb.char Bd) hPJ (by omega)
+  have hjc := X.joinC B kmax (ta.char Bd) (tb.char Bd) hPJ (by omega_fresh)
   have hfind := Lib4.find_runs (l4 hE1) B fPredJoin (toVal target) (fun d => CT.domCB d target)
     (fun _ => E.cDom s + 10) (CT.joinC kmax (ta.char Bd) (tb.char Bd))
-    (fun d hd => predJoin_runs hΔ B E target d s (hjs d hd) htg (hPD d hd) (by nlinarith)) (by omega)
+    (fun d hd => predJoin_runs hΔ B E target d s (hjs d hd) htg (hPD d hd) (by nlinarith)) (by omega_fresh)
   simp only [E5.sum_map_const] at hfind
   have hmul : (CT.joinC kmax (ta.char Bd) (tb.char Bd)).length * (E.cDom s + 10) ≤ Lj * (E.cDom s + 10) :=
     Nat.mul_le_mul_right _ hLen
@@ -326,7 +327,7 @@ theorem realJoin_runs' (E : Ext5 Δ') (X : ExtJ Δ') (kmax : ℕ) (Bd : Finset �
     simp only [Option.bind_none]
     ev_start
     · ev_run
-    · unfold cRealJoin'; omega
+    · unfold cRealJoin'; omega_fresh
   · rw [hf] at hfind
     have hdm : d ∈ CT.joinC kmax (ta.char Bd) (tb.char Bd) := List.mem_of_find?_eq_some hf
     have hmr := mergeReal_runs' hΔ B E Bd ta tb d s L Ly hBd hta htb (hjs d hdm) hL hca hcb (hRB d hdm) (by nlinarith)
@@ -334,7 +335,7 @@ theorem realJoin_runs' (E : Ext5 Δ') (X : ExtJ Δ') (kmax : ℕ) (Bd : Finset �
     simp only [Option.bind_some, toVal_some]
     ev_start
     · ev_run
-    · unfold cRealJoin'; omega
+    · unfold cRealJoin'; omega_fresh
 
 
 end proofs

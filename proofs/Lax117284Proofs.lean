@@ -403,6 +403,7 @@ import Lax117284Proofs.McisHard.PortsBasic
 import Lax117284Proofs.McisHard.PortsIndep
 import Lax117284Proofs.McisHard.PortsRegular
 import Lax117284Proofs.McisHard.SatIndepProofs
+import Lax117284Proofs.OmegaFresh
 import Lax117284Proofs.ParentTree
 import Lax117284Proofs.SourceInjectivity
 import Lax117284Proofs.Structural
