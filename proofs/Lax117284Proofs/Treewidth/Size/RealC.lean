@@ -1,6 +1,359 @@
-import Lax117284Proofs.Treewidth.Size.RealB
+import Lax117284Proofs.Treewidth.Chars.Extract
+import Lax117284Proofs.Treewidth.Chars.CountRuns
 import Lax117284Proofs.Treewidth.Size.Plans
 
+/-! ### `Lax117284Proofs.Treewidth.Size.RealA` -/
+
+section
+/-!
+# Size bounds (WP P1), part 7: sizes of real trees (1): the measure `AR.nsz`
+
+`AR.nsz` counts the nodes of `AR.toRT`: `chsz` of the chains (a chain node plus the size of its junk subtrees; an empty chain
+still yields one node) plus the `w` of the kids.
+
+* `toRT_size`      : `(AR.toRT r).size = r.nsz`;
+* `analyze_w_le`   : `(analyze B t).w ≤ t.size` (so `(analyze B t).toRT.size ≤ t.size`).
+-/
+
+namespace Lax117284Proofs.Treewidth.Chars
+
+open Lax117284Proofs.Treewidth.Seq Lax117284Proofs.Treewidth.Trees CT
+
+theorem sizeL_eq' : ∀ ks : List RT, RT.sizeL ks = (ks.map RT.size).sum
+  | [] => rfl
+  | k :: ks => by simp [RT.sizeL, sizeL_eq' ks]
+
+theorem size_node' (X : Finset ℕ) (ks : List RT) : (RT.node X ks).size = 1 + (ks.map RT.size).sum := by
+  simp [RT.size, sizeL_eq']
+
+/-- Size of the junk of a chain node. -/
+def CNode.jsz (n : CNode) : ℕ := (n.junk.map RT.size).sum
+
+/-- Nodes contributed by a chain: one per chain node (at least one), plus the junk. -/
+def chsz (ns : List CNode) : ℕ := max 1 ns.length + (ns.map CNode.jsz).sum
+
+mutual
+/-- The number of nodes of `toRT`. -/
+def AR.nsz : AR → ℕ
+  | .run _ c ks => chsz c + AR.nszL ks
+def AR.nszL : List AR → ℕ
+  | [] => 0
+  | k :: ks => AR.nsz k + AR.nszL ks
+end
+
+theorem AR.nszL_eq : ∀ ks : List AR, AR.nszL ks = (ks.map AR.nsz).sum
+  | [] => rfl
+  | k :: ks => by simp [AR.nszL, AR.nszL_eq ks]
+
+theorem chainToRT_size : ∀ (c : List CNode) (ks : List RT),
+    (AR.chainToRT c ks).size = chsz c + (ks.map RT.size).sum
+  | [], ks => by simp [AR.chainToRT, size_node', chsz]
+  | [n], ks => by
+    simp [AR.chainToRT, size_node', chsz, CNode.jsz, List.sum_append]
+    omega
+  | n :: m :: r, ks => by
+    have ih := chainToRT_size (m :: r) ks
+    simp only [AR.chainToRT, size_node', List.map_append, List.map_cons, List.map_nil, List.sum_append,
+      List.sum_cons, List.sum_nil, ih] 
+    simp only [chsz, List.length_cons, List.map_cons, List.sum_cons, CNode.jsz]
+    omega
+
+mutual
+theorem toRT_size_rec : ∀ r : AR, r.toRT.size = r.nsz
+  | .run S c ks => by
+    rw [AR.toRT_run, chainToRT_size, AR.nsz, ← AR.toRTL_eq, toRTL_size_rec ks]
+theorem toRTL_size_rec : ∀ ks : List AR, ((AR.toRTL ks).map RT.size).sum = AR.nszL ks
+  | [] => rfl
+  | k :: ks => by
+    simp only [AR.toRTL, List.map_cons, List.sum_cons, AR.nszL, toRT_size_rec k, toRTL_size_rec ks]
+end
+
+theorem toRT_size_pair : (type_of% @toRT_size_rec) ∧ (type_of% @toRTL_size_rec) :=
+  ⟨@toRT_size_rec, @toRTL_size_rec⟩
+
+theorem toRT_size : type_of% @toRT_size_rec := toRT_size_pair.1
+
+theorem sum_filter_split {α : Type} (l : List α) (p : α → Bool) (f : α → ℕ) :
+    ((l.filter p).map f).sum + ((l.filter (fun a => !p a)).map f).sum = (l.map f).sum := by
+  induction l with
+  | nil => simp
+  | cons a l ih =>
+    by_cases h : p a = true
+    · simp [List.filter_cons, h, ih.symm]; omega
+    · simp only [Bool.not_eq_true] at h
+      simp [List.filter_cons, h, ih.symm]; omega
+
+theorem sortAR_nsz (S : Finset ℕ) (l : List AR) : ((sortAR S l).map AR.nsz).sum = (l.map AR.nsz).sum := by
+  unfold sortAR
+  exact ((List.mergeSort_perm _ _).map _).sum_eq
+
+theorem analyzeNode_gen (S : Finset ℕ) (X : Finset ℕ) (kids : List (RT × AR)) (pr : RT × AR → Bool)
+    (hk : ∀ p ∈ kids, p.2.nsz ≤ p.1.size) :
+    (match (kids.filter (fun p => !pr p)).map Prod.snd with
+      | [] => AR.run S [⟨X, (kids.filter pr).map Prod.fst⟩] []
+      | [k] => if k.S = S then AR.run S (⟨X, (kids.filter pr).map Prod.fst⟩ :: k.chain) k.kids
+               else AR.run S [⟨X, (kids.filter pr).map Prod.fst⟩] [k]
+      | ks => AR.run S [⟨X, (kids.filter pr).map Prod.fst⟩] (sortAR S ks)).nsz ≤
+      1 + (kids.map (fun p => p.1.size)).sum := by
+  have hsplit := sum_filter_split kids pr (fun p => p.1.size)
+  have hQ : (((kids.filter (fun p => !pr p)).map Prod.snd).map AR.nsz).sum ≤
+      ((kids.filter (fun p => !pr p)).map (fun p => p.1.size)).sum := by
+    rw [List.map_map]
+    apply List.sum_le_sum
+    intro p hp
+    exact hk p (List.mem_of_mem_filter hp)
+  have hJ : ((((kids.filter pr).map Prod.fst).map RT.size).sum) =
+      ((kids.filter pr).map (fun p => p.1.size)).sum := by
+    rw [List.map_map]; rfl
+  split
+  · rename_i hc
+    rw [hc] at hQ
+    simp only [AR.nsz, chsz, CNode.jsz, AR.nszL, List.length_singleton, List.map_singleton, List.sum_singleton,
+      List.sum_nil, List.map_nil] at *
+    omega
+  · rename_i k hc
+    rw [hc] at hQ
+    simp only [List.map_singleton, List.sum_singleton] at hQ
+    rcases k with ⟨S', c, ks'⟩
+    simp only [AR.S, AR.chain, AR.kids]
+    by_cases hS : S' = S
+    · simp only [hS, ↓reduceIte]
+      simp only [AR.nsz, chsz, CNode.jsz, List.length_cons, List.map_cons, List.sum_cons] at *
+      omega
+    · simp only [hS, ↓reduceIte]
+      simp only [AR.nsz, chsz, CNode.jsz, AR.nszL, List.length_singleton, List.map_singleton,
+        List.sum_singleton, add_zero] at *
+      omega
+  · rename_i hne hne1
+    simp only [AR.nsz, chsz, CNode.jsz, List.length_singleton, List.map_singleton, List.sum_singleton,
+      AR.nszL_eq, sortAR_nsz] at *
+    omega
+
+theorem analyze_nsz_le (B : Finset ℕ) : ∀ t : RT, (analyze B t).nsz ≤ t.size := by
+  intro t
+  induction t using RT.ind with
+  | h X ks ih =>
+    rw [analyze_node, size_node']
+    have hk : ∀ p ∈ ks.map (fun k => (k, analyze B k)), p.2.nsz ≤ p.1.size := by
+      intro p hp
+      obtain ⟨k, hk, rfl⟩ := List.mem_map.1 hp
+      exact ih k hk
+    have hks : (ks.map RT.size).sum = ((ks.map (fun k => (k, analyze B k))).map (fun p => p.1.size)).sum := by
+      rw [List.map_map]; rfl
+    rw [hks]
+    exact analyzeNode_gen (X ∩ B) X _ (fun p => p.2.isLeaf && decide (p.2.S ⊆ X ∩ B)) hk
+
+end Lax117284Proofs.Treewidth.Chars
+
+end
+
+/-! ### `Lax117284Proofs.Treewidth.Size.RealB` -/
+
+section
+/-!
+# Size bounds (WP P1), part 8: sizes of real trees (2): `applyPlan`
+
+`planCost` bounds the growth of `AR.nsz` (= size of the reassembled tree) under `applyRun`:
+a first-type cut duplicates one chain node (`dupAfter`), a region plan adds one node per `endAt`, a new branch adds its
+`branchRT` (`chain.length + 1` nodes).  For a plan of `introPlans v N T` the number of `endAt`'s is at most the number of
+leaf runs of `T` (`wcost_le_leaves`: the `endAt`'s of a plan form an antichain of runs).
+-/
+
+namespace Lax117284Proofs.Treewidth.Chars
+
+open Lax117284Proofs.Treewidth.Seq Lax117284Proofs.Treewidth.Trees CT
+
+/-! ## chains -/
+
+theorem chsz_dupAfter_le (i : ℕ) (ns : List CNode) : chsz (dupAfter i ns) ≤ chsz ns + 1 := by
+  unfold dupAfter
+  split
+  · omega
+  · rename_i n hn
+    have h1 : (ns.take (i + 1) ++ [(⟨n.bag, []⟩ : CNode)] ++ ns.drop (i + 1)).length = ns.length + 1 := by
+      simp only [List.length_append, List.length_take, List.length_singleton, List.length_drop]
+      have : i + 1 ≤ ns.length := by
+        have := (List.getElem?_eq_some_iff.1 hn).1; omega
+      omega
+    have h2 : ((ns.take (i + 1) ++ [(⟨n.bag, []⟩ : CNode)] ++ ns.drop (i + 1)).map CNode.jsz).sum =
+        (ns.map CNode.jsz).sum := by
+      have := congrArg (fun l => (l.map CNode.jsz).sum) (List.take_append_drop (i + 1) ns)
+      simp only [List.map_append, List.sum_append] at this ⊢
+      simp [CNode.jsz]
+    unfold chsz
+    rw [h1, h2]
+    omega
+
+theorem sum_jsz_mapIdx_le (g : ℕ → ℕ) : ∀ (ns : List CNode) (f : ℕ → CNode → CNode),
+    (∀ i n, (f i n).jsz ≤ n.jsz + g i) →
+    ((ns.mapIdx f).map CNode.jsz).sum ≤ (ns.map CNode.jsz).sum + ∑ i ∈ Finset.range ns.length, g i
+  | [], f, _ => by simp
+  | n :: r, f, h => by
+    have ih := sum_jsz_mapIdx_le (fun i => g (i + 1)) r (fun i => f (i + 1)) (fun i m => h (i + 1) m)
+    have h0 := h 0 n
+    simp only [List.mapIdx_cons, List.map_cons, List.sum_cons, List.length_cons]
+    rw [Finset.sum_range_succ']
+    omega
+
+theorem chsz_addV_le (v s : ℕ) (e : Option ℕ) (ns : List CNode) : chsz (addV v s e ns) ≤ chsz ns := by
+  unfold addV chsz
+  rw [List.length_mapIdx]
+  refine Nat.add_le_add_left ((sum_jsz_mapIdx_le (fun _ => 0) ns _ ?_).trans (by simp)) _
+  intro i n
+  split_ifs <;> simp [CNode.jsz]
+
+theorem chsz_addJunk_le (x : ℕ) (br : RT) (ns : List CNode) : chsz (addJunk x br ns) ≤ chsz ns + br.size := by
+  unfold addJunk chsz
+  rw [List.length_mapIdx]
+  have := sum_jsz_mapIdx_le (fun i => if i = x then br.size else 0) ns
+    (fun i n => if i = x then ⟨n.bag, n.junk ++ [br]⟩ else n)
+    (by
+      intro i n
+      split_ifs <;> simp [CNode.jsz, List.sum_append])
+  have h2 : ∑ i ∈ Finset.range ns.length, (if i = x then br.size else 0) ≤ br.size := by
+    rw [Finset.sum_ite_eq']
+    split_ifs <;> omega
+  omega
+
+theorem chsz_cutAt_le (y w : List ℕ) (c : Cut) (ns : List CNode) : chsz (cutAt y w c ns).1 ≤ chsz ns + 1 := by
+  cases c with
+  | t1 f => exact chsz_dupAfter_le _ _
+  | t2 f => simp [cutAt]
+
+/-! ## region plans -/
+
+mutual
+/-- The number of `endAt`'s of a region plan. -/
+def wcost : WPlan → ℕ
+  | .endAt _ => 1
+  | .whole ps => wcostL ps
+def wcostL : List (Option WPlan) → ℕ
+  | [] => 0
+  | p :: ps => wcostO p + wcostL ps
+def wcostO : Option WPlan → ℕ
+  | none => 0
+  | some p => wcost p
+end
+
+mutual
+theorem processRun_nsz_le_rec (v : ℕ) (pre : Option Cut) : ∀ (wp : WPlan) (r : AR),
+    (processRun v pre wp r).nsz ≤ r.nsz + (if pre.isSome then 1 else 0) + wcost wp
+  | wp, .run S ns ks => by
+    cases wp with
+    | endAt c =>
+      simp only [processRun, AR.nsz, wcost]
+      rcases pre with _ | c'
+      · simp only [Option.isSome_none, Bool.false_eq_true, if_false]
+        have h1 := chsz_addV_le v 0 (some (cutAt (typical (ns.map fun n : CNode => n.bag.card))
+          (witnesses (ns.map fun n : CNode => n.bag.card)) c ns).2) (cutAt (typical (ns.map fun n : CNode => n.bag.card))
+          (witnesses (ns.map fun n : CNode => n.bag.card)) c ns).1
+        have h2 := chsz_cutAt_le (typical (ns.map fun n : CNode => n.bag.card)) (witnesses (ns.map fun n : CNode => n.bag.card)) c ns
+        omega
+      · simp only [Option.isSome_some, if_true]
+        refine le_trans (Nat.add_le_add_right (chsz_addV_le _ _ _ _) _) ?_
+        have h1 := chsz_cutAt_le (typical (ns.map fun n : CNode => n.bag.card)) (witnesses (ns.map fun n : CNode => n.bag.card)) c' 
+          (cutAt (typical (ns.map fun n : CNode => n.bag.card)) (witnesses (ns.map fun n : CNode => n.bag.card)) c ns).1
+        have h2 := chsz_cutAt_le (typical (ns.map fun n : CNode => n.bag.card)) (witnesses (ns.map fun n : CNode => n.bag.card)) c ns
+        omega
+    | whole ps =>
+      simp only [processRun, AR.nsz, wcost]
+      have h3 := applyKids_nszL_le_rec v ps ks
+      rcases pre with _ | c'
+      · simp only [Option.isSome_none, Bool.false_eq_true, if_false]
+        have h1 := chsz_addV_le v 0 none ns
+        omega
+      · simp only [Option.isSome_some, if_true]
+        refine le_trans (Nat.add_le_add_right (chsz_addV_le _ _ _ _) _) ?_
+        have h1 := chsz_cutAt_le (typical (ns.map fun n : CNode => n.bag.card)) (witnesses (ns.map fun n : CNode => n.bag.card)) c' ns
+        omega
+theorem applyKids_nszL_le_rec (v : ℕ) : ∀ (ps : List (Option WPlan)) (ks : List AR),
+    AR.nszL (applyKids v ps ks) ≤ AR.nszL ks + wcostL ps
+  | [], ks => by simp [applyKids, wcostL]
+  | _ :: _, [] => by simp [applyKids, AR.nszL]
+  | p :: ps, k :: ks => by
+    have h1 := applyOpt_nsz_le_rec v p k
+    have h2 := applyKids_nszL_le_rec v ps ks
+    simp only [applyKids, AR.nszL, wcostL]
+    omega
+theorem applyOpt_nsz_le_rec (v : ℕ) : ∀ (p : Option WPlan) (k : AR), (applyOpt v p k).nsz ≤ k.nsz + wcostO p
+  | none, k => by simp [applyOpt, wcostO]
+  | some p, k => by
+    have := processRun_nsz_le_rec v none p k
+    simpa [applyOpt, wcostO] using this
+end
+
+theorem processRun_nsz_le_pair : (type_of% @processRun_nsz_le_rec) ∧ (type_of% @applyKids_nszL_le_rec) ∧ (type_of% @applyOpt_nsz_le_rec) :=
+  ⟨@processRun_nsz_le_rec, @applyKids_nszL_le_rec, @applyOpt_nsz_le_rec⟩
+
+theorem processRun_nsz_le : type_of% @processRun_nsz_le_rec := processRun_nsz_le_pair.1
+
+/-! ## plans -/
+
+/-- The growth of the reassembled tree under a plan. -/
+def planCost : Plan → ℕ
+  | .att c chain _ => (if c.isSome then 1 else 0) + chain.length + 1
+  | .top pre w => (if pre.isSome then 1 else 0) + wcost w
+
+theorem branchRT_size (v : ℕ) (chain : List (Finset ℕ)) (M : Finset ℕ) :
+    (branchRT v chain M).size = chain.length + 1 := by
+  induction chain with
+  | nil => simp [branchRT, size_node']
+  | cons X chain ih =>
+    have : branchRT v (X :: chain) M = RT.node X [branchRT v chain M] := by simp [branchRT]
+    rw [this, size_node']
+    simp [ih]
+    omega
+
+theorem applyAt_nsz_le (v : ℕ) : ∀ (p : Plan) (r : AR), (applyAt v p r).nsz ≤ r.nsz + planCost p
+  | .att c chain M, .run S ns ks => by
+    simp only [applyAt, AR.nsz, planCost]
+    refine le_trans (Nat.add_le_add_right (chsz_addJunk_le _ _ _) _) ?_
+    rw [branchRT_size]
+    rcases c with _ | ct
+    · simp only [Option.isSome_none, Bool.false_eq_true, if_false]
+      omega
+    · simp only [Option.isSome_some, if_true]
+      have := chsz_cutAt_le (typical (ns.map fun n : CNode => n.bag.card))
+        (witnesses (ns.map fun n : CNode => n.bag.card)) ct ns
+      omega
+  | .top pre w, r => by
+    simpa [applyAt, planCost, add_assoc] using processRun_nsz_le v pre w r
+
+theorem modifyNth_nszL_le {f : AR → AR} {d : ℕ} (hf : ∀ r, (f r).nsz ≤ r.nsz + d) :
+    ∀ (i : ℕ) (ks : List AR), AR.nszL (modifyNth f i ks) ≤ AR.nszL ks + d
+  | _, [] => by simp [modifyNth, AR.nszL]
+  | 0, k :: ks => by
+    have := hf k
+    simp only [modifyNth, AR.nszL]; omega
+  | i + 1, k :: ks => by
+    have := modifyNth_nszL_le hf i ks
+    simp only [modifyNth, AR.nszL]; omega
+
+theorem applyRun_nsz_le (v : ℕ) (p : Plan) : ∀ (path : List ℕ) (r : AR),
+    (applyRun v p path r).nsz ≤ r.nsz + planCost p
+  | [], r => by simpa [applyRun] using applyAt_nsz_le v p r
+  | i :: rest, .run S ns ks => by
+    have := modifyNth_nszL_le (f := applyRun v p rest) (d := planCost p)
+      (fun r => applyRun_nsz_le v p rest r) i ks
+    simp only [applyRun, AR.nsz]
+    omega
+
+/-- **`applyPlan` grows the tree by at most `planCost`.** -/
+theorem applyPlan_size_le (v : ℕ) (N B : Finset ℕ) (path : List ℕ) (p : Plan) (t : RT) :
+    (applyPlan v N B path p t).size ≤ t.size + planCost p := by
+  unfold applyPlan
+  rw [toRT_size]
+  have h1 := applyRun_nsz_le v p path (analyze B t)
+  have h2 := analyze_nsz_le B t
+  omega
+
+end Lax117284Proofs.Treewidth.Chars
+
+end
+
+/-! ### `Lax117284Proofs.Treewidth.Size.RealC` -/
+
+section
 /-!
 # Size bounds (WP P1), part 9: the cost of the plans of `introPlans`
 
@@ -229,3 +582,5 @@ theorem planCost_le_of_mem_introPlans (v : ℕ) (N : Finset ℕ) {b : ℕ} :
 end CT
 
 end Lax117284Proofs.Treewidth.Chars
+
+end
