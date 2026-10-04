@@ -1,0 +1,139 @@
+% copied from the thesis chapter on fairness (content/fairness/fairness.tex, lines 1042-1179)
+\begin{figure}[!hbp]
+    \centering
+    
+\begin{minipage}{0.5\textwidth}% adapt widths of minipages 
+Nodes $\mathcal{X}$:
+\begin{itemize}
+    \item $X_{c_0} = \{ c_0,c^+,c^-\}$
+    \item $\forall i\in \{1,\dots, \ell\}\ :\ X_{S_i} = \{c_0 ,c^+,c^-,c_i \}$
+    \item $\forall v\in V\ :\ X_v = \{c_0 ,c^+,c^-,c_v, c_i \}$
+    \item $\forall u\in N(v)\ :\ X_{v,u} = 
+    \{ c_0,c^+,c^-,c_v, c_{v,u}\}$
+\end{itemize}
+
+Edges $F = F_1\cup F_2 \cup F_3$:
+\begin{itemize}
+    \item $F_1 = \{ (X_{c_0},X_{S_i})\ |\ i\in \{1,\dots,\ell\} \}$
+    \item $F_2 = \{ (X_{S_i},X_{v})\ |\ v \in V_i \}$
+    \item $F_3 = \{(X_v, X_{v,u}) \ |\ v\in V \wedge u \in N(v) \}$
+\end{itemize}
+\end{minipage}%
+\hfill%
+\begin{minipage}{0.5\textwidth}
+
+
+
+\scalebox{.75}{
+
+\tikzset{level 1 concept/.append style={ sibling angle=45,level distance = 45mm}}
+\tikzset{level 2 concept/.append style={ sibling angle=45,level distance = 25mm}}
+\tikzset{level 3 concept/.append style={ sibling angle=45,level distance = 20mm}}
+\tikzset{level 3 unimportant/.append style={ sibling angle=45,level distance = 20mm}}
+
+
+
+
+\begin{tikzpicture}
+
+
+\newcommand{\colorxdb}{black}
+\newcommand{\colorxsb}{black}
+\newcommand{\colorxvb}{black}
+\newcommand{\colorxvub}{black}
+
+
+
+  \path[mindmap,concept color=\colorxdb,text=black,]
+    node[draw=black,circle,fill=white!50,minimum size=.1cm,scale=0.78] {\Huge $\boldsymbol{X_{c_0}}$}
+    [clockwise from=90]
+    % note that `sibling angle' can only be defined in
+    % `level 1 concept/.append style={}'
+    child[level distance=40mm, concept color=\colorxsb] {
+      node[draw=black,circle,fill=white!50,minimum size=.1cm,scale=0.78] {\Huge $\boldsymbol{X_{S_{1}}}$}
+      [clockwise from=115]
+      child[level distance=25mm,sibling angle=25,concept color=\colorxvb] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {}
+          [clockwise from=140]
+          child[level distance=12.5mm,sibling angle=20,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+          child[level distance=12.5mm,sibling angle=20,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+          child[level distance=12.5mm,sibling angle=20,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+      }
+      child[level distance=25mm,sibling angle=25, concept color=\colorxvb] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {}
+          [clockwise from=110.]
+          child[level distance=12.5mm,sibling angle=20,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+          child[level distance=12.5mm,sibling angle=20,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+          child[level distance=12.5mm,sibling angle=20,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+      }
+      child[level distance=25mm,sibling angle=25, concept color=\colorxvb] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {}
+          [clockwise from=80]
+          child[level distance=12.5mm,sibling angle=20,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+          child[level distance=12.5mm,sibling angle=20,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+          child[level distance=12.5mm,sibling angle=20,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+      }
+    }
+    % note that the `concept color' is passed to the `child'(!)
+    child[concept color=\colorxsb] {
+      node[draw=black,circle,fill=white!50,minimum size=.1cm,scale=0.78] {\Huge $\boldsymbol{X_{S_{i}}}$}
+      [clockwise from=90]
+      child[,concept color=\colorxvb] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.78] {\LARGE$\boldsymbol{X_{v_{1}}}$} 
+          [clockwise from=107.5]
+          child[level distance=17.5mm,sibling angle=17.5,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+          child[level distance=17.5mm,sibling angle=17.5,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+          child[level distance=17.5mm,sibling angle=17.5,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+      }
+      child[concept color=\colorxvb] {
+        node[draw=black,circle,fill=white!50,minimum size=.1cm,scale=0.78, clockwise from=90] {\LARGE $\boldsymbol{X_{v_p}}$}
+          [clockwise from=90]
+          child[concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.78] {} }
+          child[level distance=25mm, concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=.78, minimum size = 1.5cm,text width=2.1cm, align=center] {
+        \LARGE$\boldsymbol{X_{v_{p},u}}$
+          } }
+          child[concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=1.03] {} }
+    }
+      child[,concept color=\colorxvb] {
+          node[ draw=black,circle,fill=white!50,minimum size=2.05cm, scale=0.85] {\LARGE $\boldsymbol{X_{v_{n}}} $}
+          [clockwise from=17.5]
+          child[level distance=17.5mm,sibling angle=17.5,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+          child[level distance=17.5mm,sibling angle=17.5,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+          child[level distance=17.5mm,sibling angle=17.5,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+    }
+    }
+    child[level distance=40mm, concept color=\colorxsb] {
+      node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.78] {\huge $\boldsymbol{X_{S_{\ell}}}$}
+      [clockwise from=25]
+      child[level distance=25mm,sibling angle=25,concept color=\colorxvb] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {}
+          [clockwise from=45]
+          child[level distance=12.5mm,sibling angle=20,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+          child[level distance=12.5mm,sibling angle=20,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+          child[level distance=12.5mm,sibling angle=20,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+      }
+      child[level distance=25mm,sibling angle=25,concept color=\colorxvb] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {}
+          [clockwise from=20.]
+          child[level distance=12.5mm,sibling angle=20,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+          child[level distance=12.5mm,sibling angle=20,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+          child[level distance=12.5mm,sibling angle=20,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+      }
+      child[level distance=25mm,sibling angle=25,concept color=\colorxvb] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=.3] {}
+          [clockwise from=-10]
+          child[level distance=12.5mm,sibling angle=20,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+          child[level distance=12.5mm,sibling angle=20,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+          child[level distance=12.5mm,sibling angle=20,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
+      }
+    };
+
+\node[rotate=-80] at (3.4,1.5) {\Huge$\dots$};
+\node[rotate=-10] at (1.65,3.5) {\Huge$\dots$};
+\node[rotate=-10] at (3.8,4.7) {\Large$\dots$};
+\node[rotate=-80] at (4.7,3.75) {\Large$\dots$};
+\node[rotate=-10] at (5.5,6.2) {\large$\dots$};
+\node[rotate=-80] at (6.2,5.5) {\large$\dots$};
+
+
+
+\end{tikzpicture}
+}
+
+\end{minipage}
+\caption{A tree decomposition $(\mathcal{X},F)$ of the overall conflict graph constructed from the instance of \WEQUIJIT. Observe that the width of this decomposition is~$|X_v|-1 = 4$.}
+\label{fig:tw}
+\end{figure}
