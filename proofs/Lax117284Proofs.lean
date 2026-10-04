@@ -26,6 +26,7 @@ import Lax117284Proofs.ClientsILPSize
 import Lax117284Proofs.ClientsWord
 import Lax117284Proofs.Codes
 import Lax117284Proofs.Compose
+import Lax117284Proofs.ComputableBounds
 import Lax117284Proofs.ConflictGraph
 import Lax117284Proofs.Corollary8
 import Lax117284Proofs.Corollary8_Induction
@@ -39,6 +40,7 @@ import Lax117284Proofs.D3Rank
 import Lax117284Proofs.D3Tab
 import Lax117284Proofs.Defs
 import Lax117284Proofs.ExtremeFairness
+import Lax117284Proofs.FptBridge
 import Lax117284Proofs.FromHittingSet
 import Lax117284Proofs.Hardness
 import Lax117284Proofs.IlpClients.Adjugate

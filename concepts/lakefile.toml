@@ -51,5 +51,17 @@ git = "https://github.com/lax-archive/lax-submissions"
 rev = "0503df0eaf4e41104b9a3aa31e3e028b5adf7a0e"
 subDir = "ram-linear-time/concepts"
 
+[[require]]
+name = "Lax496464"
+git = "https://github.com/yuvalyitz/jitflowshop-lax"
+rev = "605f30b327a2385b4617a6e7123975faadca7ebd"
+subDir = "concepts"
+
+[[require]]
+name = "Lax888481"
+git = "https://github.com/yuvalyitz/isem-lax"
+rev = "3cdde85ce7b7eed2938def9b9be0b5434f615c0f"
+subDir = "concepts"
+
 [[lean_lib]]
 name = "Lax117284"

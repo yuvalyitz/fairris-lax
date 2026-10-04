@@ -1,3 +1,4 @@
+import Lax117284Proofs.ComputableBounds
 import Lax117284Proofs.Machine.TwNum4
 import Mathlib.Tactic
 import Lax228581.Treewidth
@@ -977,11 +978,12 @@ theorem fits_num {a b CB EB S c w : ℕ} (ha : 1 ≤ a) (hb : b ≤ CB * a ^ EB)
     have h6 : 7 + S ≤ (7 + S) * a ^ c := Nat.le_mul_of_pos_right _ h4
     nlinarith
 
+set_option maxHeartbeats 2000000 in
 open Classical in
 /-- **The problem is fixed-parameter tractable in the number of days plus the treewidth**, given
 the cited theorem. -/
 theorem fpt_real (hex : ∃ (prog : Program) (c : ℕ), AxStmt prog c) :
-    FPT Lax117284.Theorem4.byDaysAndTreewidth := by
+    FptDecision Lax117284.Theorem4.byDaysAndTreewidth := by
   obtain ⟨prog, c0, hax0⟩ := hex
   have hca : 1 ≤ c0 + 1 := by omega
   have hcc : c0 + 1 + 1 ≤ c0 + 1 + 1 := le_rfl
@@ -992,8 +994,12 @@ theorem fpt_real (hex : ∃ (prog : Program) (c : ℕ), AxStmt prog c) :
   set lay := TwLay.layoutT prog (c0 + 1 + 1) (PLit prog + (c0 + 1) + 1) with hlay
   set S := lay.scalars.length with hS
   set c := Ep + EB + (7 + S + 12 * CB) + 1 with hcdef
-  refine ⟨compileProgram lay (TwMain.mainCom prog (c0 + 1 + 1) (PLit prog + (c0 + 1) + 1)), c,
-    Gp (c0 + 1 + 1) Cp, fun w => ?_⟩
+  have hg : Computable (Gp (c0 + 1 + 1) Cp) := by
+    unfold Gp HB Fm TwPrep.geE
+    bound_computable
+  apply Lax117284Proofs.FptBridge.decision (prog := compileProgram lay
+    (TwMain.mainCom prog (c0 + 1 + 1) (PLit prog + (c0 + 1) + 1))) (c := c) hg
+  intro w
   have hs : Solves lay (TwMain.mainCom prog (c0 + 1 + 1) (PLit prog + (c0 + 1) + 1))
       {x | x ∈ Lax117284.Theorem4.byDaysAndTreewidth.Domain ∧ Fits c w x} fAnsT
       (Bx prog (c0 + 1) (c0 + 1 + 1) (PLit prog + (c0 + 1) + 1))

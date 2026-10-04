@@ -45,12 +45,12 @@ word of an integer program is its two counts, then the `M * N` coefficients of t
 by row, then the `M` right-hand sides (the layout convention of `InstSem.lean`'s `instToks`); reading it back
 is total, missing entries being read as `0`.
 
-The bound of `FPT` is, as everywhere in this development, `c * g k * (|x| + 1) ^ c` with `g` an arbitrary
-function of the parameter. The `g` of the proof is astronomically large (of the order of
-`(n^n)^(2^(n²))` in the number `n` of clients, more than the paper's algorithm needs); it is a
-function of the parameter alone, which is all fixed-parameter tractability asks. Unlike a general
-integer-programming algorithm this one needs no factor polynomial in the word length: all its numbers stay
-below a fixed power of the length of the word plus its largest entry.
+The decision theorem uses the archive's shared fixed-parameter time definition, with a
+computable function of the number of variables and a polynomial in binary input size.
+The verified solver enumerates certificates in a parameter-bounded box and checks the
+reconstructed solutions. Its explicit bound is larger than the bound of the general
+integer-programming algorithm cited in the source.
+
 -/
 
 namespace Lax117284.IlpClients
@@ -132,6 +132,6 @@ def ilpClients : Problem where
   param z := (decodeILP z).N
 
 /-- **Integer programs of the clients' family are fixed-parameter tractable** in the number of variables. -/
-axiom ilpClients_fpt : FPT ilpClients
+axiom ilpClients_fpt : FptDecision ilpClients
 
 end Lax117284.IlpClients

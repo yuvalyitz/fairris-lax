@@ -36,12 +36,12 @@ combination.
 
 # Formalization Notes
 
-The combination of the two halves is not a general closure theorem. An fpt-reduction is only
-required to run where its image fits in the word length, and the image here has a
-parameter-sized table, so on a word much shorter than that table the decision program cannot run
-the algorithm for the integer programs on the image; the proof of `fpt_byClients` handles those words, whose number
-of schedules is bounded by a function of $n$ alone, by enumeration. On every other word it writes
-the integer program and runs the algorithm for the integer programs on it at a word length chosen for that program.
+The public decision and reduction statements use the archive's shared fixed-parameter
+time definitions from `Lax496464`, including computable parameter bounds and binary
+input size. The direct decision program enumerates schedules on short inputs; on the
+remaining inputs it builds the integer program and runs the verified solver at a
+sufficient word length. A proved bridge transfers these machine specifications to
+the shared definitions.
 
 Hardness is stated at treewidth at most $6$ rather than for each $\tau \ge 6$ separately.
 The class of instances of treewidth at most $6$ is contained in that of treewidth at most
@@ -87,18 +87,18 @@ axiom uniform_treewidth_npHard :
 
 /-- **Theorem 4, second bullet.** The problem is fixed-parameter tractable with respect to
 the number of days plus the treewidth of the overall conflict graph. -/
-axiom fpt_byDaysAndTreewidth : FPT byDaysAndTreewidth
+axiom fpt_byDaysAndTreewidth : FptDecision byDaysAndTreewidth
 
 /-- **Theorem 4, third bullet, the reduction.** The problem parameterized by the number of
 clients fpt-reduces to the feasibility of the integer programs of the family `IlpClients.ilpClients`,
 parameterized by the number of variables: the integer program of Theorem 21 of the source, with one
 variable per type of day and set of clients and one slack per client, `2 ^ (n² + n) + n` variables in
 all, computed by a word RAM program. -/
-axiom byClients_fptReduces_ilp : byClients ≤fpt IlpClients.ilpClients
+axiom byClients_fptReduces_ilp : FptReduces byClients IlpClients.ilpClients
 
 /-- **Theorem 4, third bullet.** The problem is fixed-parameter tractable with respect to
 the number of clients: by the reduction `byClients_fptReduces_ilp` and the algorithm for the
 integer programs of the family, `IlpClients.ilpClients_fpt`. -/
-axiom fpt_byClients : FPT byClients
+axiom fpt_byClients : FptDecision byClients
 
 end Lax117284.Theorem4

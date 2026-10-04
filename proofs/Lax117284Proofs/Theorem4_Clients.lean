@@ -12,6 +12,27 @@ namespace Lax117284Proofs.Theorem4Clients
 open Lax808846Proofs.Transfer Lax808846.Ram Lax808846.RamComputes Lax808846Proofs.Compile
 open Lax117284.InstanceEncoding Lax117284.ParameterizedComplexity Lax117284.Scheduling
 open Lax117284Proofs.Machine.ClMain
+open Lax117284Proofs.ClientsILP
+
+set_option maxHeartbeats 2000000 in
+set_option maxRecDepth 10000 in
+theorem computable_Gt (P : Program) (c' c1 : ℕ) (g' : ℕ → ℕ)
+    (hg' : Computable g') : Computable (Gt P c' g' c1) := by
+  have hn : Computable nN := by
+    unfold nN nV nT nZ
+    bound_computable
+  have hcomp := hg'.comp hn
+  have hb : Computable Gb := by
+    unfold Gb Q
+    bound_computable
+  exact Primrec.nat_add.to_comp.comp
+    (Primrec.nat_add.to_comp.comp
+      (Primrec.nat_add.to_comp.comp (Computable.const _)
+        (Primrec.nat_mul.to_comp.comp
+          (Primrec.nat_mul.to_comp.comp (Computable.const _) hcomp) (Computable.const _)))
+      (Computable.const _))
+    (Primrec.nat_add.to_comp.comp
+      (Primrec.nat_mul.to_comp.comp (Computable.const 10) hb) (Computable.const 1))
 
 theorem param_eq {x : List ℕ} (hx : x ∈ UniformInstances) :
     Lax117284.Theorem4.byClients.param x = x.getD 0 0 := by
@@ -23,6 +44,7 @@ theorem param_eq {x : List ℕ} (hx : x ∈ UniformInstances) :
   rw [h1, Lax117284Proofs.Injectivity.decode_eq hy]
   exact hx0.symm
 
+set_option maxHeartbeats 2000000 in
 open Classical in
 open Lax117284.IlpClients (decodeILP ilpClients) in
 /--
@@ -44,8 +66,12 @@ the same for every word length. If the word is too short, the number of schedule
 function of `n` alone, and the program enumerates them. A parameter above `m` is answered `no`
 at once when there is a client. No result is cited.
 -/
-theorem fpt_byClients : FPT Lax117284.Theorem4.byClients := by
-  obtain ⟨P, c', g', hD⟩ := Lax117284Proofs.Machine.Ilp.ilpClients_fpt_proved
+theorem fpt_byClients : FptDecision Lax117284.Theorem4.byClients := by
+  obtain ⟨P, c', g', hg', hD⟩ : ∃ (P : Program) (c' : ℕ) (g' : ℕ → ℕ),
+      Computable g' ∧ Decides ilpClients P c' g' :=
+    ⟨compileProgram Lax117284Proofs.Machine.Ilp.layoutI Lax117284Proofs.Machine.Ilp.ilpCom,
+      Lax117284Proofs.Machine.Ilp.cI, Lax117284Proofs.Machine.Ilp.gI,
+      Lax117284Proofs.Machine.Ilp.computable_gI, Lax117284Proofs.Machine.Ilp.ilpClients_machine⟩
   set c1 := c' + 1 with hc1def
   have hc1 : c1 = c' + 1 := rfl
   have hc1' : 1 ≤ c1 := by omega
@@ -68,7 +94,10 @@ theorem fpt_byClients : FPT Lax117284.Theorem4.byClients := by
   have hsol := solves (P := P) (c' := c') (c1 := c1) (g' := g') hc1 hOr
   set S := (layoutF P c1).scalars.length with hS
   set c := 2 + c' + c' * c' + (10 * C0 P c1 + S + 14) with hcdef
-  refine ⟨compileProgram (layoutF P c1) (mainCom P c1), c, Gt P c' g' c1, fun w => ?_⟩
+  have hg := computable_Gt P c' c1 g' hg'
+  apply Lax117284Proofs.FptBridge.decision
+    (prog := compileProgram (layoutF P c1) (mainCom P c1)) (c := c) hg
+  intro w
   have hs : Solves (layoutF P c1) (mainCom P c1)
       {x | x ∈ Lax117284.Theorem4.byClients.Domain ∧ Fits c w x} fAns (Bx P c1) (Kx P c' g' c1) :=
     ⟨hsol.ok, fun x hx => hsol.inp x hx.1, fun x hx => hsol.run x hx.1⟩

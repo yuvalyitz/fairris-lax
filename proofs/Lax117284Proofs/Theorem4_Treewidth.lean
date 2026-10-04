@@ -36,7 +36,7 @@ small width in time `2^{O(w^3)}` times a polynomial
 (`Lax117284.Bodlaender.niceDecomposition_computable`) is proved, in `BodlaenderProved.lean`, from
 its proof in lax-689794.
 -/
-theorem fpt_byDaysAndTreewidth : FPT Lax117284.Theorem4.byDaysAndTreewidth := by
+theorem fpt_byDaysAndTreewidth : FptDecision Lax117284.Theorem4.byDaysAndTreewidth := by
   obtain ⟨prog, c, h⟩ := Lax117284Proofs.BodlaenderProved.niceDecomposition_computable_proved
   exact TwFinal.fpt_real ⟨prog, c, h⟩
 

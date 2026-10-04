@@ -125,5 +125,11 @@ git = "https://github.com/yuvalyitz/tovey-lax"
 rev = "ca0635f35fd64dde0d628f3060c3dc537ea7f44f"
 subDir = "proofs"
 
+[[require]]
+name = "Lax496464Proofs"
+git = "https://github.com/yuvalyitz/jitflowshop-lax"
+rev = "605f30b327a2385b4617a6e7123975faadca7ebd"
+subDir = "proofs"
+
 [[lean_lib]]
 name = "Lax117284Proofs"

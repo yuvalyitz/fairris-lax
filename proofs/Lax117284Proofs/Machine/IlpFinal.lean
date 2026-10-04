@@ -1,3 +1,4 @@
+import Lax117284Proofs.ComputableBounds
 import Lax117284Proofs.Machine.IlpXv
 import Lax117284Proofs.Machine.ClMainOk
 import Lax117284Proofs.IlpClientsBridge
@@ -1856,10 +1857,19 @@ theorem time_bound {x : List ℕ} (hx : x ∈ Lax117284.IlpClients.ilpClients.Do
   calc gI (x.getD 0 0) ≤ cI * gI (x.getD 0 0) := Nat.le_mul_of_pos_left _ h2
     _ ≤ cI * gI (x.getD 0 0) * (x.length + 1) ^ cI := Nat.le_mul_of_pos_right _ h1
 
+set_option maxHeartbeats 5000000 in
+set_option maxRecDepth 10000 in
+theorem computable_gI : Computable gI := by
+  have hf : Computable Kfam := by
+    unfold Kfam Kbig Ksearch Kturn Keval Rd Dn Kn zLen nM nN nV nT nZ
+    bound_computable
+  have hs := (Lax117284Proofs.FptBridge.computable_sum hf).comp
+    (Primrec.nat_add.to_comp.comp Computable.id (Computable.const 1))
+  exact Primrec.nat_add.to_comp.comp
+    (Primrec.nat_mul.to_comp.comp (Computable.const 10)
+      (Primrec.nat_add.to_comp.comp (Computable.const 100) hs)) (Computable.const 1)
+
 /--
----
-conclusion: Lax117284.IlpClients.ilpClients_fpt
----
 The integer programs of the family are solved by a word RAM program that reads the word, with `N`
 variables and `M` constraints, and decides at once whether it is the program `a x = b` of one variable
 (the fixed word `[1, 1, 0, 1]` and the program of no client), which it solves by a division. Otherwise
@@ -1875,8 +1885,10 @@ the kernel bound of the family by Siegel's lemma, the bound `n` on the number of
 soundness of the test. Every number is at most a fixed power of the length of the word plus its largest
 entry, so the running time is a function of the number of variables alone times a constant.
 -/
-theorem ilpClients_fpt_proved : Lax117284.ParameterizedComplexity.FPT Lax117284.IlpClients.ilpClients := by
-  refine ⟨compileProgram layoutI ilpCom, cI, gI, fun w => ?_⟩
+theorem ilpClients_machine :
+    Lax117284.ParameterizedComplexity.Decides Lax117284.IlpClients.ilpClients
+      (compileProgram layoutI ilpCom) cI gI := by
+  intro w
   have hs : Solves layoutI ilpCom
       {x | x ∈ Lax117284.IlpClients.ilpClients.Domain ∧ Lax117284.ParameterizedComplexity.Fits cI w x}
       fAns Bx Kx :=
@@ -1888,6 +1900,16 @@ theorem ilpClients_fpt_proved : Lax117284.ParameterizedComplexity.FPT Lax117284.
     exact time_bound hx
 
 end
+
+/--
+---
+conclusion: Lax117284.IlpClients.ilpClients_fpt
+---
+The verified solver satisfies the archive's shared fixed-parameter time definition.
+-/
+theorem ilpClients_fpt_proved :
+    Lax117284.ParameterizedComplexity.FptDecision Lax117284.IlpClients.ilpClients :=
+  Lax117284Proofs.FptBridge.decision computable_gI ilpClients_machine
 
 end Lax117284Proofs.Machine.Ilp
 

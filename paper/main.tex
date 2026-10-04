@@ -122,11 +122,15 @@ graph}~$G$ is the union, over all days, of the daily conflict graphs; its \emph{
 A tree decomposition of a graph is a tree of bags of vertices, every vertex and every edge
 in some bag, the bags containing a fixed vertex forming a connected subtree; its width is
 the largest bag size minus one, and the treewidth of a graph is the least width of a tree
-decomposition of it. Bodlaender's algorithm finds one of minimum width, if it exists
-within a given bound, in time~$2^{\bigO(\tau^3)}\cdot\mathrm{poly}$.
+decomposition of it. Given a width bound~$w$, Bodlaender's algorithm finds a tree
+decomposition of width at most~$w$ or determines that none exists, in
+time~$2^{\bigO(w^3)}\cdot\mathrm{poly}$.
 % lax end
 An algorithm is \emph{fixed-parameter tractable} (FPT) for a parameter~$\kappa$ if it runs
-in~$f(\kappa)\cdot n^{\bigO(1)}$ time for some computable~$f$.
+in~$f(\kappa)\cdot N^{\bigO(1)}$ time for some computable~$f$, where~$N$
+is the binary input size. We use the shared fixed-parameter time definition
+from the archive; the structural parameter~$m+\tau$ need not itself be
+computed in polynomial time.
 
 \section{The Fairness Parameter}
 \label{sec:k}

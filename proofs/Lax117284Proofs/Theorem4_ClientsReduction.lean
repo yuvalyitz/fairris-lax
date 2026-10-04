@@ -1,3 +1,4 @@
+import Lax117284Proofs.ComputableBounds
 import Lax117284.Theorem4
 import Lax117284.IlpClients
 import Lax117284Proofs.Machine.ClRedSpec
@@ -153,9 +154,6 @@ theorem time_le (hx : x ∈ UniformInstances) :
 /-! ### The theorem -/
 
 /--
----
-conclusion: Lax117284.Theorem4.byClients_fptReduces_ilp
----
 The reduction is the map that sends the word of an instance with `n` clients, `m` days and
 parameter `k` to the word of the integer program of Theorem 21 of the source (`zList`): one
 variable per pair of a type of day (a conflict relation on the clients) and a set of clients, which
@@ -173,9 +171,10 @@ entries of the word and of its image, which fit into the word length by the fitt
 on both. Correctness is the equivalence of the integer program with the existence of a `k`-fair
 schedule (`zList_feasible_iff`), which holds when `k ≤ m` or there is no client.
 -/
-theorem byClients_fptReduces_ilp :
-    Lax117284.Theorem4.byClients ≤fpt Lax117284.IlpClients.ilpClients := by
-  refine ⟨fRed, compileProgram layoutR redCom, cR, gR, nN, ?_, ?_, ?_, ?_⟩
+theorem machine_reduction : MachineReduction
+    Lax117284.Theorem4.byClients Lax117284.IlpClients.ilpClients
+    fRed (compileProgram layoutR redCom) cR gR nN := by
+  refine ⟨?_, ?_, ?_, ?_⟩
   · -- the image is a word of the family (or the fixed word)
     rintro x ⟨I, k, hdec⟩
     rw [fRed_eq hdec]
@@ -215,5 +214,51 @@ theorem byClients_fptReduces_ilp :
       rw [param_eq hx]
       show 10 * KR x + 1 ≤ _
       exact time_le hx
+
+/--
+---
+conclusion: Lax117284.Theorem4.byClients_fptReduces_ilp
+---
+The verified reduction satisfies the archive's shared FPT-reduction definition.
+-/
+theorem byClients_fptReduces_ilp :
+    FptReduces Lax117284.Theorem4.byClients Lax117284.IlpClients.ilpClients := by
+  have hr := machine_reduction
+  have hn : Computable nN := by
+    unfold nN nV nT nZ
+    bound_computable
+  have hg : Computable gR := by
+    unfold gR zLen nM nN nV nT nZ
+    bound_computable
+  refine ⟨fRed, ⟨hr.maps_domain, hr.correct⟩, ⟨nN, hn, hr.param_le⟩, ?_⟩
+  apply Lax117284Proofs.FptBridge.of_machine hg hr.time
+  refine ⟨fun n => zLen n + 2, 1, ?_, ?_⟩
+  · unfold zLen nM nN nV nT nZ
+    bound_computable
+  · intro x hx v hv
+    obtain ⟨I, k, hdec⟩ := hx
+    have hp : Lax117284.Theorem4.byClients.param x = I.clients := by
+      show (decode x.dropLast).clients = _
+      rw [decode_dropLast hdec]
+    rw [hp, pow_one]
+    change v < 2 ^ ((zLen I.clients + 2) * (Lax759944.BinaryWordEncoding.bitSize x + 1))
+    have hm : I.days < 2 ^ Lax759944.BinaryWordEncoding.bitSize x := by
+      rw [← ClientsWord.x1 hdec]
+      have hl := ClientsWord.len_eq hdec
+      exact Lax496464Proofs.WHierarchy.Machine.SizeFacts.lt_two_pow_bitSize
+        (by rw [List.getD_eq_getElem _ _ (by omega : 1 < x.length)]; exact List.getElem_mem _)
+    have hz : zLen I.clients < 2 ^ ((zLen I.clients + 2) * (Lax759944.BinaryWordEncoding.bitSize x + 1)) :=
+      Nat.lt_two_pow_self.trans_le (Nat.pow_le_pow_right (by omega) (by nlinarith))
+    have hm' : I.days < 2 ^ ((zLen I.clients + 2) * (Lax759944.BinaryWordEncoding.bitSize x + 1)) :=
+      hm.trans_le (Nat.pow_le_pow_right (by omega) (by nlinarith))
+    rw [fRed_eq hdec] at hv
+    unfold fI at hv
+    split_ifs at hv
+    · simp only [List.mem_cons, List.not_mem_nil, or_false] at hv
+      have hpos : 1 < 2 ^ ((zLen I.clients + 2) * (Lax759944.BinaryWordEncoding.bitSize x + 1)) :=
+        (by norm_num : 1 < 2 ^ 1).trans_le (Nat.pow_le_pow_right (by omega) (by nlinarith))
+      rcases hv with rfl | rfl | rfl | rfl <;> omega
+    · have hle := mem_zList_le I k hv
+      exact hle.trans_lt (max_lt hz hm')
 
 end Lax117284Proofs.Theorem4ClientsReduction
