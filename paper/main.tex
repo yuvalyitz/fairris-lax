@@ -7,6 +7,7 @@
 \usepackage{amsthm,amsmath,amssymb,amsfonts}
 \usepackage{mathtools}
 \usepackage{booktabs}
+\usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{subcaption}
 \usepackage{ifthen}
@@ -70,6 +71,10 @@ inside the dummy client's interval, preserving the conflict graph needed for the
 treewidth bound. A reduction from \SAT\ establishes the required hardness of
 \textsc{Multicoloured Independent Set} on regular instances. This note presents the
 statements in the notation of~\cite{HHIMS}, with links to their Lean counterparts.
+For completeness, the supporting results of Bodlaender and Kloks on finding nice tree
+decompositions of bounded width are also formalized. This general graph algorithm
+development goes beyond the scheduling scope of the project and supplies the
+decompositions used by its scheduling algorithm.
 \end{abstract}
 
 \section{Introduction}
@@ -171,7 +176,7 @@ schedule exists. The formalization uses its verified polynomial-time 2-SAT algor
 
 % lax begin Lax117284.Theorem2
 \setcounter{theorem}{1}
-\begin{theorem}
+\begin{theorem}[Hardness]
 \label{thm:2hard}
 \DDEQUIJIT\ is NP-hard.
 \end{theorem}
@@ -196,7 +201,7 @@ client~$j$, has a matching saturating every job vertex.
 
 % lax begin Lax117284Proofs.Theorem2UnitP.uniform_unitP_mem_P
 \setcounter{theorem}{1}
-\begin{theorem}
+\begin{theorem}[Tractability]
 \label{thm:2trac}
 \UEQUIJIT\ is solved in polynomial time, by \Cref{thm:10} and a maximum bipartite matching
 algorithm.
@@ -249,7 +254,7 @@ coincide.
 
 % lax begin Lax117284.Theorem4
 \setcounter{theorem}{3}
-\begin{theorem}
+\begin{theorem}[Bounded-Treewidth Hardness]
 \label{thm:4a}
 \EQUIJIT\ is NP-hard on instances whose overall conflict graph has treewidth at most~$6$, and hence under any fixed treewidth upper bound of at least~$6$.
 \end{theorem}
@@ -321,7 +326,7 @@ great-grandchild per neighbour~$u$ of~$v$ replacing~$c_i$ with~$c_{v,u}$. Thus e
 \setcounter{lemma}{14}
 \begin{lemma}
 \label{lem:15}
-\WEQUIJIT reduces in polynomial time to
+\WEQUIJIT\ reduces in polynomial time to
 \EQUIJIT, raising the treewidth of the overall conflict
 graph by at most~$2$.
 \end{lemma}
@@ -379,7 +384,7 @@ graph of an instance.
 
 % lax begin Lax117284Proofs.TreewidthReal.fpt_byDaysAndTreewidth
 \setcounter{theorem}{3}
-\begin{theorem}
+\begin{theorem}[Days and Treewidth]
 \label{thm:4b}
 \EQUIJIT\ is fixed-parameter tractable with respect to~$m+\tau$.
 \end{theorem}
@@ -392,7 +397,7 @@ fixed-parameter tractability; no sharper running-time bound is asserted here.
 
 % lax begin Lax117284Proofs.Theorem4Clients.fpt_byClients
 \setcounter{theorem}{3}
-\begin{theorem}
+\begin{theorem}[Number of Clients]
 \label{thm:4c}
 \EQUIJIT\ is fixed-parameter tractable with respect to the number~$n$ of clients.
 \end{theorem}

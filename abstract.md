@@ -1,7 +1,5 @@
-Each of $n$ clients submits one job on every one of $m$ days. A job has a processing time
-and a due date, and — the schedule being just-in-time — occupies exactly the interval
-between them, so that on any single day the jobs a machine can accept are the ones whose
-intervals are pairwise disjoint. The objective is fairness rather than throughput: every
+Each of $n$ clients submits one job on every one of $m$ days. A job with processing time $p$ and due date $d$ occupies exactly the interval
+$(d-p,d]$. On each day, a machine can accept jobs whose intervals are pairwise disjoint. The objective is fairness rather than throughput: every
 client must be served on at least $k$ of the $m$ days. This submission formalizes the
 theorems of Heeger, Hermelin, Itzhaki, Molter and Shabtay on this problem,
 $1 \mid \mathrm{rep} \mid \min_j \sum_i Z_{i,j}$.
@@ -33,3 +31,8 @@ required by the treewidth argument. On each gadget day, the dummy client's inter
 covers a region containing a separate, disjoint slot for every inactive client. This
 preserves the blocking argument without introducing conflicts between inactive clients.
 The concept pages specify the construction and its tree decomposition.
+
+For completeness, the submission also formalizes the supporting results of Bodlaender
+and Kloks on finding nice tree decompositions of bounded width. This general graph
+algorithm development goes beyond the scheduling scope of the project and supplies
+the decompositions used by its scheduling algorithm.

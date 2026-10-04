@@ -1,31 +1,29 @@
 % copied from the thesis chapter on fairness (content/fairness/fairness.tex, lines 1204-1351)
-\begin{figure}[!hbp]
+\begin{figure}[t]
+\centering\scalebox{0.8}{\begin{minipage}{\textwidth}%
 \centering
 \begin{subfigure}{0.8\textwidth}
 \begin{center}
+\resizebox{\linewidth}{!}{%
 \begin{tikzpicture}
 
     \def\dmax{5.5}
     \def\eps{.1}
-    % main axis
     \draw[thick,->] (0,0) -- (13.5,0) node[anchor=north west] {};
-    % I dashed borders
     \draw[line width=0.1, dashed]
     (\dmax,-.) -- (\dmax,2.2) node[anchor=north] {};
     \node at (({\dmax}, -.5) {$d_{\max}$};
     \draw[line width=0.1, dashed]
     (0.5,-.) -- (0.5,2.2) node[anchor=north] {};
-    \node at (({11.}, -.5) {$d_{\max}+n$};
+    \node at (({11.}, -.5) {$d_{\max}+n+1$};
     
     \draw[line width=0.1, dashed]
     (11.,-.) -- (11.,2.2) node[anchor=north] {};
 
-    % I
     \draw[line width=.75, >-<]
   ({0.5+\eps}, 2.) -- ({\dmax-\eps}, 2.) node[anchor=north west] {};
   \node at (({\dmax*0.5+\eps*0.5}, 2.2) {The $i$-th day of $\mathcal{I}$};
     
-    % I intervals
 
     \node at (({\dmax*0.5+0.25}, 1.1) {$\dots$};
   \draw[line width=1, |-|]
@@ -60,44 +58,41 @@
 
    \draw[line width=1, |-|]
   (\dmax+\eps, 1.3) -- ({11.-\eps}, 1.3) node[anchor=north west] {};
-  \node at (({8.5}, 1.6) {$b^+$};
+  \node at (({8.5}, 1.6) {$c^+$};
    \draw[line width=1, |-|]
   (\dmax+\eps, .5) -- ({11.-\eps}, .5) node[anchor=north west] {};
-  \node at (({8.5}, .7) {$b^-$};
+  \node at (({8.5}, .7) {$c^-$};
   
-    \end{tikzpicture}
+    \end{tikzpicture}}
     \caption{When $1\leq i\leq \q$, the jobs of the original clients have the same intervals as in  the $i$-th day of $\mathcal{I}$.}
     \end{center}
     \end{subfigure}
 
   
-% \end{tikzpicture}
  \begin{subfigure}{0.8\textwidth}
         \begin{center}
-            \begin{tikzpicture}
+            \resizebox{\linewidth}{!}{%
+\begin{tikzpicture}
 
                  \def\dmax{5.5}
     \def\eps{.1}
-    % main axis
     \draw[thick,->] (0,0) -- (13.5,0) node[anchor=north west] {};
-    % I dashed borders
     \draw[line width=0.1, dashed]
     (\dmax,-.) -- (\dmax,2.2) node[anchor=north] {};
     \node at (({\dmax}, -.5) {$d_{\max}$};
-    \node at (({11.}, -.5) {$d_{\max}+n$};
+    \node at (({11.}, -.5) {$d_{\max}+n+1$};
     \draw[line width=0.1, dashed]
     (11.,-.) -- (11.,2.2) node[anchor=north] {};
 
     
    \draw[line width=1, |-|]
   (\dmax+\eps, 1.3) -- ({11.-\eps}, 1.3) node[anchor=north west] {};
-  \node at (({8.5}, 1.6) {$b^+$};
+  \node at (({8.5}, 1.6) {$c^+$};
    \draw[line width=1, |-|]
   (\dmax+\eps, .5) -- ({11.-\eps}, .5) node[anchor=north west] {};
-  \node at (({8.5}, .7) {$b^-$};
+  \node at (({8.5}, .7) {$c^-$};
 
 
-% Intervals over b^- b^+
 \foreach \x/\i in
     {
         1/1,2/3,3/1
@@ -118,7 +113,6 @@
 
     }  
 
-% Intervals after b^- b^+
 \foreach \x/\i in
     {
         1/1,2/3,3/1
@@ -140,10 +134,11 @@
     }  
     
    
-\end{tikzpicture}
-\caption{When $\q< i\leq2\q$ let the jobs of original clients either intersect the jobs of both $b^-$ and $b^+$  (for $\{\ c\ |\ i-\q \leq k_c\ \}$) \textit{or} intersect no jobs at all (for $\{\ c\ |\ i-\q > k_c\ \}$).}
+\end{tikzpicture}}
+\caption{When $\q< i\leq2\q$ let the jobs of original clients either intersect the jobs of both $c^-$ and $c^+$  (for $\{\ c\ |\ i-\q \leq k_c\ \}$) \textit{or} intersect no jobs at all (for $\{\ c\ |\ i-\q > k_c\ \}$).}
 \end{center}
 \end{subfigure}
+\end{minipage}}
 \caption{An intersection model of the $i$-th day's jobs.}
 \label{fig:reduction-unweighted}
 \end{figure}

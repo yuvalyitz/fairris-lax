@@ -1,5 +1,6 @@
 % copied from the thesis chapter on fairness (content/fairness/fairness.tex, lines 1042-1179)
-\begin{figure}[!hbp]
+\begin{figure}[t]
+\centering\scalebox{0.8}{\begin{minipage}{\textwidth}%
     \centering
     
 \begin{minipage}{0.5\textwidth}% adapt widths of minipages 
@@ -7,7 +8,7 @@ Nodes $\mathcal{X}$:
 \begin{itemize}
     \item $X_{c_0} = \{ c_0,c^+,c^-\}$
     \item $\forall i\in \{1,\dots, \ell\}\ :\ X_{S_i} = \{c_0 ,c^+,c^-,c_i \}$
-    \item $\forall v\in V\ :\ X_v = \{c_0 ,c^+,c^-,c_v, c_i \}$
+    \item $\forall v\in V_i\ :\ X_v = \{c_0 ,c^+,c^-,c_v, c_i \}$
     \item $\forall u\in N(v)\ :\ X_{v,u} = 
     \{ c_0,c^+,c^-,c_v, c_{v,u}\}$
 \end{itemize}
@@ -24,7 +25,7 @@ Edges $F = F_1\cup F_2 \cup F_3$:
 
 
 
-\scalebox{.75}{
+\resizebox{\linewidth}{!}{
 
 \tikzset{level 1 concept/.append style={ sibling angle=45,level distance = 45mm}}
 \tikzset{level 2 concept/.append style={ sibling angle=45,level distance = 25mm}}
@@ -47,8 +48,6 @@ Edges $F = F_1\cup F_2 \cup F_3$:
   \path[mindmap,concept color=\colorxdb,text=black,]
     node[draw=black,circle,fill=white!50,minimum size=.1cm,scale=0.78] {\Huge $\boldsymbol{X_{c_0}}$}
     [clockwise from=90]
-    % note that `sibling angle' can only be defined in
-    % `level 1 concept/.append style={}'
     child[level distance=40mm, concept color=\colorxsb] {
       node[draw=black,circle,fill=white!50,minimum size=.1cm,scale=0.78] {\Huge $\boldsymbol{X_{S_{1}}}$}
       [clockwise from=115]
@@ -71,7 +70,6 @@ Edges $F = F_1\cup F_2 \cup F_3$:
           child[level distance=12.5mm,sibling angle=20,concept color=\colorxvub] { node[draw=black,circle,fill=white!50,minimum size=.1cm, scale=0.3] {} }
       }
     }
-    % note that the `concept color' is passed to the `child'(!)
     child[concept color=\colorxsb] {
       node[draw=black,circle,fill=white!50,minimum size=.1cm,scale=0.78] {\Huge $\boldsymbol{X_{S_{i}}}$}
       [clockwise from=90]
@@ -134,6 +132,7 @@ Edges $F = F_1\cup F_2 \cup F_3$:
 }
 
 \end{minipage}
+\end{minipage}}
 \caption{A tree decomposition $(\mathcal{X},F)$ of the overall conflict graph constructed from the instance of \WEQUIJIT. Observe that the width of this decomposition is~$|X_v|-1 = 4$.}
 \label{fig:tw}
 \end{figure}
