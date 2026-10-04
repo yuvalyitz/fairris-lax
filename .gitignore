@@ -19,3 +19,6 @@ lake-manifest.json
 .claude/
 .codex/
 .agents/
+
+# Internal working notes are kept outside the submission.
+/notes/

@@ -23,7 +23,9 @@ fixed-parameter tractable in the number of variables: `ilpClients_fpt`. The matr
 only the right-hand side (the number `cnt t` of days of each type `t` and the number `B` of days a
 client may go unserved) is free. The reduction of the problem of the clients to this problem is
 `Theorem4.byClients_fptReduces_ilp`, and `ilpClients_fpt` is proved in the proofs package, by a
-guess-and-verify algorithm specific to these matrices, not cited.
+certificate-enumeration algorithm specific to these matrices. The search space depends
+only on the number of clients; each certificate is decoded using the right-hand sides,
+and the resulting assignment is checked.
 
 # Formalization Notes
 

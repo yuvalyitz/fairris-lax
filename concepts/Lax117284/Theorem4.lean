@@ -14,8 +14,8 @@ type: theorem
 * is fixed-parameter tractable with respect to $m + \tau$,
 * and is fixed-parameter tractable with respect to the number $n$ of clients.
 
-Hardness at constant treewidth holds already at $\tau = 6$, and therefore at every larger
-constant: it is obtained from Multicoloured Independent Set through the per-client problem,
+Hardness holds already under the bound $\tau \le 6$, and therefore under every larger
+constant upper bound: it is obtained from Multicoloured Independent Set through the per-client problem,
 whose instances the construction produces with treewidth at most $4$, and a reduction back
 to the uniform problem that raises the treewidth by at most $2$. Tractability for
 $m + \tau$ is a dynamic program over a nice tree decomposition of the overall conflict
@@ -29,8 +29,8 @@ The third bullet is stated in two halves: the problem parameterized by $n$ *fpt-
 feasibility of the integer programs of the reduction, parameterized by the number of variables
 (`byClients_fptReduces_ilp`, proved: the integer program of the source, written by a word RAM
 program), and the feasibility of these integer programs is fixed-parameter tractable
-(`IlpClients.ilpClients_fpt`, proved by a guess-and-verify algorithm for the constraint matrices
-of the family, which are fixed by $n$; the source cites Lenstra's algorithm for it, which is not
+(`IlpClients.ilpClients_fpt`, proved by enumerating parameter-bounded certificates and checking the reconstructed
+solutions for the matrices of the family, which are fixed by $n$; the source cites Lenstra's algorithm for it, which is not
 needed for this family). Fixed-parameter tractability in $n$ (`fpt_byClients`) is their
 combination.
 

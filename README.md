@@ -16,7 +16,7 @@ requires all external dependencies to be registered and pinned to their register
 |---|---|
 | 2-SAT is in P (Aspvall, Plass, Tarjan 1979) | `TwoSAT/` |
 | A nice tree decomposition of small width in fixed-parameter time (Bodlaender 1996, Kloks 1994) | `Treewidth/` (the exact dynamic program of Bodlaender and Kloks on the word RAM), through `BodlaenderProved.lean` |
-| The integer programs of Theorem 4 are solved in fixed-parameter time (the paper cites Lenstra) | `IlpClients/`, `Machine/Ilp*.lean`: the programs of the family have a fixed constraint matrix, and a guess-and-verify algorithm solves them, so Lenstra's algorithm is not needed |
+| The integer programs of Theorem 4 are solved in fixed-parameter time (the paper cites Lenstra) | `IlpClients/`, `Machine/Ilp*.lean`: the programs of the family have a fixed constraint matrix, and an algorithm enumerates parameter-bounded certificates, reconstructs solutions and checks them, so Lenstra's algorithm is not needed |
 | Bounded-occurrence 3-SAT is NP-hard (Tovey 1984) | `lax-345332`, through `BoundedSatProved.lean` |
 | Multicoloured Independent Set is NP-hard on regular instances | `McisHard/`: from bounded-occurrence 3-SAT, through the occurrence graph, a regularisation gadget and a copy of the graph for every clause |
 | Hitting Set is NP-hard (Karp 1972), and hardness of interval scheduling with eligible machine sets | `lax-496464` and `lax-888481`, through `JitHard/Sat34Wired.lean` |
@@ -42,9 +42,8 @@ For archive validation, run:
 
     lax build .
 
-Every dependency is pinned to a git commit: ISEM (`lax-888481`), Tovey (`lax-345332`) and
-RJLMax (`lax-391470`) are registered; flexflowjit (`lax-496464`) is pinned to its submitted commit
-and `lax build .` reports it as a draft dependency until it is registered.
+External dependencies are pinned to git commits in the Lake configuration.
+Run strict archive validation to check their registration and compatibility.
 
 The full build takes a while; on a machine with limited memory, cap Lake's parallelism, for
 example `LEAN_NUM_THREADS=2 lake build` from `proofs/`, or it will start one Lean process per

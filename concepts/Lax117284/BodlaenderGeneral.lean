@@ -3,7 +3,7 @@ import Lax808846.Ram
 
 /-!
 ---
-title: Nice tree decompositions of small width are found in fixed-parameter time
+title: Nice Tree Decompositions of Small Width Are Found in Fixed-Parameter Time
 type: theorem
 ---
 **Bodlaender's theorem.** For every constant $k$ one can decide in linear time whether a graph
@@ -17,13 +17,13 @@ and Approximations"*, Lecture Notes in Computer Science 842, Springer 1994. A si
 presentation of the whole algorithm is E. Althaus and S. Ziegler, *"Optimal tree decompositions
 revisited: a simpler linear-time FPT algorithm"*, arXiv:1912.09144 (2020).
 
-The algorithm reduces to a graph with a constant fraction fewer vertices — either by contracting
-a maximal matching among the low-degree vertices, or by removing the "I-simplicial" vertices of
-the graph with the edges added between vertices that have $k+1$ common low-degree neighbours —
-solves that recursively, lifts the answer to a decomposition of width at most $2k+1$, and hands
-that to `BodlaenderKloks.improveDecomposition`.
+The formalized algorithm uses the improvement step of Bodlaender and Kloks in a
+vertex-by-vertex construction. It extends a decomposition to include the next vertex,
+then reduces its width using `BodlaenderKloks.improveDecomposition`. Its verified bound
+is fixed-parameter time with polynomial dependence on the encoded input length, as
+stated below.
 
-# Formalization notes
+# Formalization Notes
 
 The input is the word of the graph (see `GraphWords`) followed by the bound `k`. The output is
 either `[0]`, admissible only when the graph has no tree decomposition of width at most `k` (in

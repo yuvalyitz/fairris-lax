@@ -3,7 +3,7 @@ import Lax808846.Ram
 
 /-!
 ---
-title: Optimal tree decompositions from a given one
+title: Optimal Tree Decompositions from a Given One
 type: theorem
 ---
 **The theorem of Bodlaender and Kloks.** For all $k$ and $\ell$ there is a linear-time
@@ -22,7 +22,7 @@ This is the *second stage* of Bodlaender's algorithm, `BodlaenderGeneral.niceDec
 being the first: the latter builds the decomposition of width at most $2k+1$ this one
 consumes.
 
-# Formalization notes
+# Formalization Notes
 
 The input is one word: the graph (see `GraphWords`), the two numbers `k` and `l`, and the word
 of a nice tree decomposition of width at most `l`. The graph word states its own length, so the

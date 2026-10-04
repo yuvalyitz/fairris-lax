@@ -15,8 +15,8 @@ overall conflict graph by at most $2$.
 Let $I$ have $n$ clients, $m$ days and fairness parameters $k_1, \ldots, k_n$ with
 $k_j \le m$. Append another $m$ days, add two clients $c^-$ and $c^+$, and ask for the
 uniform parameter $m$. The jobs of $c^-$ and $c^+$ coincide on every day, so at most one of
-them runs on any day and, being asked for $m$ of the $2m$ days, each of them runs on
-exactly one day of every pair. Their common job occupies a stretch of time later than every
+them runs on any day and, each requiring $m$ of the $2m$ days, together they occupy every day,
+with exactly one of them running on each day. Their common job occupies a stretch of time later than every
 due date of $I$, so it conflicts with no original job on the original days. On the
 additional days each original client $j$ has a job of its own, which is placed inside that
 stretch on $k_j$ of them and after it on the others. A client of $I$ can therefore be served

@@ -4,7 +4,7 @@ import Lax228581.Treewidth
 
 /-!
 ---
-title: Graphs and nice tree decompositions as words
+title: Graphs and Nice Tree Decompositions as Words
 type: definition
 ---
 A *tree decomposition* of a graph is a tree whose nodes carry bags of vertices such that every
@@ -17,7 +17,7 @@ either an *introduce* node, whose bag is the bag of its single child plus one ve
 with two children whose bags equal its own. This is the form dynamic programs over tree
 decompositions consume; it is due to Kloks.
 
-# Formalization notes
+# Formalization Notes
 
 The word RAM of the archive reads and writes lists of natural numbers, so this module fixes
 how a graph and a nice tree decomposition are written as one.

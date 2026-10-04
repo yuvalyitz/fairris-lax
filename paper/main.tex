@@ -11,6 +11,7 @@
 \usetikzlibrary{decorations.pathreplacing}
 \usepackage[colorlinks,urlcolor=blue!50!black,linkcolor=blue!50!black,citecolor=green!40!black]{hyperref}
 \usepackage{cleveref}
+\usepackage{etoolbox}
 
 \definecolor{myred}{rgb}{0.75,0,0}
 \definecolor{myblue}{rgb}{0,0,0.72}
@@ -19,7 +20,12 @@
 \definecolor{mygray}{rgb}{0.55,0.55,0.55}
 
 \newtheorem{theorem}{Theorem}
+\newcounter{theoremanchor}
+\AtBeginEnvironment{theorem}{\stepcounter{theoremanchor}}
+\providecommand{\theHtheorem}{}
+\renewcommand{\theHtheorem}{\arabic{theoremanchor}}
 \newtheorem{lemma}{Lemma}
+\newtheorem*{supportingtheorem}{Theorem}
 \newtheorem{corollary}{Corollary}
 \newtheorem{observation}{Observation}
 \theoremstyle{definition}
@@ -54,8 +60,7 @@ days, and a schedule is \emph{fair} if every client is served on at least $k$ of
 The paper gives a complete dichotomy of the problem's complexity in the fairness parameter
 $k$, settles the two natural restrictions to day-independent processing times and
 day-independent due dates, and determines the complexity with respect to the treewidth of
-the daily conflict structure and the number of clients. Thirteen theorems, two lemmas and a
-corollary are proved in Lean. The construction gives inactive clients disjoint slots
+the daily conflict structure and the number of clients. The development proves the scheduling results and supporting algorithmic statements in Lean. The construction gives inactive clients disjoint slots
 inside the dummy client's interval, preserving the conflict graph needed for the
 treewidth bound. A reduction from \SAT\ establishes the required hardness of
 \textsc{Multicoloured Independent Set} on regular instances. This note presents the
@@ -81,13 +86,14 @@ there a $k$-fair schedule?
 % lax begin lax-808846
 Running times below are stated on the word RAM: a program is a fixed list of instructions
 operating on words of $w$ bits, and its running time is the number of instructions it
-executes on an input word, at every word length admitting that input.
+executes on an input word, under the word-length and workspace conditions stated in the linked concepts.
 % lax end
 
 \cite{HHIMS} gives a complete answer in the fairness parameter alone:
 
 % lax begin Lax117284.Theorem1
-\begin{theorem}[Theorem 1]
+\setcounter{theorem}{0}
+\begin{theorem}
 \label{thm:1}
 For $0\le k\le m$, \EQUIJIT\ is solvable in polynomial time when
 $k\in\{0,m-1,m\}$. It is NP-hard for every fixed pair $(m,k)$ with $0<k<m-1$.
@@ -120,7 +126,8 @@ in $f(\kappa)\cdot n^{\bigO(1)}$ time for some computable $f$.
 \label{sec:k}
 
 % lax begin Lax117284.Theorem7
-\begin{theorem}[Theorem 7]
+\setcounter{theorem}{6}
+\begin{theorem}
 \label{thm:7}
 \EQUIJIT\ is NP-hard already at $k=1$, $m=3$, and with every job's processing time equal.
 \end{theorem}
@@ -133,7 +140,8 @@ per variable, and one client per literal occurrence, with due dates chosen so th
 $1$-fair schedule of the three days exists exactly when the formula is satisfiable.
 
 % lax begin Lax117284.Corollary8
-\begin{corollary}[Corollary 8]
+\setcounter{corollary}{7}
+\begin{corollary}
 \label{cor:8}
 \EQUIJIT\ is NP-hard for every $m\ge3$ and $0<k<m-1$.
 \end{corollary}
@@ -146,17 +154,17 @@ schedule, taking $(m,1)$ to $(m+1,1)$. Chaining these from $(3,1)$ reaches every
 $(m,k)$ with $m\ge3$ and $0<k<m-1$.
 
 % lax begin Lax117284.Theorem9
-\begin{theorem}[Theorem 9]
+\setcounter{theorem}{8}
+\begin{theorem}
 \label{thm:9}
-\EQUIJIT\ is solved in $\bigO(mn^2+nm^2)$ time when $k=m-1$.
+\EQUIJIT\ is solvable in polynomial time when $k=m-1$.
 \end{theorem}
 % lax end
 A variable $x_{i,j}$ per day and client; a \emph{conflict clause}
 $(\lnot x_{i,j_1}\lor\lnot x_{i,j_2})$ for every conflicting pair on a day, and a
 \emph{validation clause} $(x_{i_1,j}\lor x_{i_2,j})$ for every client and every two days —
 forbidding two rejections — give a 2-CNF formula satisfiable exactly when a $(m-1)$-fair
-schedule exists, decided in linear time in its size by the algorithm of Aspvall, Plass and
-Tarjan.
+schedule exists. The formalization uses its verified polynomial-time 2-SAT algorithm.
 
 \Cref{thm:1} follows from \Cref{cor:8} and \Cref{thm:9}, together with the trivial cases
 $k=0$ and $k=m$.
@@ -165,7 +173,8 @@ $k=0$ and $k=m$.
 \label{sec:dayindep}
 
 % lax begin Lax117284.Theorem2
-\begin{theorem}[Theorem 2, hardness]
+\setcounter{theorem}{1}
+\begin{theorem}[Hardness]
 \label{thm:2hard}
 \DDEQUIJIT\ is NP-hard.
 \end{theorem}
@@ -174,7 +183,8 @@ $k=0$ and $k=m$.
 processing times, so \Cref{cor:8}'s lift carries this hardness to every $m\ge3,\,0<k<m-1$.
 
 % lax begin Lax117284.Theorem10
-\begin{theorem}[Theorem 10]
+\setcounter{theorem}{9}
+\begin{theorem}
 \label{thm:10}
 With unit processing times, two jobs of a day conflict exactly when their due dates agree.
 An instance with $k\le m$ admits a $k$-fair schedule if and only if the bipartite graph
@@ -195,7 +205,8 @@ to a rejection vertex records that it is not, and only $m-k$ rejections are avai
 \end{figure}
 
 % lax begin Lax117284Proofs.Theorem2UnitP.uniform_unitP_mem_P
-\begin{theorem}[Theorem 2, tractability]
+\setcounter{theorem}{1}
+\begin{theorem}[Tractability]
 \label{thm:2trac}
 \UEQUIJIT\ is solved in polynomial time, by \Cref{thm:10} and a maximum bipartite matching
 algorithm.
@@ -203,7 +214,8 @@ algorithm.
 % lax end
 
 % lax begin Lax117284.Theorem11
-\begin{theorem}[Theorem 11]
+\setcounter{theorem}{10}
+\begin{theorem}
 \label{thm:11}
 \OPEQUIJIT\ is NP-hard.
 \end{theorem}
@@ -214,7 +226,8 @@ instance at $k=1$ that is a yes-instance exactly when every job of the source ca
 scheduled just in time, which is NP-hard~\cite{Sung05}.
 
 % lax begin Lax117284.Theorem12
-\begin{theorem}[Theorem 12]
+\setcounter{theorem}{11}
+\begin{theorem}
 \label{thm:12}
 With day-independent due dates and a constant number $m$ of days, \EQUIJIT\ is solved in
 polynomial time.
@@ -228,10 +241,11 @@ about earlier clients needs to leave behind, and for constant $m$ there are poly
 many states.
 
 % lax begin Lax117284.Theorem13
-\begin{theorem}[Theorem 13]
+\setcounter{theorem}{12}
+\begin{theorem}
 \label{thm:13}
 With both due dates and processing times day-independent, every day has the same conflict
-graph $G$, and \SDEQUIJIT\ is solved in $\bigO(n\log n)$ time: a $k$-fair schedule exists
+graph $G$, and \SDEQUIJIT\ is solvable in polynomial time: a $k$-fair schedule exists
 exactly when $k\cdot\chi(G)\le m$, where $\chi(G)$ is the chromatic number of $G$.
 \end{theorem}
 % lax end
@@ -244,7 +258,8 @@ coincide.
 \label{sec:fpt}
 
 % lax begin Lax117284.Theorem4
-\begin{theorem}[Theorem 4, first bullet]
+\setcounter{theorem}{3}
+\begin{theorem}[Bounded-Treewidth Hardness]
 \label{thm:4a}
 \EQUIJIT\ is NP-hard on instances whose overall conflict graph has treewidth at most
 $6$, and hence under any fixed treewidth upper bound of at least $6$.
@@ -265,16 +280,17 @@ one vertex per class with no two chosen vertices adjacent? It is NP-hard.
 $r$-regular with $r\ge1$, every class of $n\ge4$ vertices, and $|E|$ even.
 The formalization proves \MCIS\ NP-hard on these instances directly, by a
 reduction from \SAT~\cite{Tovey84}: the occurrence graph of a formula (one vertex per
-clause position, grouped by variable) is made regular by five uniform \emph{ports} per
+clause position) is made regular by five uniform \emph{ports} per
 position, each a seven-vertex gadget whose independence number is fixed whether or not its
 port is used, and the resulting graph is then replaced by a disjoint union of copies of
-itself, one colour class per original class, which fixes the parity of $|E|$ without
+itself, with the colour classes defined by the construction, which fixes the parity of $|E|$ without
 touching $r$-regularity or the existence of a multicoloured independent set.
 \end{quote}
 % lax end
 
 % lax begin Lax117284.Lemma14
-\begin{lemma}[Lemma 14]
+\setcounter{lemma}{13}
+\begin{lemma}
 \label{lem:14}
 $1\mid k_j,\mathrm{rep}\mid\min_j\sum_iZ_{i,j}$ — \EQUIJIT\ with one fairness parameter
 $k_j$ per client, \WEQUIJIT\ — is NP-hard even when the overall conflict graph has
@@ -306,7 +322,7 @@ The formalization proves the stated tree decomposition for this construction.
 \begin{figure}[tb]
 \centering
 \input{figures/blocking}
-\caption{Blocking on one day: $c_0$'s job occupies $[0,N]$, and every other
+\caption{Blocking on one day: $c_0$'s job occupies $(0,N]$, and every inactive
 client's job is its own private unit slot at offset $\pi(c)$ — conflicting with $c_0$ but
 with no other blocked client.}
 \label{fig:blocking}
@@ -318,7 +334,7 @@ an \emph{incidence-checking} gadget, in which $c^+$ and $c^-$ can together be sa
 exactly when the selected vertices are pairwise non-adjacent. The resulting conflict graph
 has the tree decomposition of \Cref{fig:treedecomp}: a root bag $\{c_0,c^+,c^-\}$, one child
 bag per colour adding $c_i$, one grandchild per vertex of that colour adding $c_v$, and one
-great-grandchild per neighbour $u$ of $v$ adding $c_{v,u}$ — width four throughout.
+great-grandchild per neighbour $u$ of $v$ replacing $c_i$ with $c_{v,u}$. Thus every bag has at most five clients, giving width at most four.
 
 \begin{figure}[tb]
 \centering
@@ -328,7 +344,8 @@ great-grandchild per neighbour $u$ of $v$ adding $c_{v,u}$ — width four throug
 \end{figure}
 
 % lax begin Lax117284.Lemma15
-\begin{lemma}[Lemma 15]
+\setcounter{lemma}{14}
+\begin{lemma}
 \label{lem:15}
 $1\mid k_j,\mathrm{rep}\mid\min_j\sum_iZ_{i,j}$ reduces in polynomial time to
 $1\mid\mathrm{rep}\mid\min_j\sum_iZ_{i,j}$, raising the treewidth of the overall conflict
@@ -338,10 +355,11 @@ graph by at most $2$.
 Given $I$ with $n$ clients, $m$ days and parameters $k_j\le m$: append another $m$ days and
 two clients $c^-,c^+$ whose identical job, on every new day, occupies a stretch later than
 every due date of $I$ — so it conflicts with nothing of $I$ — and ask for the uniform
-parameter $m$. Since $c^-,c^+$ conflict with each other and together need $m$ of the $2m$
-days, each runs on exactly one day of every pair; each original client $j$ is given a job of
-its own inside that stretch on $k_j$ of the new days and after it on the rest, so it is
-served $k_j+(m-k_j)=m$ times overall exactly when it was served $k_j$ times in $I$. Two
+parameter $m$. Each of $c^-,c^+$ requires $m$ executions. They conflict on every day, so together
+occupy all $2m$ days, with exactly one of them served each day. Each original client $j$
+is blocked on $k_j$ of the additional days and can run on the other $m-k_j$ days.
+It can therefore reach the uniform requirement $m$ exactly when it can be served on
+at least $k_j$ original days. Two
 clients add at most two to the treewidth.
 
 Combining \Cref{lem:14,lem:15} gives \Cref{thm:4a}: $4+2=6$.
@@ -359,18 +377,18 @@ leaves upward.
 % lax end
 
 % lax begin Lax117284.BodlaenderKloks
-\begin{theorem}[Bodlaender and Kloks]
+\begin{supportingtheorem}[Bodlaender and Kloks]
 Given a graph and a nice tree decomposition of width at most $\ell$, one can decide whether
 the treewidth is at most $k$ and, if so, find a nice decomposition of width at most $k$, in
 time $2^{\bigO(\ell^3)}\cdot\mathrm{poly}$.
-\end{theorem}
+\end{supportingtheorem}
 % lax end
 
 % lax begin Lax117284.BodlaenderGeneral
-\begin{theorem}[Bodlaender]
+\begin{supportingtheorem}[Bodlaender]
 Given a graph and $k$, one can decide whether the treewidth is at most $k$ and, if so, find a
 nice decomposition of width at most $k$, in time $2^{\bigO(k^3)}\cdot\mathrm{poly}$.
-\end{theorem}
+\end{supportingtheorem}
 % lax end
 Bodlaender's theorem is formalized with an algorithm that is done slightly differently than
 in the paper: the exact dynamic program of Bodlaender and Kloks over \emph{characteristics} of
@@ -385,36 +403,39 @@ graph of an instance.
 \subsection{Fixed-Parameter Tractability}
 
 % lax begin Lax117284Proofs.TreewidthReal.fpt_byDaysAndTreewidth
-\begin{theorem}[Theorem 4, second bullet]
+\setcounter{theorem}{3}
+\begin{theorem}[Days and Treewidth]
 \label{thm:4b}
-\EQUIJIT\ is fixed-parameter tractable with respect to $m+\tau$, in $2^{\bigO(\tau
-m)}\cdot n$ time.
+\EQUIJIT\ is fixed-parameter tractable with respect to $m+\tau$.
 \end{theorem}
 % lax end
-A dynamic program over a nice tree decomposition of the overall conflict graph (found by
-Bodlaender's algorithm): the table entry at a bag $X$ and an assignment $\sigma$ of partial
-fairness counts to $X$ records whether the clients of $X$ can be scheduled, consistently
-with $\sigma$, using only the days visible below that bag.
+A dynamic program over a nice tree decomposition records the schedules on each bag
+that extend to feasible, fair schedules on the clients in its subtree. A state specifies,
+for each day, which clients of the bag are served. The transitions combine these
+restrictions at introduce, forget and join nodes. The verified implementation establishes
+fixed-parameter tractability; no sharper running-time bound is asserted here.
 
 % lax begin Lax117284Proofs.Theorem4Clients.fpt_byClients
-\begin{theorem}[Theorem 4, third bullet]
+\setcounter{theorem}{3}
+\begin{theorem}[Number of Clients]
 \label{thm:4c}
 \EQUIJIT\ is fixed-parameter tractable with respect to the number $n$ of clients.
 \end{theorem}
 % lax end
 % lax begin Lax117284.IlpClients
-When $m$ is large enough that some daily conflict relation on the $n$ clients must recur,
-the problem reduces to feasibility of an integer program with $2^{\bigO(n\log n)}$
-variables — one per pair of a conflict \emph{type} and a subset of clients scheduled that
-type, plus a slack per client — and as many constraints. \cite{HHIMS} invokes Lenstra's
-algorithm for this: fixed-dimension integer programming in $n^{\bigO(n)}\cdot
-m^{\bigO(1)}$ time~\cite{Lenstra83}. The formalization does not reprove Lenstra's theorem;
-instead it observes that the programs this reduction produces are not arbitrary
-fixed-dimension instances but one explicit family, one constraint matrix per number of
-clients, and gives a direct fixed-parameter algorithm for exactly that family — guess an
-assignment of the $2^{\bigO(n\log n)}$ variables within the bound the right-hand sides
-impose and verify the constraints — avoiding both Lenstra's general algorithm and the
-geometry of numbers it is built on.
+The reduction groups days by their conflict relation. The formal construction reserves
+$2^{n^2}$ relation types and $2^n$ subsets of clients, giving exactly
+$2^{n^2+n}+n$ variables, including one slack variable per client, and $2^{n^2}+n$
+constraints. The constraint matrix depends only on $n$; the right-hand sides record
+counts of day types and the allowed number of rejections.
+
+The source uses fixed-dimension integer programming~\cite{Lenstra83}. The formalization
+instead proves an algorithm for this particular family. It enumerates certificates in a
+finite search space whose size depends only on $n$, reconstructs candidate solutions
+from each certificate and the right-hand sides, and checks the constraints. The
+normalization and certificate-completeness lemmas justify this search. This establishes
+fixed-parameter tractability without enumerating every assignment up to the right-hand
+sides. The scheduling decision program separately handles short inputs by enumeration.
 % lax end
 
 \section{Formalization Notes}
