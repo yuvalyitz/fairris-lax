@@ -31,8 +31,3 @@ required by the treewidth argument. On each gadget day, the dummy client's inter
 covers a region containing a separate, disjoint slot for every inactive client. This
 preserves the blocking argument without introducing conflicts between inactive clients.
 The concept pages specify the construction and its tree decomposition.
-
-For completeness, the submission also formalizes the supporting results of Bodlaender
-and Kloks on finding nice tree decompositions of bounded width. This general graph
-algorithm development goes beyond the scheduling scope of the project and supplies
-the decompositions used by its scheduling algorithm.
