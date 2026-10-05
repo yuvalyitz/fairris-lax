@@ -15,7 +15,7 @@ requires all external dependencies to be registered and pinned to their register
 | Result taken from the literature | Proved in |
 |---|---|
 | 2-SAT is in P (Aspvall, Plass, Tarjan 1979) | `TwoSAT/` |
-| A nice tree decomposition of small width in fixed-parameter time (Bodlaender 1996, Kloks 1994) | `Treewidth/` (the exact dynamic program of Bodlaender and Kloks on the word RAM), through `BodlaenderProved.lean` |
+| A nice tree decomposition of small width in fixed-parameter time (Bodlaender 1996, Kloks 1994) | lax-689794 (the exact dynamic program of Bodlaender and Kloks on the word RAM), through `BodlaenderProved.lean` |
 | The integer programs of Theorem 4 are solved in fixed-parameter time (the paper cites Lenstra) | `IlpClients/`, `Machine/Ilp*.lean`: the programs of the family have a fixed constraint matrix, and an algorithm enumerates parameter-bounded certificates, reconstructs solutions and checks them, so Lenstra's algorithm is not needed |
 | Bounded-occurrence 3-SAT is NP-hard (Tovey 1984) | `lax-345332`, through `BoundedSatProved.lean` |
 | Multicoloured Independent Set is NP-hard on regular instances | `McisHard/`: from bounded-occurrence 3-SAT, through the occurrence graph, a regularisation gadget and a copy of the graph for every clause |
@@ -105,15 +105,11 @@ The 2-SAT development is under `TwoSAT/` (`Math/`, `Bridge.lean`, `Correct.lean`
 under `TwoSAT/Machine/`) and the bipartite matching development under `Bipartite/` (`Matching.lean`,
 `Maximum.lean`, `KuhnCorrect.lean`, `GraphBridge.lean`, the program under `Bipartite/Ram2/`, and
 `Machine.lean`/`MachineTotal.lean` for the running-time statements).
-The algorithm of Bodlaender and Kloks for nice tree decompositions of small width is under
-`Treewidth/`, with the concepts `GraphWords` (graphs and nice decompositions as words),
-`BodlaenderKloks` (the improvement step) and `BodlaenderGeneral` (Bodlaender's theorem for an
-arbitrary graph). It is the exact dynamic program over characteristics of partial decompositions,
-not the linear-time algorithm of the paper: `Seq/`, `Trees/`, `Chars/` and `Wrap/` prove its
-correctness, `Size/` bounds the tables, and `Fun/` runs the Lean functions themselves on a
-verified virtual machine and transfers the runs to the word RAM (`Fun/Final.lean`). The concept
-`Bodlaender` of Theorem 4 is the case of the overall conflict graph and is derived from
-`BodlaenderGeneral` in `BodlaenderProved.lean`.
+Bodlaender's theorem for nice tree decompositions of small width is proved in the separate
+submission [lax-689794](https://laxarchive.org/lax-689794/) (the exact dynamic program of Bodlaender
+and Kloks over characteristics of partial decompositions, run on the word RAM), which this
+submission requires. The concept `Bodlaender` of Theorem 4 is the case of the overall conflict graph
+and is derived from `Lax689794.Bodlaender.niceDecomposition_computable` in `BodlaenderProved.lean`.
 
 ## Layout
 

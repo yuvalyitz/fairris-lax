@@ -90,6 +90,14 @@ git = "https://github.com/yuvalyitz/jitflowshop-lax"
 rev = "605f30b327a2385b4617a6e7123975faadca7ebd"
 subDir = "concepts"
 
+# Bodlaender's theorem for an arbitrary graph, and nice tree decompositions as words, proved in
+# lax-689794 (registered, pinned to its registered commit); the statement is reused for `Bodlaender`
+[[require]]
+name = "Lax689794"
+git = "https://github.com/yuvalyitz/treewidth-lax"
+rev = "b6743cf02087f552d8f023581f4718e68c42e444"
+subDir = "concepts"
+
 # compressed sparse row encodings of graphs (for the bipartite matching modules)
 [[require]]
 name = "Lax271696"
